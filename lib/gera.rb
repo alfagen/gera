@@ -1,3 +1,4 @@
+require 'money'
 require 'crypto_math'
 require 'crypto_math/root'
 require 'require_all'
