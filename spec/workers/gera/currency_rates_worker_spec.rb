@@ -1,7 +1,9 @@
-require 'rails_helper'
+require 'spec_helper'
 
-describe GERA::CurrencyRatesWorker do
-  it do
-    expect( GERA::CurrencyRatesWorker.new.perform ).to be_truthy
+module GERA
+  RSpec.describe CurrencyRatesWorker do
+    it do
+      expect( CurrencyRatesWorker.new.perform ).to be_truthy
+    end
   end
 end

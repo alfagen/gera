@@ -3,13 +3,30 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rspec/rails'
 require 'factory_bot'
+require 'pry'
 require 'database_rewinder'
+require 'vcr'
+
+require 'timecop'
+
+require 'sidekiq/testing/inline'
+Sidekiq::Testing.inline!
 
 require_relative '../lib/gera'
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
-Rails.backtrace_cleaner.remove_silencers!
+# Rails.backtrace_cleaner.remove_silencers!
+
+CryptoMath.define_money! File.expand_path("../config/currencies.yml", __FILE__)
+
+VCR.configure do |c|
+  c.cassette_library_dir = 'spec/vcr_cassettes'
+  # c.allow_http_connections_when_no_cassette = true
+  c.ignore_localhost = true
+  c.hook_into :webmock
+  c.configure_rspec_metadata!
+end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
@@ -25,6 +42,14 @@ RSpec.configure do |config|
     # ...rather than:
     #     # => "be bigger than 2"
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
+  end
+
+  config.before(:each) do
+    GERA::Universe.clear!
+  end
+
+  config.before(:suite) do
+    FactoryBot.find_definitions
   end
 
   # rspec-mocks config goes here. You can use an alternate test double
@@ -43,15 +68,19 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  #config.before(:suite) do
-    #DatabaseRewinder.clean_all
-    ## or
-    ## DatabaseRewinder.clean_with :any_arg_that_would_be_actually_ignored_anyway
-  #end
+  config.before(:suite) do
+    DatabaseRewinder.init
+    require 'database_rewinder/active_record_monkey'
+    # Почему-то падает с ошибкой  undefined method `empty?' for nil:NilClass
+    #
+    DatabaseRewinder.clean_all
+    # or
+    # DatabaseRewinder.clean_with :any_arg_that_would_be_actually_ignored_anyway
+  end
 
-  #config.after(:each) do
-    #DatabaseRewinder.clean
-  #end
+  config.after(:each) do
+    DatabaseRewinder.clean
+  end
 
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.

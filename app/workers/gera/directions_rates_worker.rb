@@ -7,7 +7,10 @@ module GERA
 
     sidekiq_options queue: :critical
 
-    def perform
+    # exchange_rate_id - ID изменившегося направление
+    # фактически не используется
+    #
+    def perform(*args) # exchange_rate_id: nil)
       logger.info "start"
 
       DirectionRate.transaction do

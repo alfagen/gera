@@ -7,7 +7,7 @@ FactoryBot.define do
     "ps_name#{n}"
   end
 
-  factory :payment_system do
+  factory :payment_system, class: GERA::PaymentSystem do
     currency { RUB }
     priority { 1 }
     letter_cod { generate :ps_slug }

@@ -1,9 +1,7 @@
 module GERA
   class RateSourceBitfinex < RateSource
-    SUPPORTED_CURRENCIES = %i(NEO BTC ETH EUR USD)
-
-    def self.available_pairs
-      generate_pairs_from_currencies SUPPORTED_CURRENCIES
+    def self.supported_currencies
+      %i(NEO BTC ETH EUR USD).map { |m| Money::Currency.find! m }
     end
   end
 end

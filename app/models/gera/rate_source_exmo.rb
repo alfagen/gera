@@ -1,9 +1,7 @@
 module GERA
   class RateSourceEXMO < RateSource
-    SUPPORTED_CURRENCIES = %i(BTC BCH DSH ETH ETC LTC XRP XMR USD RUB ZEC EUR)
-
-    def self.available_pairs
-      generate_pairs_from_currencies SUPPORTED_CURRENCIES
+    def self.supported_currencies
+      %i(BTC BCH DSH ETH ETC LTC XRP XMR USD RUB ZEC EUR).map { |m| Money::Currency.find! m }
     end
   end
 end

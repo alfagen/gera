@@ -9,8 +9,8 @@ module GERA
 
     UnknownExchangeRate = Class.new StandardError
 
-    belongs_to :ps_from, class_name: 'PaymentSystem'
-    belongs_to :ps_to, class_name: 'PaymentSystem'
+    belongs_to :ps_from, class_name: 'GERA::PaymentSystem'
+    belongs_to :ps_to, class_name: 'GERA::PaymentSystem'
     belongs_to :currency_rate, class_name: 'GERA::CurrencyRate'
     belongs_to :exchange_rate
 

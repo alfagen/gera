@@ -2,7 +2,6 @@ module GERA
   class CurrencyRateMode < ApplicationRecord
     include CurrencyPairSupport
     include CurrencyRateModeBuilderSupport
-    include Authority::Abilities
 
     self.table_name = 'currency_rate_modes'
 

@@ -4,12 +4,6 @@ module GERA
     RateNotFound = Class.new StandardError
     self.table_name = 'rate_sources'
 
-    CBR_ID  = 1
-    EXMO_ID = 2
-    MANUAL_ID = 3
-    CBR_AVG_ID = 4
-    BITFINEX_ID = 5
-
     has_many :snapshots, class_name: 'ExternalRateSnapshot'
     has_many :external_rates, foreign_key: :source_id
 
@@ -24,26 +18,23 @@ module GERA
       self.priority ||= RateSource.maximum(:priority).to_i + 1 if self.class.attribute_names.include? 'priority'
     end
 
-    # TODO Избавиться от шорткатов
-    #
-    def self.exmo
-      find EXMO_ID
+    before_validation do
+      self.title ||= self.class.name.underscore
+      self.key ||= self.class.name.underscore
     end
 
-    def self.cbr
-      find CBR_ID
+    delegate :supported_currencies, :available_pairs, to: :class
+
+    def self.supported_currencies
+      raise 'not implemented'
     end
 
-    def self.cbr_avg
-      find CBR_AVG_ID
+    def self.available_pairs
+      generate_pairs_from_currencies supported_currencies
     end
 
-    def self.bitfinex
-      find BITFINEX_ID
-    end
-
-    def self.manual
-      find MANUAL_ID
+    def self.get!
+      where(type: self.name).take!
     end
 
     def find_rate_by_currency_pair!(pair)
@@ -69,14 +60,6 @@ module GERA
     def is_currency_supported?(cur)
       cur = Money::Currency.find cur unless cur.is_a? Money::Currency
       supported_currencies.include? cur
-    end
-
-    def supported_currencies
-      self.class::SUPPORTED_CURRENCIES.map { |c| Money::Currency.find! c }
-    end
-
-    def available_pairs
-      self.class.available_pairs
     end
 
     private
