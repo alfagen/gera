@@ -11,7 +11,7 @@ require_rel 'builders'
 require_rel 'repositories'
 
 module GERA
-  # Your code goes here...
+  FACTORY_PATH = File.expand_path("../spec/factories", __dir__)
 end
 
 Gera = GERA
