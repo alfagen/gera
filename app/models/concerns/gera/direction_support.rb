@@ -6,7 +6,7 @@ module GERA
     end
 
     def direction
-      Direction.new(ps_from: payment_system_from, ps_to: payment_system_to).freeze
+      ::GERA::Direction.new(ps_from: payment_system_from, ps_to: payment_system_to).freeze
     end
   end
 end
