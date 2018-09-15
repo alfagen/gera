@@ -5,13 +5,13 @@ module GERA
 
     self.table_name = 'currency_rates'
 
-    belongs_to :snapshot, class_name: 'CurrencyRateSnapshot'
+    belongs_to :snapshot, class_name: 'GERA::CurrencyRateSnapshot'
     belongs_to :external_rate, optional: true
     belongs_to :rate_source, optional: true
 
-    belongs_to :external_rate1, class_name: 'ExternalRate', optional: true
-    belongs_to :external_rate2, class_name: 'ExternalRate', optional: true
-    belongs_to :external_rate3, class_name: 'ExternalRate', optional: true
+    belongs_to :external_rate1, class_name: 'GERA::ExternalRate', optional: true
+    belongs_to :external_rate2, class_name: 'GERA::ExternalRate', optional: true
+    belongs_to :external_rate3, class_name: 'GERA::ExternalRate', optional: true
 
     scope :by_exchange_rate, -> (er) { by_currency_pair er.currency_pair }
 

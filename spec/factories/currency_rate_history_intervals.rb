@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :currency_rate_history_interval do
+  factory :currency_rate_history_interval, class: GERA::CurrencyRateHistoryInterval do
     cur_from_id { 1 }
     cur_to_id { 1 }
     min_rate { 1.5 }

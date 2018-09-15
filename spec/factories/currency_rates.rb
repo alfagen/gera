@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :currency_rate do
+  factory :currency_rate, class: GERA::CurrencyRate do
     cur_from { USD }
     cur_to { RUB }
     rate_value { 60 }

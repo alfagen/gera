@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/BrandyMint/crypto_math.git
-  revision: d55f4f2ff36fa73697bb91d09283c159e94b266d
+  revision: 0d17026dfb10fe5275d70cb3e33b8a490fcbc134
   specs:
-    crypto_math (0.1.3)
+    crypto_math (0.1.4)
       activesupport
       money (~> 6.11)
       percentable

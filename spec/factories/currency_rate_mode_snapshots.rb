@@ -3,7 +3,7 @@ FactoryBot.define do
     "title#{n}"
   end
 
-  factory :currency_rate_mode_snapshot do
+  factory :currency_rate_mode_snapshot, class: GERA::CurrencyRateModeSnapshot do
     title { generate :crms_title }
   end
 end
