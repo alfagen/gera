@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     s.add_dependency 'auto_logger', '~> 0.1.3'
     s.add_dependency 'request_store'
     s.add_dependency 'business_time'
+    s.add_dependency 'dapi-archivable'
 
     s.add_development_dependency 'rubocop'
     s.add_development_dependency 'rubocop-rspec'

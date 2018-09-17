@@ -1,5 +1,9 @@
+require 'archivable'
+
 module GERA
   class PaymentSystem < ApplicationRecord
+    include ::Archivable
+
     self.table_name = :cms_paymant_system
 
     scope :ordered, -> { order :priority }
