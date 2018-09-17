@@ -21,15 +21,6 @@ load 'rails/tasks/statistics.rake'
 
 require 'bundler/gem_tasks'
 
-#require 'rake/testtask'
-
-#Rake::TestTask.new(:test) do |t|
-  #t.libs << 'test'
-  #t.pattern = 'test/**/*_test.rb'
-  #t.verbose = false
-#end
-
-#task default: :test
 begin
   require 'rspec/core/rake_task'
 
@@ -38,4 +29,12 @@ begin
   task :default => :spec
 rescue LoadError
   # no rspec available
+end
+
+task default: :rspec
+
+YARD::Rake::YardocTask.new do |t|
+  t.files   = ['lib/**/*.rb', 'app/**/*.rb']  # optional
+  t.options = ['--any', '--extra', '--opts'] # optional
+  t.stats_options = ['--list-undoc']         # optional
 end

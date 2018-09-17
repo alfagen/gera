@@ -1,5 +1,6 @@
-# Базовый курс
 module GERA
+  # Базовый курс
+  #
   class CurrencyRate < ApplicationRecord
     include CurrencyPairSupport
 

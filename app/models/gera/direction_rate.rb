@@ -1,5 +1,6 @@
-# Конечный курс обмена по направлениями
 module GERA
+  # Конечный курс обмена по направлениями
+  #
   class DirectionRate < ApplicationRecord
     include Mathematic
     include AutoLogger
