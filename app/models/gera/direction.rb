@@ -2,7 +2,7 @@ module GERA
   # Направление обмена
   #
   class Direction
-    include Virtus.model # strict: true
+    include Virtus.model
 
     attribute :ps_from #, PaymentSystem
     attribute :ps_to   #, PaymentSystem
