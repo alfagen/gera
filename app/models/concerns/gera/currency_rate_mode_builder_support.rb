@@ -12,7 +12,7 @@ module Gera
     end
 
     def build_currency_rate!
-      raise build_result.error if build_result.error
+      raise build_result.error if build_result.error?
 
       build_result.currency_rate
     end

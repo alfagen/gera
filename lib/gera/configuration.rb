@@ -12,6 +12,28 @@ module Gera
 		def configure
 			yield self
 		end
+
+    # @param [Symbol] Валюта для кросс-расчетов по-умолчанию
+    mattr_accessor :default_cross_currency
+    @@default_cross_currency = :usd
+
+    def default_cross_currency
+      return @@default_cross_currency if @@default_cross_currency.is_a? Money::Currency
+      Money::Currency.find! @@default_cross_currency
+    end
+
+    # @param [Hash] Набор кросс-валют для расчета
+    mattr_accessor :cross_pairs
+    # В данном примере курс к KZT считать через RUB
+    @@cross_pairs = { kzt: :rub }
+
+    def cross_pairs
+      h = {}
+      @@cross_pairs.each do |k, v|
+        h[Money::Currency.find!(k)] = Money::Currency.find! v
+      end
+      h
+    end
 	end
 end
 

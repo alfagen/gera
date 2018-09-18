@@ -12,6 +12,8 @@ module Gera
     scope :ordered, -> { order :priority }
     scope :enabled, -> { where is_enabled: true }
 
+    scope :enabled_for_cross_rates, -> { enabled }
+
     validates :key, presence: true, uniqueness: true
 
     before_create do

@@ -6,6 +6,10 @@
 
 Инструкция по использованию в процессе подготовки.
 
+## TODO
+
+* Уйти от STI в RateSource
+
 ## Installation
 
 Add this line to your application's Gemfile:

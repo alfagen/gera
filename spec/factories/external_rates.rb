@@ -1,9 +1,7 @@
 FactoryBot.define do
   factory :external_rate, class: Gera::ExternalRate do
-    bank_id { 1 }
-    cur_from { "MyString" }
-    cur_to { "MyString" }
-    rate { 1.5 }
-    datetime { "2018-03-06 16:48:58" }
+    cur_from { "USD" }
+    cur_to { "RUB" }
+    rate_value { 1.5 }
   end
 end

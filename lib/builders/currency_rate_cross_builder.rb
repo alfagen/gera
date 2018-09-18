@@ -37,11 +37,12 @@ module Gera
     end
 
     def generate_cross_rates(pair)
-      # TODO вынести в настройки или в автоматм
-      if pair.include?(KZT) || pair.include?(EUR)
-        cross_cur = RUB
+      if Gera.cross_pairs.has_key? pair.cur_from
+        cross_cur = Gera.cross_pairs[pair.cur_from]
+      elsif Gera.cross_pairs.has_key? pair.cur_to
+        cross_cur = Gera.cross_pairs[pair.cur_to]
       else
-        cross_cur = USD
+        cross_cur = Gera.default_cross_currency
       end
 
       [
@@ -51,10 +52,11 @@ module Gera
     end
 
     def sources
-      @sources ||= Gera::RateSource.enabled.ordered
+      @sources ||= Gera::RateSource.enabled_for_cross_rates.ordered
     end
 
     def find_external_rate pair
+      raise Error, "Поиск курса через самого себя #{pair}" if pair.same?
       raise Error, "Циклический поиск (#{@cached_pairs.to_a.join(',')}) курса для #{pair}" if @cached_pairs.include? pair
       @cached_pairs << pair
       sources.each do |source|

@@ -11,6 +11,10 @@ module Gera
 
     scope :ordered, -> { order :cur_from, :cur_to }
 
+    before_validation do
+      self.source ||= snapshot.try :rate_source
+    end
+
     before_validation :upcase_currencies
 
     # TODO validate cur_from, cur_to из списка разрешенных

@@ -1,18 +1,34 @@
 module Gera
   class CurrencyRateBuilder
     Error = Class.new StandardError
-    class Result
+    Result = Class.new
+    class SuccessResult < Result
       include Virtus.model
-
       attribute :currency_rate #, CurrencyRate
-      attribute :error, StandardError
 
       def success?
-        ! error?
+        true
       end
 
       def error?
-        error.present?
+        false
+      end
+    end
+
+    class ErrorResult < Result
+      include Virtus.model
+      attribute :error, StandardError
+
+      def currency_rate
+        nil
+      end
+
+      def success?
+        false
+      end
+
+      def error?
+        true
       end
     end
 
@@ -29,12 +45,16 @@ module Gera
 
     private
 
+    def build
+      raise 'not implemented'
+    end
+
     def success(currency_rate)
-      Result.new(currency_rate: currency_rate).freeze
+      SuccessResult.new(currency_rate: currency_rate).freeze
     end
 
     def failure(error)
-      Result.new(error: error).freeze
+      ErrorResult.new(error: error).freeze
     end
   end
 end
