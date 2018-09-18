@@ -1,1 +1,1 @@
---plugin rspec --output-dir ./docs --no-private --protected app/**/*.rb lib/**/*.rb - README.md MIT-LICENSE
+--plugin rspec --output-dir ./docs --no-private --no-protected app/**/*.rb lib/**/*.rb spec/**/*_spec.rb spec/*_spec.rb - README.md LICENSE

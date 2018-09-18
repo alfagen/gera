@@ -181,15 +181,15 @@
     <span class='id identifier rubyid_sleep'>sleep</span> <span class='int'>2</span>
   <span class='kw'>end</span>
 
-  <span class='const'><span class='object_link'><a href="DirectionRateSnapshot.html" title="Gera::DirectionRateSnapshot (class)">DirectionRateSnapshot</a></span></span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="DirectionRateSnapshot.html" title="Gera::DirectionRateSnapshot (class)">DirectionRateSnapshot</a></span></span><span class='period'>.</span><span class='id identifier rubyid_table_exists?'>table_exists?</span>
-  <span class='const'><span class='object_link'><a href="DirectionRate.html" title="Gera::DirectionRate (class)">DirectionRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
+  <span class='const'>DirectionRateSnapshot</span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span> <span class='kw'>if</span> <span class='const'>DirectionRateSnapshot</span><span class='period'>.</span><span class='id identifier rubyid_table_exists?'>table_exists?</span>
+  <span class='const'>DirectionRate</span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
 
-  <span class='const'><span class='object_link'><a href="ExternalRate.html" title="Gera::ExternalRate (class)">ExternalRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
-  <span class='const'><span class='object_link'><a href="ExternalRateSnapshot.html" title="Gera::ExternalRateSnapshot (class)">ExternalRateSnapshot</a></span></span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
+  <span class='const'>ExternalRate</span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
+  <span class='const'>ExternalRateSnapshot</span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
 
-  <span class='const'><span class='object_link'><a href="CurrencyRate.html" title="Gera::CurrencyRate (class)">CurrencyRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
-  <span class='const'><span class='object_link'><a href="RateSource.html" title="Gera::RateSource (class)">RateSource</a></span></span><span class='period'>.</span><span class='id identifier rubyid_update_all'>update_all</span> <span class='label'>actual_snapshot_id:</span> <span class='kw'>nil</span>
-  <span class='const'><span class='object_link'><a href="CurrencyRateSnapshot.html" title="Gera::CurrencyRateSnapshot (class)">CurrencyRateSnapshot</a></span></span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
+  <span class='const'>CurrencyRate</span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
+  <span class='const'>RateSource</span><span class='period'>.</span><span class='id identifier rubyid_update_all'>update_all</span> <span class='label'>actual_snapshot_id:</span> <span class='kw'>nil</span>
+  <span class='const'>CurrencyRateSnapshot</span><span class='period'>.</span><span class='id identifier rubyid_batch_purge'>batch_purge</span>
 
   <span class='kw'>if</span> <span class='const'>Rails</span><span class='period'>.</span><span class='id identifier rubyid_env'>env</span><span class='period'>.</span><span class='id identifier rubyid_prodiction?'>prodiction?</span>
     <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Enable all sidekiqs</span><span class='tstring_end'>&#39;</span></span>
@@ -206,7 +206,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Sep 18 22:11:28 2018 by
+  Generated on Tue Sep 18 23:21:36 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.16 (ruby-2.4.4).
 </div>
