@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Class: GERA::ExternalRate
+  Class: Gera::ExternalRate
   
     &mdash; Documentation by YARD 0.9.16
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "GERA::ExternalRate";
+  pathId = "Gera::ExternalRate";
   relpath = '../';
 </script>
 
@@ -37,7 +37,7 @@
         <div id="menu">
   
     <a href="../_index.html">Index (E)</a> &raquo;
-    <span class='title'><span class='object_link'><a href="../GERA.html" title="GERA (module)">GERA</a></span></span>
+    <span class='title'><span class='object_link'><a href="../Gera.html" title="Gera (module)">Gera</a></span></span>
      &raquo; 
     <span class="title">ExternalRate</span>
   
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Class: GERA::ExternalRate
+      <div id="content"><h1>Class: Gera::ExternalRate
   
   
   
@@ -69,16 +69,16 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="ApplicationRecord.html" title="GERA::ApplicationRecord (class)">ApplicationRecord</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="ApplicationRecord.html" title="Gera::ApplicationRecord (class)">ApplicationRecord</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">ActiveRecord::Base</li>
           
-            <li class="next"><span class='object_link'><a href="ApplicationRecord.html" title="GERA::ApplicationRecord (class)">ApplicationRecord</a></span></li>
+            <li class="next"><span class='object_link'><a href="ApplicationRecord.html" title="Gera::ApplicationRecord (class)">ApplicationRecord</a></span></li>
           
-            <li class="next">GERA::ExternalRate</li>
+            <li class="next">Gera::ExternalRate</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -93,7 +93,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="CurrencyPairSupport.html" title="GERA::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></dd>
+      <dd><span class='object_link'><a href="CurrencyPairSupport.html" title="Gera::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></dd>
   </dl>
   
   
@@ -179,8 +179,8 @@
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="CurrencyPairSupport.html" title="GERA::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="CurrencyPairSupport.html#currency_from-instance_method" title="GERA::CurrencyPairSupport#currency_from (method)">#currency_from</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair-instance_method" title="GERA::CurrencyPairSupport#currency_pair (method)">#currency_pair</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair=-instance_method" title="GERA::CurrencyPairSupport#currency_pair= (method)">#currency_pair=</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_to-instance_method" title="GERA::CurrencyPairSupport#currency_to (method)">#currency_to</a></span></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="CurrencyPairSupport.html" title="Gera::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="CurrencyPairSupport.html#currency_from-instance_method" title="Gera::CurrencyPairSupport#currency_from (method)">#currency_from</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair-instance_method" title="Gera::CurrencyPairSupport#currency_pair (method)">#currency_pair</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair=-instance_method" title="Gera::CurrencyPairSupport#currency_pair= (method)">#currency_pair=</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_to-instance_method" title="Gera::CurrencyPairSupport#currency_to (method)">#currency_to</a></span></p>
 
   
   
@@ -218,7 +218,7 @@
       <pre class="code"><span class="info file"># File 'app/models/gera/external_rate.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_direction_rate'>direction_rate</span>
-  <span class='const'><span class='object_link'><a href="Universe.html" title="GERA::Universe (class)">Universe</a></span></span><span class='period'>.</span><span class='id identifier rubyid_direction_rates_repository'><span class='object_link'><a href="Universe.html#direction_rates_repository-instance_method" title="GERA::Universe#direction_rates_repository (method)">direction_rates_repository</a></span></span><span class='period'>.</span><span class='id identifier rubyid_find_direction_rate_by_exchange_rate_id'>find_direction_rate_by_exchange_rate_id</span> <span class='id identifier rubyid_id'>id</span>
+  <span class='const'><span class='object_link'><a href="Universe.html" title="Gera::Universe (class)">Universe</a></span></span><span class='period'>.</span><span class='id identifier rubyid_direction_rates_repository'><span class='object_link'><a href="Universe.html#direction_rates_repository-instance_method" title="Gera::Universe#direction_rates_repository (method)">direction_rates_repository</a></span></span><span class='period'>.</span><span class='id identifier rubyid_find_direction_rate_by_exchange_rate_id'>find_direction_rate_by_exchange_rate_id</span> <span class='id identifier rubyid_id'>id</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -260,7 +260,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Sep 17 23:48:40 2018 by
+  Generated on Tue Sep 18 19:56:09 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.16 (ruby-2.4.3).
 </div>

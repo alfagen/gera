@@ -1,6 +1,5 @@
 module Gera
   class RateFromMultiplicator
-    FORMAT_ROUND = 3
     include Mathematic
     attr_reader :value
 
@@ -36,8 +35,8 @@ module Gera
       self.class.new(1.0 / value).freeze
     end
 
-    # TODO вынести в helpers в GERA
-    #
+    FORMAT_ROUND = 3
+
     def format(cur1='', cur2='')
       cur1 = " #{cur1}" if cur1.present?
       cur2 = " #{cur2}" if cur2.present?

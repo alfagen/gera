@@ -1,4 +1,4 @@
-module GERA
+module Gera
   module CurrenciesPurger
     def self.purge_all(env)
       raise unless env == Rails.env

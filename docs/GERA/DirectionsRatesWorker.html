@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Class: GERA::DirectionsRatesWorker
+  Class: Gera::DirectionsRatesWorker
   
     &mdash; Documentation by YARD 0.9.16
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "GERA::DirectionsRatesWorker";
+  pathId = "Gera::DirectionsRatesWorker";
   relpath = '../';
 </script>
 
@@ -37,7 +37,7 @@
         <div id="menu">
   
     <a href="../_index.html">Index (D)</a> &raquo;
-    <span class='title'><span class='object_link'><a href="../GERA.html" title="GERA (module)">GERA</a></span></span>
+    <span class='title'><span class='object_link'><a href="../Gera.html" title="Gera (module)">Gera</a></span></span>
      &raquo; 
     <span class="title">DirectionsRatesWorker</span>
   
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Class: GERA::DirectionsRatesWorker
+      <div id="content"><h1>Class: Gera::DirectionsRatesWorker
   
   
   
@@ -74,7 +74,7 @@
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next">GERA::DirectionsRatesWorker</li>
+            <li class="next">Gera::DirectionsRatesWorker</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -215,10 +215,10 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_perform'>perform</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span> <span class='comment'># exchange_rate_id: nil)
 </span>  <span class='id identifier rubyid_logger'>logger</span><span class='period'>.</span><span class='id identifier rubyid_info'>info</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>start</span><span class='tstring_end'>&quot;</span></span>
 
-  <span class='const'><span class='object_link'><a href="DirectionRate.html" title="GERA::DirectionRate (class)">DirectionRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
+  <span class='const'><span class='object_link'><a href="DirectionRate.html" title="Gera::DirectionRate (class)">DirectionRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_transaction'>transaction</span> <span class='kw'>do</span>
     <span class='comment'># Генерруем для всех, потому что так нужно старому пыху
 </span>    <span class='comment'># ExchangeRate.available.find_each do |er|
-</span>    <span class='const'><span class='object_link'><a href="ExchangeRate.html" title="GERA::ExchangeRate (class)">ExchangeRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='symbol'>:payment_system_from</span><span class='comma'>,</span> <span class='symbol'>:payment_system_to</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_find_each'>find_each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_er'>er</span><span class='op'>|</span>
+</span>    <span class='const'><span class='object_link'><a href="ExchangeRate.html" title="Gera::ExchangeRate (class)">ExchangeRate</a></span></span><span class='period'>.</span><span class='id identifier rubyid_includes'>includes</span><span class='lparen'>(</span><span class='symbol'>:payment_system_from</span><span class='comma'>,</span> <span class='symbol'>:payment_system_to</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_find_each'>find_each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_er'>er</span><span class='op'>|</span>
       <span class='id identifier rubyid_safe_create'>safe_create</span> <span class='id identifier rubyid_er'>er</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
@@ -234,7 +234,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Sep 17 23:48:41 2018 by
+  Generated on Tue Sep 18 19:56:09 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.16 (ruby-2.4.3).
 </div>

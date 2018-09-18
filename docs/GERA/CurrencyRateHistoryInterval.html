@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Class: GERA::CurrencyRateHistoryInterval
+  Class: Gera::CurrencyRateHistoryInterval
   
     &mdash; Documentation by YARD 0.9.16
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "GERA::CurrencyRateHistoryInterval";
+  pathId = "Gera::CurrencyRateHistoryInterval";
   relpath = '../';
 </script>
 
@@ -37,7 +37,7 @@
         <div id="menu">
   
     <a href="../_index.html">Index (C)</a> &raquo;
-    <span class='title'><span class='object_link'><a href="../GERA.html" title="GERA (module)">GERA</a></span></span>
+    <span class='title'><span class='object_link'><a href="../Gera.html" title="Gera (module)">Gera</a></span></span>
      &raquo; 
     <span class="title">CurrencyRateHistoryInterval</span>
   
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Class: GERA::CurrencyRateHistoryInterval
+      <div id="content"><h1>Class: Gera::CurrencyRateHistoryInterval
   
   
   
@@ -69,16 +69,16 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="ApplicationRecord.html" title="GERA::ApplicationRecord (class)">ApplicationRecord</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="ApplicationRecord.html" title="Gera::ApplicationRecord (class)">ApplicationRecord</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">ActiveRecord::Base</li>
           
-            <li class="next"><span class='object_link'><a href="ApplicationRecord.html" title="GERA::ApplicationRecord (class)">ApplicationRecord</a></span></li>
+            <li class="next"><span class='object_link'><a href="ApplicationRecord.html" title="Gera::ApplicationRecord (class)">ApplicationRecord</a></span></li>
           
-            <li class="next">GERA::CurrencyRateHistoryInterval</li>
+            <li class="next">Gera::CurrencyRateHistoryInterval</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -93,7 +93,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="HistoryIntervalConcern.html" title="GERA::HistoryIntervalConcern (module)">HistoryIntervalConcern</a></span></dd>
+      <dd><span class='object_link'><a href="HistoryIntervalConcern.html" title="Gera::HistoryIntervalConcern (module)">HistoryIntervalConcern</a></span></dd>
   </dl>
   
   
@@ -114,8 +114,8 @@
   <h2>Constant Summary</h2>
   
   <h3 class="inherited">Constants included
-     from <span class='object_link'><a href="HistoryIntervalConcern.html" title="GERA::HistoryIntervalConcern (module)">HistoryIntervalConcern</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="HistoryIntervalConcern.html#INTERVAL-constant" title="GERA::HistoryIntervalConcern::INTERVAL (constant)">HistoryIntervalConcern::INTERVAL</a></span></p>
+     from <span class='object_link'><a href="HistoryIntervalConcern.html" title="Gera::HistoryIntervalConcern (module)">HistoryIntervalConcern</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="HistoryIntervalConcern.html#INTERVAL-constant" title="Gera::HistoryIntervalConcern::INTERVAL (constant)">HistoryIntervalConcern::INTERVAL</a></span></p>
 
 
 
@@ -212,8 +212,8 @@
       <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate_history_interval.rb', line 6</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_create_by_interval!'>create_by_interval!</span><span class='lparen'>(</span><span class='id identifier rubyid_interval_from'>interval_from</span><span class='comma'>,</span> <span class='id identifier rubyid_interval_to'>interval_to</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_interval_to'>interval_to</span> <span class='op'>||=</span> <span class='id identifier rubyid_interval_from'>interval_from</span> <span class='op'>+</span> <span class='const'><span class='object_link'><a href="HistoryIntervalConcern.html#INTERVAL-constant" title="GERA::HistoryIntervalConcern::INTERVAL (constant)">INTERVAL</a></span></span>
-  <span class='const'><span class='object_link'><a href="CurrencyRate.html" title="GERA::CurrencyRate (class)">CurrencyRate</a></span></span><span class='period'>.</span>
+  <span class='id identifier rubyid_interval_to'>interval_to</span> <span class='op'>||=</span> <span class='id identifier rubyid_interval_from'>interval_from</span> <span class='op'>+</span> <span class='const'><span class='object_link'><a href="HistoryIntervalConcern.html#INTERVAL-constant" title="Gera::HistoryIntervalConcern::INTERVAL (constant)">INTERVAL</a></span></span>
+  <span class='const'><span class='object_link'><a href="CurrencyRate.html" title="Gera::CurrencyRate (class)">CurrencyRate</a></span></span><span class='period'>.</span>
     <span class='id identifier rubyid_where'>where</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>created_at &gt;= ? and created_at &lt; ?</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_interval_from'>interval_from</span><span class='comma'>,</span> <span class='id identifier rubyid_interval_to'>interval_to</span><span class='rparen'>)</span><span class='period'>.</span>
     <span class='id identifier rubyid_group'>group</span><span class='lparen'>(</span><span class='symbol'>:cur_from</span><span class='comma'>,</span> <span class='symbol'>:cur_to</span><span class='rparen'>)</span><span class='period'>.</span>
     <span class='id identifier rubyid_pluck'>pluck</span><span class='lparen'>(</span><span class='symbol'>:cur_from</span><span class='comma'>,</span> <span class='symbol'>:cur_to</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>min(rate_value)</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>max(rate_value)</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span>
@@ -222,8 +222,8 @@
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_cur_from'>cur_from</span> <span class='op'>==</span> <span class='id identifier rubyid_cur_to'>cur_to</span>
 
     <span class='id identifier rubyid_create!'>create!</span><span class='lparen'>(</span>
-      <span class='label'>cur_from_id:</span> <span class='const'>Money</span><span class='op'>::</span><span class='const'>Currency</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_cur_from'>cur_from</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_local_id'>local_id</span><span class='comma'>,</span>
-      <span class='label'>cur_to_id:</span> <span class='const'>Money</span><span class='op'>::</span><span class='const'>Currency</span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_cur_to'>cur_to</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_local_id'>local_id</span><span class='comma'>,</span>
+      <span class='label'>cur_from_id:</span> <span class='const'><span class='object_link'><a href="../Money.html" title="Money (class)">Money</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Money/Currency.html" title="Money::Currency (class)">Currency</a></span></span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_cur_from'>cur_from</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_local_id'>local_id</span><span class='comma'>,</span>
+      <span class='label'>cur_to_id:</span> <span class='const'><span class='object_link'><a href="../Money.html" title="Money (class)">Money</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Money/Currency.html" title="Money::Currency (class)">Currency</a></span></span><span class='period'>.</span><span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_cur_to'>cur_to</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_local_id'>local_id</span><span class='comma'>,</span>
       <span class='label'>min_rate:</span> <span class='id identifier rubyid_min_rate'>min_rate</span><span class='comma'>,</span> <span class='label'>max_rate:</span> <span class='id identifier rubyid_max_rate'>max_rate</span><span class='comma'>,</span>
       <span class='label'>interval_from:</span> <span class='id identifier rubyid_interval_from'>interval_from</span><span class='comma'>,</span> <span class='label'>interval_to:</span> <span class='id identifier rubyid_interval_to'>interval_to</span>
     <span class='rparen'>)</span>
@@ -239,7 +239,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Sep 17 23:48:41 2018 by
+  Generated on Tue Sep 18 19:56:09 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.16 (ruby-2.4.3).
 </div>

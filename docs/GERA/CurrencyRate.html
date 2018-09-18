@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Class: GERA::CurrencyRate
+  Class: Gera::CurrencyRate
   
     &mdash; Documentation by YARD 0.9.16
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "GERA::CurrencyRate";
+  pathId = "Gera::CurrencyRate";
   relpath = '../';
 </script>
 
@@ -37,7 +37,7 @@
         <div id="menu">
   
     <a href="../_index.html">Index (C)</a> &raquo;
-    <span class='title'><span class='object_link'><a href="../GERA.html" title="GERA (module)">GERA</a></span></span>
+    <span class='title'><span class='object_link'><a href="../Gera.html" title="Gera (module)">Gera</a></span></span>
      &raquo; 
     <span class="title">CurrencyRate</span>
   
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Class: GERA::CurrencyRate
+      <div id="content"><h1>Class: Gera::CurrencyRate
   
   
   
@@ -69,16 +69,16 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="ApplicationRecord.html" title="GERA::ApplicationRecord (class)">ApplicationRecord</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="ApplicationRecord.html" title="Gera::ApplicationRecord (class)">ApplicationRecord</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">ActiveRecord::Base</li>
           
-            <li class="next"><span class='object_link'><a href="ApplicationRecord.html" title="GERA::ApplicationRecord (class)">ApplicationRecord</a></span></li>
+            <li class="next"><span class='object_link'><a href="ApplicationRecord.html" title="Gera::ApplicationRecord (class)">ApplicationRecord</a></span></li>
           
-            <li class="next">GERA::CurrencyRate</li>
+            <li class="next">Gera::CurrencyRate</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -93,7 +93,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="CurrencyPairSupport.html" title="GERA::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></dd>
+      <dd><span class='object_link'><a href="CurrencyPairSupport.html" title="Gera::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></dd>
   </dl>
   
   
@@ -322,8 +322,8 @@
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="CurrencyPairSupport.html" title="GERA::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="CurrencyPairSupport.html#currency_from-instance_method" title="GERA::CurrencyPairSupport#currency_from (method)">#currency_from</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair-instance_method" title="GERA::CurrencyPairSupport#currency_pair (method)">#currency_pair</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair=-instance_method" title="GERA::CurrencyPairSupport#currency_pair= (method)">#currency_pair=</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_to-instance_method" title="GERA::CurrencyPairSupport#currency_to (method)">#currency_to</a></span></p>
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="CurrencyPairSupport.html" title="Gera::CurrencyPairSupport (module)">CurrencyPairSupport</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="CurrencyPairSupport.html#currency_from-instance_method" title="Gera::CurrencyPairSupport#currency_from (method)">#currency_from</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair-instance_method" title="Gera::CurrencyPairSupport#currency_pair (method)">#currency_pair</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_pair=-instance_method" title="Gera::CurrencyPairSupport#currency_pair= (method)">#currency_pair=</a></span>, <span class='object_link'><a href="CurrencyPairSupport.html#currency_to-instance_method" title="Gera::CurrencyPairSupport#currency_to (method)">#currency_to</a></span></p>
 
   
   
@@ -353,12 +353,12 @@
       <pre class="lines">
 
 
+53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_dump'>dump</span>
   <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='label'>only:</span> <span class='lbracket'>[</span><span class='symbol'>:created_at</span><span class='comma'>,</span> <span class='symbol'>:cur_from</span><span class='comma'>,</span> <span class='symbol'>:cur_to</span><span class='comma'>,</span> <span class='symbol'>:mode</span><span class='comma'>,</span> <span class='symbol'>:rate_value</span><span class='comma'>,</span> <span class='symbol'>:metadata</span><span class='comma'>,</span> <span class='symbol'>:rate_source_id</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span> <span class='label'>external_rates:</span> <span class='id identifier rubyid_external_rates'>external_rates</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:dump</span><span class='rparen'>)</span>
@@ -383,12 +383,12 @@
       <pre class="lines">
 
 
+29
 30
-31
-32</pre>
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_external_rates'>external_rates</span>
   <span class='lbracket'>[</span><span class='id identifier rubyid_external_rate'>external_rate</span><span class='comma'>,</span> <span class='id identifier rubyid_external_rate1'>external_rate1</span><span class='comma'>,</span> <span class='id identifier rubyid_external_rate2'>external_rate2</span><span class='comma'>,</span> <span class='id identifier rubyid_external_rate3'>external_rate3</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span>
@@ -413,12 +413,12 @@
       <pre class="lines">
 
 
+25
 26
-27
-28</pre>
+27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_external_rates='>external_rates=</span><span class='lparen'>(</span><span class='id identifier rubyid_rates'>rates</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_external_rate'>external_rate</span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_external_rate1'>external_rate1</span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_external_rate2'>external_rate2</span><span class='comma'>,</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_external_rate3'>external_rate3</span> <span class='op'>=</span> <span class='id identifier rubyid_rates'>rates</span>
@@ -443,16 +443,16 @@
       <pre class="lines">
 
 
+45
 46
 47
 48
 49
 50
-51
-52</pre>
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_humanized_rate'>humanized_rate</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_rate_value'>rate_value</span> <span class='op'>&lt;</span> <span class='int'>1</span>
@@ -481,12 +481,12 @@
       <pre class="lines">
 
 
+57
 58
-59
-60</pre>
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_meta'>meta</span>
   <span class='ivar'>@meta</span> <span class='op'>||=</span> <span class='const'>OpenStruct</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='id identifier rubyid_metadata'>metadata</span><span class='period'>.</span><span class='id identifier rubyid_deep_symbolize_keys'>deep_symbolize_keys</span>
@@ -511,15 +511,15 @@
       <pre class="lines">
 
 
+37
 38
-39
-40</pre>
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rate_money'>rate_money</span>
-  <span class='const'>Money</span><span class='period'>.</span><span class='id identifier rubyid_from_amount'>from_amount</span><span class='lparen'>(</span><span class='id identifier rubyid_rate_value'>rate_value</span><span class='comma'>,</span> <span class='id identifier rubyid_cur_to'>cur_to</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../Money.html" title="Money (class)">Money</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_amount'>from_amount</span><span class='lparen'>(</span><span class='id identifier rubyid_rate_value'>rate_value</span><span class='comma'>,</span> <span class='id identifier rubyid_cur_to'>cur_to</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -541,15 +541,15 @@
       <pre class="lines">
 
 
+41
 42
-43
-44</pre>
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reverse_rate_money'>reverse_rate_money</span>
-  <span class='const'>Money</span><span class='period'>.</span><span class='id identifier rubyid_from_amount'>from_amount</span><span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>/</span> <span class='id identifier rubyid_rate_value'>rate_value</span><span class='comma'>,</span> <span class='id identifier rubyid_cur_from'>cur_from</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../Money.html" title="Money (class)">Money</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_amount'>from_amount</span><span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>/</span> <span class='id identifier rubyid_rate_value'>rate_value</span><span class='comma'>,</span> <span class='id identifier rubyid_cur_from'>cur_from</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -571,12 +571,12 @@
       <pre class="lines">
 
 
+33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'app/models/gera/currency_rate.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_currency_pair'>currency_pair</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_humanized_rate'>humanized_rate</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -591,7 +591,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Sep 17 23:48:40 2018 by
+  Generated on Tue Sep 18 19:56:08 2018 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.16 (ruby-2.4.3).
 </div>

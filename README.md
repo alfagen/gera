@@ -1,10 +1,10 @@
 # Gera
 
-Генератор курсов.
+Генератор курсов для крипто- обменников и бирж.
 
 ## Usage
 
-How to use my plugin.
+Инструкция по использованию в процессе подготовки.
 
 ## Installation
 
@@ -28,5 +28,4 @@ $ gem install gera
 Contribution directions go here.
 
 ## License
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-# gera
+The gem is available as open source under the terms of the [GPLv3](https://opensource.org/licenses/GPL-3.0).
