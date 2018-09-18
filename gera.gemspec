@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
     s.version     = Gera::VERSION
     s.authors     = ["Danil Pismenny"]
     s.email       = ["danil@brandymint.ru"]
-    s.homepage    = "https://github.com/brandymint/GERA"
+    s.homepage    = "https://github.com/brandymint/gera"
     s.summary       = %q{Currency Rates Generator}
     s.description   = %q{Rails On Rails engine to import and generate currency rates}
     s.license     = "GPLv3"
