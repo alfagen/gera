@@ -1,4 +1,4 @@
-module GERA
+module Gera
   module CurrencyPairSupport
     extend ActiveSupport::Concern
 
@@ -26,7 +26,7 @@ module GERA
     end
 
     def currency_pair
-      @currency_pair ||= CryptoMath::CurrencyPair.new currency_from, currency_to
+      @currency_pair ||= Gera::CurrencyPair.new currency_from, currency_to
     end
 
     def currency_from

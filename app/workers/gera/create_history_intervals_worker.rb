@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CreateHistoryIntervalsWorker
     include Sidekiq::Worker
     include AutoLogger

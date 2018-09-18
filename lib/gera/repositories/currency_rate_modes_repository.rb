@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CurrencyRateModesRepository
     def snapshot
       @snapshot ||= find_or_create_active_snapshot

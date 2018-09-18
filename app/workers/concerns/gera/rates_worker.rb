@@ -1,7 +1,7 @@
 require 'open-uri'
 require 'rest-client'
 
-module GERA
+module Gera
   # Сливает курсы со всех источников
   #
   module RatesWorker

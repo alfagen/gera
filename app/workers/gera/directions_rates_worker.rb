@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class DirectionsRatesWorker
     include Sidekiq::Worker
     include AutoLogger

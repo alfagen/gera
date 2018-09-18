@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class PaymentSystemsRepository
     def find_by_id id
       cache_by_id[id]

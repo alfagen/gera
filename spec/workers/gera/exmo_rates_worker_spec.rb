@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module GERA
+module Gera
   RSpec.describe EXMORatesWorker do
     before do
       create :rate_source_exmo

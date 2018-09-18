@@ -1,4 +1,4 @@
-module GERA
+module Gera
   module ApplicationHelper
   end
 end

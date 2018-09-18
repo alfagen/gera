@@ -1,6 +1,6 @@
 require_relative 'currency_rate_builder'
 
-module GERA
+module Gera
   class CurrencyRateCrossBuilder < CurrencyRateBuilder
     attribute :cross_rate_modes
 
@@ -45,13 +45,13 @@ module GERA
       end
 
       [
-        GERA::CrossRateMode.new(currency_pair: pair.change_to(cross_cur)).freeze,
-        GERA::CrossRateMode.new(currency_pair: pair.change_from(cross_cur)).freeze
+        Gera::CrossRateMode.new(currency_pair: pair.change_to(cross_cur)).freeze,
+        Gera::CrossRateMode.new(currency_pair: pair.change_from(cross_cur)).freeze
       ]
     end
 
     def sources
-      @sources ||= GERA::RateSource.enabled.ordered
+      @sources ||= Gera::RateSource.enabled.ordered
     end
 
     def find_external_rate pair

@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class DirectionRatesRepository
     FinitRateNotFound = Class.new StandardError
     NoActualSnapshot = Class.new StandardError

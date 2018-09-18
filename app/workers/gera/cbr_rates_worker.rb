@@ -1,7 +1,7 @@
 require 'open-uri'
 require 'business_time'
 
-module GERA
+module Gera
   # Загрузчик курсов из ЦБ РФ
   # по адресу
   # http://www.cbr.ru/scripts/XML_daily.asp?date_req=08/04/2018

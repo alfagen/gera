@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CbrExternalRate < ApplicationRecord
     self.table_name = 'cbr_external_rates'
 

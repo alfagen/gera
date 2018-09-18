@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module GERA
+module Gera
   RSpec.describe CurrencyRatesWorker do
     it do
       expect( CurrencyRatesWorker.new.perform ).to be_truthy

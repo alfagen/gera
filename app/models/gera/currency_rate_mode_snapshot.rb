@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CurrencyRateModeSnapshot < ApplicationRecord
     self.table_name = 'currency_rate_mode_snapshots'
 

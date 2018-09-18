@@ -1,4 +1,4 @@
-module GERA
+module Gera
   module CurrencyRateModeBuilderSupport
     def build_currency_rate
       @currency_rate ||= build_currency_rate!

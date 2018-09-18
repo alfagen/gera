@@ -1,6 +1,6 @@
 require 'archivable'
 
-module GERA
+module Gera
   class PaymentSystem < ApplicationRecord
     include ::Archivable
 

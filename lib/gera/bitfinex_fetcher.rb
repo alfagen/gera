@@ -1,8 +1,9 @@
 require 'uri'
 require 'net/http'
 require 'rest-client'
+require 'virtus'
 
-module GERA
+module Gera
   class BitfinexFetcher
     API_URL = 'https://api.bitfinex.com/v1/pubticker/'
 

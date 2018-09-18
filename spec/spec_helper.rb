@@ -18,8 +18,6 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Rails.backtrace_cleaner.remove_silencers!
 
-CryptoMath.define_money! File.expand_path("../config/currencies.yml", __FILE__)
-
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/vcr_cassettes'
   # c.allow_http_connections_when_no_cassette = true
@@ -45,7 +43,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    GERA::Universe.clear!
+    Gera::Universe.clear!
   end
 
   config.before(:suite) do

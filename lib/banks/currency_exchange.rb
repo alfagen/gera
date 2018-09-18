@@ -1,7 +1,7 @@
 # Банк для Money
 #
 
-module GERA
+module Gera
   class CurrencyExchange
     def self.get_rate(cur_from, cur_to)
       pair = CurrencyPair.new(cur_from, cur_to)

@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class PurgeDirectionRatesWorker
     include Sidekiq::Worker
 

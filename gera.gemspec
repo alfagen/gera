@@ -6,7 +6,7 @@ require "gera/version"
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
     s.name        = "gera"
-    s.version     = GERA::VERSION
+    s.version     = Gera::VERSION
     s.authors     = ["Danil Pismenny"]
     s.email       = ["danil@brandymint.ru"]
     s.homepage    = "https://github.com/brandymint/GERA"
@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
 
     s.add_dependency "rails", "~> 5.2.1"
     s.add_dependency 'virtus'
-    s.add_dependency 'crypto_math', '~> 0.1.2'
     s.add_dependency 'require_all'
     s.add_dependency 'rest-client', '~> 2.0'
     s.add_dependency 'sidekiq'
@@ -26,6 +25,10 @@ Gem::Specification.new do |s|
     s.add_dependency 'request_store'
     s.add_dependency 'business_time'
     s.add_dependency 'dapi-archivable'
+    s.add_dependency 'psych'
+    s.add_dependency 'money'
+    s.add_dependency 'money-rails'
+    s.add_dependency 'percentable'
 
     s.add_development_dependency 'rubocop'
     s.add_development_dependency 'rubocop-rspec'

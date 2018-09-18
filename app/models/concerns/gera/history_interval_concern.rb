@@ -1,4 +1,4 @@
-module GERA
+module Gera
   module HistoryIntervalConcern
     extend ActiveSupport::Concern
     INTERVAL = 5.minutes

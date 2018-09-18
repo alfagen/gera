@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CurrencyRateBuilder
     Error = Class.new StandardError
     class Result

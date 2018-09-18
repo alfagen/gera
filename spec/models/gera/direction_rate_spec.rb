@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe GERA::DirectionRate do
+describe Gera::DirectionRate do
   before do
-    allow( GERA::DirectionsRatesWorker ).to receive :perform_async
+    allow( Gera::DirectionsRatesWorker ).to receive :perform_async
   end
   subject { create :direction_rate }
   it do

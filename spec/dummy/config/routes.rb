@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  mount GERA::Engine => "/gera"
+  mount Gera::Engine => "/gera"
 end

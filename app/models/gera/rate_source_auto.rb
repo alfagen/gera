@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class RateSourceAuto < RateSource
     def build_currency_rate(pair)
       build_same(pair) ||

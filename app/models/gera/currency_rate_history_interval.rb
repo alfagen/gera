@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CurrencyRateHistoryInterval < ApplicationRecord
     include HistoryIntervalConcern
     self.table_name = 'currency_rate_history_intervals'

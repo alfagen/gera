@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CBRAvgRatesWorker
     include Sidekiq::Worker
     include AutoLogger

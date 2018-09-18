@@ -1,23 +1,32 @@
 require 'money'
-require 'crypto_math'
-require 'crypto_math/root'
 require 'require_all'
+require 'percentable'
 
 require 'sidekiq'
 require 'auto_logger'
 
-require "gera/engine"
 require "gera/version"
+require 'gera/numeric'
+
+require "gera/configuration"
+require "gera/mathematic"
+require 'gera/bitfinex_fetcher'
+require 'gera/currency_pair'
+require 'gera/rate'
+require 'gera/money_support'
+
+module Gera
+  FACTORY_PATH = File.expand_path("../factories", __dir__)
+  CURRENCIES_PATH = File.expand_path("../config/currencies.yml", __dir__)
+
+  extend Configuration
+end
 
 require_rel 'banks'
 require_rel 'builders'
 require_rel 'gera/repositories'
 
-require 'gera/bitfinex_fetcher'
-
-module GERA
-  FACTORY_PATH = File.expand_path("../spec/factories", __dir__)
-
+if defined? ::Rails::Railtie
+  require "gera/engine"
+  require "gera/railtie"
 end
-
-Gera = GERA

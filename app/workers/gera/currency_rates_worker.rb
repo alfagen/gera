@@ -1,4 +1,4 @@
-module GERA
+module Gera
   #
   # Строит текущие базовые курсы на основе источников и методов расчета
   #
@@ -14,7 +14,7 @@ module GERA
       CurrencyRate.transaction do
         @snapshot = create_snapshot
 
-        CryptoMath::CurrencyPair.all.each do |pair|
+        Gera::CurrencyPair.all.each do |pair|
           create_rate pair
         end
       end

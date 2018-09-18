@@ -1,6 +1,6 @@
 require_relative 'currency_rate_builder'
 
-module GERA
+module Gera
   class CurrencyRateAutoBuilder < CurrencyRateBuilder
     private
 

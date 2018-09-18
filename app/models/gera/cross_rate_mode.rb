@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CrossRateMode < ApplicationRecord
     include CurrencyPairSupport
     self.table_name = 'cross_rate_modes'

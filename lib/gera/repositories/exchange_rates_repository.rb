@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class ExchangeRatesRepository
     def find_by_direction direction
       get_matrix[direction.ps_from_id][direction.ps_to_id]

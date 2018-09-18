@@ -10,7 +10,7 @@
 # * position - позиция в best которую нужно установить?
 # * on_notif - ???
 # * on_corridor - в коридоре?
-module GERA
+module Gera
   class ExchangeRate < ApplicationRecord
 
     DEFAULT_COMISSION = 50
@@ -20,8 +20,8 @@ module GERA
 
     self.table_name = :cms_exchange_rate
 
-    belongs_to :payment_system_from, foreign_key: :id_ps1, class_name: 'GERA::PaymentSystem'
-    belongs_to :payment_system_to, foreign_key: :id_ps2, class_name: 'GERA::PaymentSystem'
+    belongs_to :payment_system_from, foreign_key: :id_ps1, class_name: 'Gera::PaymentSystem'
+    belongs_to :payment_system_to, foreign_key: :id_ps2, class_name: 'Gera::PaymentSystem'
 
     has_many :order_reservations, foreign_key: :emoney_id2
 

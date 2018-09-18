@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class RateSourceManual < RateSource
     def self.supported_currencies
       Money::Currency.all

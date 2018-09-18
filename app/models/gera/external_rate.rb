@@ -1,6 +1,6 @@
 # Курсы внешних систем
 
-module GERA
+module Gera
   class ExternalRate < ApplicationRecord
     include CurrencyPairSupport
 

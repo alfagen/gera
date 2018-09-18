@@ -1,2 +1,2 @@
-GERA::Engine.routes.draw do
+Gera::Engine.routes.draw do
 end

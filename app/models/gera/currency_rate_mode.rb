@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CurrencyRateMode < ApplicationRecord
     include CurrencyPairSupport
     include CurrencyRateModeBuilderSupport

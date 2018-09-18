@@ -1,4 +1,4 @@
-module GERA
+module Gera
   # Загрузка курсов из EXMO
   #
   class EXMORatesWorker

@@ -1,6 +1,6 @@
 require 'request_store'
 
-module GERA
+module Gera
   class Universe
     class << self
       delegate :currency_rate_modes_repository, :currency_rates_repository, :direction_rates_repository, :exchange_rates_repository,

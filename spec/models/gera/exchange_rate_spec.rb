@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module GERA
+module Gera
   RSpec.describe ExchangeRate do
     before do
       allow(DirectionsRatesWorker).to receive(:perform_async)

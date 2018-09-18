@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :direction_rate, class: 'GERA::DirectionRate' do
+  factory :direction_rate, class: 'Gera::DirectionRate' do
     association :exchange_rate, is_enabled: true
 
     # Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)

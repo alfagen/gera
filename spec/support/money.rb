@@ -1,5 +1,5 @@
 MoneyRails.configure do |config|
-  config.default_bank = Money::Bank::VariableExchange.new(GERA::CurrencyExchange)
+  config.default_bank = Money::Bank::VariableExchange.new(Gera::CurrencyExchange)
   config.amount_column = { postfix: '_cents', type: :integer, null: false, limit: 8, default: 0, present: true }
 
   # default

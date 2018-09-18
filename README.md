@@ -1,10 +1,13 @@
-# GERA
-Short description and motivation.
+# Gera
+
+Генератор курсов.
 
 ## Usage
+
 How to use my plugin.
 
 ## Installation
+
 Add this line to your application's Gemfile:
 
 ```ruby

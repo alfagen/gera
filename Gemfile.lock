@@ -1,21 +1,14 @@
-GIT
-  remote: https://github.com/BrandyMint/crypto_math.git
-  revision: 0d17026dfb10fe5275d70cb3e33b8a490fcbc134
-  specs:
-    crypto_math (0.1.4)
-      activesupport
-      money (~> 6.11)
-      percentable
-      virtus (~> 1.0)
-
 PATH
   remote: .
   specs:
     gera (0.1.0)
       auto_logger (~> 0.1.3)
       business_time
-      crypto_math (~> 0.1.2)
       dapi-archivable
+      money
+      money-rails
+      percentable
+      psych
       rails (~> 5.2.1)
       request_store
       require_all
@@ -169,8 +162,15 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
+    monetize (1.9.0)
+      money (~> 6.12)
     money (6.12.0)
       i18n (>= 0.6.4, < 1.1)
+    money-rails (1.12.0)
+      activesupport (>= 3.0)
+      monetize (~> 1.9.0)
+      money (~> 6.12.0)
+      railties (>= 3.0)
     mysql2 (0.5.2)
     nenv (0.3.0)
     netrc (0.11.0)
@@ -196,6 +196,7 @@ GEM
       yard (~> 0.9.11)
     pry-rails (0.3.6)
       pry (>= 0.10.4)
+    psych (3.0.2)
     public_suffix (3.0.3)
     rack (2.0.5)
     rack-protection (2.0.4)
@@ -274,7 +275,7 @@ GEM
     ruby_dep (1.5.0)
     safe_yaml (1.0.4)
     shellany (0.0.1)
-    sidekiq (5.2.1)
+    sidekiq (5.2.2)
       connection_pool (~> 2.2, >= 2.2.2)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
@@ -314,7 +315,6 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  crypto_math!
   database_rewinder
   factory_bot
   factory_bot_rails

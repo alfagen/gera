@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class ExternalRateSnapshot < ApplicationRecord
     self.table_name = 'external_rate_snapshots'
 

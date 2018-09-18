@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class PurgeCurrencyRatesWorker
     include Sidekiq::Worker
 

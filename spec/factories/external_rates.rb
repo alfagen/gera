@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :external_rate, class: GERA::ExternalRate do
+  factory :external_rate, class: Gera::ExternalRate do
     bank_id { 1 }
     cur_from { "MyString" }
     cur_to { "MyString" }

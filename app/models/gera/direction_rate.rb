@@ -1,4 +1,4 @@
-module GERA
+module Gera
   # Конечный курс обмена по направлениями
   #
   class DirectionRate < ApplicationRecord
@@ -10,9 +10,9 @@ module GERA
 
     UnknownExchangeRate = Class.new StandardError
 
-    belongs_to :ps_from, class_name: 'GERA::PaymentSystem'
-    belongs_to :ps_to, class_name: 'GERA::PaymentSystem'
-    belongs_to :currency_rate, class_name: 'GERA::CurrencyRate'
+    belongs_to :ps_from, class_name: 'Gera::PaymentSystem'
+    belongs_to :ps_to, class_name: 'Gera::PaymentSystem'
+    belongs_to :currency_rate, class_name: 'Gera::CurrencyRate'
     belongs_to :exchange_rate
 
     has_many :direction_rate_snapshot_to_records

@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class CurrencyRatesRepository
     UnknownPair = Class.new StandardError
 

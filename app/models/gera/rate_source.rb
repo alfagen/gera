@@ -1,4 +1,4 @@
-module GERA
+module Gera
   class RateSource < ApplicationRecord
     extend CurrencyPairGenerator
     RateNotFound = Class.new StandardError
