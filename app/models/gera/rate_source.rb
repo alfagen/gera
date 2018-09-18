@@ -15,7 +15,7 @@ module GERA
     validates :key, presence: true, uniqueness: true
 
     before_create do
-      self.priority ||= RateSource.maximum(:priority).to_i + 1 if self.class.attribute_names.include? 'priority'
+      self.priority ||= RateSource.maximum(:priority).to_i + 1
     end
 
     before_validation do

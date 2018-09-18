@@ -1,9 +1,11 @@
-# Загрузчик курсов из ЦБ РФ
-# http://www.cbr.ru/scripts/XML_daily.asp?date_req=08/04/2018
 require 'open-uri'
 require 'business_time'
 
 module GERA
+  # Загрузчик курсов из ЦБ РФ
+  # по адресу
+  # http://www.cbr.ru/scripts/XML_daily.asp?date_req=08/04/2018
+  #
   class CBRRatesWorker
     include Sidekiq::Worker
     include AutoLogger
@@ -21,7 +23,7 @@ module GERA
     Error = Class.new StandardError
     WrongDate = Class.new Error
 
-    URL = 'http://www.cbr.ru/scripts/XML_daily.asp' # ?date_req=07/04/2018
+    URL = 'http://www.cbr.ru/scripts/XML_daily.asp'
 
     def perform
       ActiveRecord::Base.connection.clear_query_cache
