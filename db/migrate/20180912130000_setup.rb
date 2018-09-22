@@ -44,6 +44,21 @@ class Setup < ActiveRecord::Migration[5.2]
       t.index ["rate_source_id"], name: "index_cross_rate_modes_on_rate_source_id"
     end
 
+    create_table "direction_rate_history_intervals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+      t.float "min_rate", null: false
+      t.float "max_rate", null: false
+      t.float "min_comission", null: false
+      t.float "max_comission", null: false
+      t.timestamp "interval_from", default: -> { "CURRENT_TIMESTAMP" }, null: false
+      t.timestamp "interval_to", null: false
+      t.integer "payment_system_to_id", null: false
+      t.integer "payment_system_from_id", null: false
+      t.float "avg_rate", null: false
+      t.index ["interval_from", "payment_system_from_id", "payment_system_to_id"], name: "drhi_uniq", unique: true
+      t.index ["payment_system_from_id"], name: "fk_rails_70f35124fc"
+      t.index ["payment_system_to_id"], name: "fk_rails_5c92dd1b7f"
+    end
+
     create_table "currency_rate_history_intervals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
       t.integer "cur_from_id", limit: 1, null: false
       t.integer "cur_to_id", limit: 1, null: false
@@ -247,5 +262,7 @@ class Setup < ActiveRecord::Migration[5.2]
     add_foreign_key "direction_rates", "currency_rates", on_delete: :cascade
     add_foreign_key "external_rates", "external_rate_snapshots", column: "snapshot_id", on_delete: :cascade
     add_foreign_key "external_rates", "rate_sources", column: "source_id"
+    add_foreign_key "direction_rate_history_intervals", "cms_paymant_system", column: "payment_system_from_id"
+    add_foreign_key "direction_rate_history_intervals", "cms_paymant_system", column: "payment_system_to_id"
   end
 end
