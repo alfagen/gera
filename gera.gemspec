@@ -30,6 +30,8 @@ Gem::Specification.new do |s|
     s.add_dependency 'money-rails'
     s.add_dependency 'percentable'
 
+    s.add_development_dependency 'rails-erd'
+    s.add_development_dependency 'railroady'
     s.add_development_dependency 'rubocop'
     s.add_development_dependency 'rubocop-rspec'
     s.add_development_dependency 'guard-bundler'

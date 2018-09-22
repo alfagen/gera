@@ -176,6 +176,21 @@ ActiveRecord::Schema.define(version: 2018_09_13_185640) do
     t.index ["snapshot_id", "cur_from", "cur_to"], name: "index_current_exchange_rates_uniq", unique: true
   end
 
+  create_table "direction_rate_history_intervals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.float "min_rate", null: false
+    t.float "max_rate", null: false
+    t.float "min_comission", null: false
+    t.float "max_comission", null: false
+    t.timestamp "interval_from", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.timestamp "interval_to", null: false
+    t.integer "payment_system_to_id", null: false
+    t.integer "payment_system_from_id", null: false
+    t.float "avg_rate", null: false
+    t.index ["interval_from", "payment_system_from_id", "payment_system_to_id"], name: "drhi_uniq", unique: true
+    t.index ["payment_system_from_id"], name: "fk_rails_70f35124fc"
+    t.index ["payment_system_to_id"], name: "fk_rails_5c92dd1b7f"
+  end
+
   create_table "direction_rate_snapshot_to_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "direction_rate_id", null: false
     t.bigint "direction_rate_snapshot_id", null: false
@@ -252,6 +267,8 @@ ActiveRecord::Schema.define(version: 2018_09_13_185640) do
   add_foreign_key "currency_rates", "external_rates", column: "external_rate3_id"
   add_foreign_key "currency_rates", "external_rates", on_delete: :nullify
   add_foreign_key "currency_rates", "rate_sources"
+  add_foreign_key "direction_rate_history_intervals", "cms_paymant_system", column: "payment_system_from_id"
+  add_foreign_key "direction_rate_history_intervals", "cms_paymant_system", column: "payment_system_to_id"
   add_foreign_key "direction_rate_snapshot_to_records", "direction_rate_snapshots", on_delete: :cascade
   add_foreign_key "direction_rate_snapshot_to_records", "direction_rates"
   add_foreign_key "direction_rates", "cms_exchange_rate", column: "exchange_rate_id"

@@ -23,8 +23,6 @@ module Gera
     belongs_to :payment_system_from, foreign_key: :id_ps1, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :id_ps2, class_name: 'Gera::PaymentSystem'
 
-    has_many :order_reservations, foreign_key: :emoney_id2
-
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
 
