@@ -20,7 +20,6 @@ load 'rails/tasks/engine.rake'
 load 'rails/tasks/statistics.rake'
 
 require 'bundler/gem_tasks'
-load 'lib/tasks/auto_generate_diagram.rake'
 
 begin
   require 'rspec/core/rake_task'
@@ -31,6 +30,8 @@ begin
 rescue LoadError
   # no rspec available
 end
+
+load 'lib/tasks/auto_generate_diagram.rake'
 
 task default: :rspec
 
