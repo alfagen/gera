@@ -104,9 +104,6 @@ GEM
     erubi (1.7.1)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
-    factory_bot_rails (4.11.1)
-      factory_bot (~> 4.11.1)
-      railties (>= 3.0.0)
     ffi (1.9.25)
     formatador (0.2.5)
     globalid (0.4.1)
@@ -327,7 +324,6 @@ DEPENDENCIES
   byebug
   database_rewinder
   factory_bot
-  factory_bot_rails
   gera!
   guard-bundler
   guard-ctags-bundler

@@ -16,7 +16,6 @@ require 'gera/rate'
 require 'gera/money_support'
 
 module Gera
-  FACTORY_PATH = File.expand_path("../factories", __dir__)
   CURRENCIES_PATH = File.expand_path("../config/currencies.yml", __dir__)
 
   extend Configuration

@@ -16,7 +16,7 @@ require_relative '../lib/gera'
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
-# Rails.backtrace_cleaner.remove_silencers!
+Rails.backtrace_cleaner.remove_silencers!
 
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/vcr_cassettes'
