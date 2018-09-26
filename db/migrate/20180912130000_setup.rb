@@ -1,5 +1,7 @@
 class Setup < ActiveRecord::Migration[5.2]
   def change
+    execute "SET SQL_MODE='ALLOW_INVALID_DATES';"
+
     create_table "external_rate_snapshots", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
       t.bigint "rate_source_id", null: false
       t.timestamp "actual_for", default: -> { "CURRENT_TIMESTAMP" }, null: false
