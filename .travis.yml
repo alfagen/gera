@@ -1,0 +1,19 @@
+language: ruby
+rvm:
+  - 2.4.4
+env:
+  - RAILS_ENV=test
+before_script:
+  - bundle exec rake db:create db:migrate RAILS_ENV=test
+services:
+  - mysql
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+
+dist: trusty
+
+sudo: required

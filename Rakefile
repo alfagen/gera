@@ -28,12 +28,10 @@ begin
 
   task :default => :spec
 rescue LoadError
-  # no rspec available
+  puts 'no rspec available'
 end
 
 load 'lib/tasks/auto_generate_diagram.rake'
-
-task default: :rspec
 
 if defined? YARD
   YARD::Rake::YardocTask.new do |t|
