@@ -35,8 +35,10 @@ load 'lib/tasks/auto_generate_diagram.rake'
 
 task default: :rspec
 
-YARD::Rake::YardocTask.new do |t|
-  t.files   = ['lib/**/*.rb', 'app/**/*.rb']  # optional
-  t.options = ['--any', '--extra', '--opts'] # optional
-  t.stats_options = ['--list-undoc']         # optional
+if defined? YARD
+  YARD::Rake::YardocTask.new do |t|
+    t.files   = ['lib/**/*.rb', 'app/**/*.rb']  # optional
+    t.options = ['--any', '--extra', '--opts'] # optional
+    t.stats_options = ['--list-undoc']         # optional
+  end
 end
