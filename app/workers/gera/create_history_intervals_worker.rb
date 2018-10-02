@@ -7,8 +7,8 @@ module Gera
     MINIMAL_DATE = Time.parse('13-07-2018 18:00')
 
     def perform
-      save_direction_rate_history_intervals
-      save_currency_rate_history_intervals
+      save_direction_rate_history_intervals if DirectionRateHistoryInterval.table_exists?
+      save_currency_rate_history_intervals if CurrencyRateHistoryInterval.table_exists?
     end
 
     private
