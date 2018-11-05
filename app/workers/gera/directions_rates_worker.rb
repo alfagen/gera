@@ -40,7 +40,7 @@ module Gera
     rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid, CurrencyRatesRepository::UnknownPair => err
       logger.error err
       Bugsnag.notify err do |b|
-        b.meta_data = { exchange_rate_id: exchange_rate_id.id, currency_rate_id: currency_rate.try(:id) }
+        b.meta_data = { exchange_rate_id: exchange_rate.id, currency_rate_id: currency_rate.try(:id) }
       end
     end
   end
