@@ -104,5 +104,23 @@ module Gera
         expect(outcome_amount).to eq outcome_amount_target.to_f
       end
     end
+
+    describe "#calculate_total_using_regular_comission" do
+      let(:base_amount) { 1000 }
+      let(:comission) { 10 }
+
+      specify do
+        expect(calculate_total_using_regular_comission(base_amount, comission)).to eq(1100)
+      end
+    end
+
+    describe "#calculate_total_using_regular_comission" do
+      let(:base_amount) { 1080 }
+      let(:comission) { 10 }
+
+      specify do
+        expect(calculate_total_using_reverse_comission(base_amount, comission)).to eq(1200)
+      end
+    end
   end
 end

@@ -116,6 +116,20 @@ module Gera
       Money.new(res, to_currency)
     end
 
+    # Рассчет суммы с комиссей. Процент комиссии считается от изначальной суммы.
+    # Комиссия указывается в процентах.
+    #
+    def calculate_total_using_regular_comission(amount, comission)
+      amount + (amount * comission / 100.0)
+    end
+
+    # Рассчет суммы с обратной комиссей. Процент комиссии считается от итоговой суммы
+    # Комиссия указывается в процентах.
+    #
+    def calculate_total_using_reverse_comission(amount, comission)
+      100.0 / (100 - comission) * amount
+    end
+
     private
 
     # Отдает комиссию исходя из конечной и базовой ставки
