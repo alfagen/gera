@@ -106,20 +106,42 @@ module Gera
     end
 
     describe "#calculate_total_using_regular_comission" do
-      let(:base_amount) { 1000 }
-      let(:comission) { 10 }
+      let(:base_amount) { 90 }
 
-      specify do
-        expect(calculate_total_using_regular_comission(base_amount, comission)).to eq(1100)
+      context "comission is zero" do
+        let(:comission) { 0 }
+
+        specify do
+          expect(calculate_total_using_regular_comission(base_amount, comission)).to eq(base_amount)
+        end
+      end
+
+      context "fee is not zero" do
+        let(:comission) { 10 }
+
+        specify do
+          expect(calculate_total_using_regular_comission(base_amount, comission)).to eq(99.0)
+        end
       end
     end
 
     describe "#calculate_total_using_regular_comission" do
-      let(:base_amount) { 1080 }
-      let(:comission) { 10 }
+      let(:base_amount) { 90 }
 
-      specify do
-        expect(calculate_total_using_reverse_comission(base_amount, comission)).to eq(1200)
+      context "comission is zero" do
+        let(:comission) { 0 }
+
+        specify do
+          expect(calculate_total_using_reverse_comission(base_amount, comission)).to eq(base_amount)
+        end
+      end
+
+      context "fee is not zero" do
+        let(:comission) { 10 }
+
+        specify do
+          expect(calculate_total_using_reverse_comission(base_amount, comission)).to eq(100.0)
+        end
       end
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_13_185640) do
+ActiveRecord::Schema.define(version: 2018_11_28_080124) do
 
   create_table "cbr_external_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2018_09_13_185640) do
     t.boolean "require_qiwi_phone", default: false, null: false
     t.string "content_path_slug"
     t.string "payment_service_name"
+    t.integer "total_computation_method", default: 0, null: false
     t.index ["content_path_slug"], name: "index_cms_paymant_system_on_content_path_slug", unique: true
     t.index ["income_enabled"], name: "index_cms_paymant_system_on_income_enabled"
     t.index ["outcome_enabled"], name: "index_cms_paymant_system_on_outcome_enabled"
