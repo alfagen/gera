@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
     s.add_dependency 'require_all'
     s.add_dependency 'rest-client', '~> 2.0'
     s.add_dependency 'sidekiq'
-    s.add_dependency 'auto_logger', '~> 0.1.3'
+    s.add_dependency 'auto_logger', '~> 0.1.4'
     s.add_dependency 'request_store'
     s.add_dependency 'business_time'
     s.add_dependency 'dapi-archivable'
