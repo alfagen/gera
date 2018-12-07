@@ -12,6 +12,7 @@ module Gera
     scope :disabled,  -> { where income_enabled: false, outcome_enabled: false }
 
     enum total_computation_method: %i(regular_fee reverse_fee)
+    enum transfer_comission_payer: %i(user shop), _prefix: :transfer_comission_payer
 
     validates :name, presence: true, uniqueness: true
     validates :currency, presence: true
