@@ -38,7 +38,7 @@ module Gera
       where('cms_exchange_rate.id_ps1 <> cms_exchange_rate.id_ps2')
     }
 
-    after_commit :update_direction_rates
+    after_commit :update_direction_rates, on: [ :create, :update ]
 
     after_save do
       self.timec = Time.zone.now
