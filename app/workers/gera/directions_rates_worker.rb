@@ -16,8 +16,8 @@ module Gera
       DirectionRate.transaction do
         # Генерруем для всех, потому что так нужно старому пыху
         # ExchangeRate.available.find_each do |er|
-        ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |er|
-          safe_create er
+        ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
+          safe_create(exchange_rate)
         end
       end
       logger.info "finish"
@@ -31,7 +31,7 @@ module Gera
       @snapshot ||= DirectionRateSnapshot.create!
     end
 
-    def safe_create exchange_rate
+    def safe_create(exchange_rate)
       direction_rates.create!(
         exchange_rate: exchange_rate,
         currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)

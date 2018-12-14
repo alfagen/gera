@@ -78,15 +78,17 @@ module Gera
       ).freeze
     end
 
+    DEFAULT_COMMISSION = 10
+
     def create_exchange_rates
       PaymentSystem.pluck(:id).each do |foreign_id|
-        er = ExchangeRate.find_by(payment_system_from_id: id, payment_system_to_id: foreign_id) ||
-          ExchangeRate.create!(payment_system_from_id: id, payment_system_to_id: foreign_id, comission: 10)
+        ExchangeRate
+          .create_with(commission: DEFAULT_COMMISSION)
+          .find_or_create_by(payment_system_from_id: id, payment_system_to_id: foreign_id)
 
-        if foreign_id != id
-          er = ExchangeRate.find_by(payment_system_from_id: foreign_id, payment_system_to_id: id) ||
-            ExchangeRate.create!(payment_system_from_id: foreign_id, payment_system_to_id: id, comission: 10)
-        end
+        ExchangeRate
+          .create_with(commission: DEFAULT_COMMISSION)
+          .find_or_create_by(payment_system_from_id: foreign_id, payment_system_to_id: id)
       end
     end
   end
