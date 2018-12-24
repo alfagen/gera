@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_28_080124) do
+ActiveRecord::Schema.define(version: 2018_12_24_115325) do
 
   create_table "cbr_external_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
@@ -22,79 +22,6 @@ ActiveRecord::Schema.define(version: 2018_11_28_080124) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cur_from", "cur_to", "date"], name: "index_cbr_external_rates_on_cur_from_and_cur_to_and_date", unique: true
-  end
-
-  create_table "cms_exchange_rate", id: :integer, unsigned: true, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "id_ps1", null: false
-    t.integer "id_ps2", null: false
-    t.float "value_ps", null: false
-    t.integer "timec", default: 0, null: false
-    t.string "position", limit: 10, default: "1-7", null: false
-    t.float "cor1", default: 0.0, null: false
-    t.float "cor2", default: 8.0, null: false
-    t.boolean "on_notif", default: true, null: false
-    t.boolean "on_corridor", default: false, null: false
-    t.boolean "is_enabled", default: false, null: false
-    t.timestamp "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.string "in_cur", limit: 3, null: false
-    t.string "out_cur", limit: 3, null: false
-    t.index ["id_ps1", "id_ps2"], name: "exchange_rate_unique_index", unique: true
-    t.index ["id_ps2"], name: "fk_rails_ef77ea3609"
-    t.index ["is_enabled"], name: "index_cms_exchange_rate_on_is_enabled"
-  end
-
-  create_table "cms_paymant_system", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", limit: 60
-    t.string "pay_class", limit: 40
-    t.string "cur_sign", limit: 10
-    t.string "img"
-    t.integer "type_cy", null: false
-    t.float "internal_transfer", default: 0.0, null: false
-    t.float "commision", default: 0.0, null: false
-    t.integer "priority", limit: 1
-    t.integer "priority_in", limit: 1, unsigned: true
-    t.integer "priority_out", limit: 1, unsigned: true
-    t.integer "sort", limit: 1, unsigned: true
-    t.integer "id_b"
-    t.boolean "is_visible", default: true, null: false
-    t.string "letter_cod", default: ""
-    t.boolean "show_notice", default: false, null: false, unsigned: true
-    t.boolean "auto_set_card", default: false, null: false, unsigned: true
-    t.boolean "income_enabled", default: false, null: false
-    t.boolean "outcome_enabled", default: false, null: false
-    t.boolean "referal_output_enabled", default: false, null: false
-    t.timestamp "deleted_at"
-    t.timestamp "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.string "outcome_account_format", default: "null", null: false
-    t.string "available_outcome_card_brands"
-    t.boolean "require_unique_income", default: false, null: false
-    t.integer "minimal_income_amount_cents"
-    t.string "maximal_income_amount_cents"
-    t.string "bestchange_key"
-    t.boolean "manual_confirmation_available", default: false, null: false
-    t.integer "system_type", default: 0, null: false
-    t.boolean "require_income_card_verification", default: false, null: false
-    t.boolean "is_issuing_bank", default: false, null: false
-    t.float "income_fee", default: 0.0, null: false
-    t.string "faq_link"
-    t.string "income_account_type", default: "wallet"
-    t.string "direct_payment_url"
-    t.boolean "require_wallets_api_key", default: false, null: false
-    t.boolean "check_incoming_residue", default: false, null: false
-    t.integer "reserves_aggregator_id"
-    t.string "cheque_format", default: "none", null: false
-    t.bigint "reserves_delta_cents", default: 0, null: false
-    t.integer "income_wallets_selection", default: 0, null: false
-    t.boolean "require_qiwi_phone", default: false, null: false
-    t.string "content_path_slug"
-    t.string "payment_service_name"
-    t.integer "total_computation_method", default: 0, null: false
-    t.index ["content_path_slug"], name: "index_cms_paymant_system_on_content_path_slug", unique: true
-    t.index ["income_enabled"], name: "index_cms_paymant_system_on_income_enabled"
-    t.index ["outcome_enabled"], name: "index_cms_paymant_system_on_outcome_enabled"
-    t.index ["reserves_aggregator_id"], name: "fk_rails_8d95b43a82"
   end
 
   create_table "cross_rate_modes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -220,6 +147,26 @@ ActiveRecord::Schema.define(version: 2018_11_28_080124) do
     t.index ["ps_to_id"], name: "fk_rails_fbaf7f33e1"
   end
 
+  create_table "exchange_rates", id: :integer, unsigned: true, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "id_ps1", null: false
+    t.integer "id_ps2", null: false
+    t.float "value_ps", null: false
+    t.integer "timec", default: 0, null: false
+    t.string "position", limit: 10, default: "1-7", null: false
+    t.float "cor1", default: 0.0, null: false
+    t.float "cor2", default: 8.0, null: false
+    t.boolean "on_notif", default: true, null: false
+    t.boolean "on_corridor", default: false, null: false
+    t.boolean "is_enabled", default: false, null: false
+    t.timestamp "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "in_cur", limit: 3, null: false
+    t.string "out_cur", limit: 3, null: false
+    t.index ["id_ps1", "id_ps2"], name: "exchange_rate_unique_index", unique: true
+    t.index ["id_ps2"], name: "fk_rails_ef77ea3609"
+    t.index ["is_enabled"], name: "index_exchange_rates_on_is_enabled"
+  end
+
   create_table "external_rate_snapshots", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "rate_source_id", null: false
     t.timestamp "actual_for", default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -239,6 +186,61 @@ ActiveRecord::Schema.define(version: 2018_11_28_080124) do
     t.index ["source_id"], name: "index_external_rates_on_source_id"
   end
 
+  create_table "payment_systems", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", limit: 60
+    t.string "pay_class", limit: 40
+    t.string "cur_sign", limit: 10
+    t.string "img"
+    t.integer "type_cy", null: false
+    t.float "internal_transfer", default: 0.0, null: false
+    t.float "commision", default: 0.0, null: false
+    t.integer "priority", limit: 1
+    t.integer "priority_in", limit: 1, unsigned: true
+    t.integer "priority_out", limit: 1, unsigned: true
+    t.integer "sort", limit: 1, unsigned: true
+    t.integer "id_b"
+    t.boolean "is_visible", default: true, null: false
+    t.string "letter_cod", default: ""
+    t.boolean "show_notice", default: false, null: false, unsigned: true
+    t.boolean "auto_set_card", default: false, null: false, unsigned: true
+    t.boolean "income_enabled", default: false, null: false
+    t.boolean "outcome_enabled", default: false, null: false
+    t.boolean "referal_output_enabled", default: false, null: false
+    t.timestamp "deleted_at"
+    t.timestamp "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "outcome_account_format", default: "null", null: false
+    t.string "available_outcome_card_brands"
+    t.boolean "require_unique_income", default: false, null: false
+    t.integer "minimal_income_amount_cents"
+    t.string "maximal_income_amount_cents"
+    t.string "bestchange_key"
+    t.boolean "manual_confirmation_available", default: false, null: false
+    t.integer "system_type", default: 0, null: false
+    t.boolean "require_income_card_verification", default: false, null: false
+    t.boolean "is_issuing_bank", default: false, null: false
+    t.float "income_fee", default: 0.0, null: false
+    t.string "faq_link"
+    t.string "income_account_type", default: "wallet"
+    t.string "direct_payment_url"
+    t.boolean "require_wallets_api_key", default: false, null: false
+    t.boolean "check_incoming_residue", default: false, null: false
+    t.integer "reserves_aggregator_id"
+    t.string "cheque_format", default: "none", null: false
+    t.bigint "reserves_delta_cents", default: 0, null: false
+    t.integer "income_wallets_selection", default: 0, null: false
+    t.boolean "require_qiwi_phone", default: false, null: false
+    t.string "content_path_slug"
+    t.string "payment_service_name"
+    t.integer "total_computation_method", default: 0, null: false
+    t.integer "transfer_comission_payer", default: 0, null: false
+    t.integer "minimal_outcome_amount_cents"
+    t.index ["content_path_slug"], name: "index_payment_systems_on_content_path_slug", unique: true
+    t.index ["income_enabled"], name: "index_payment_systems_on_income_enabled"
+    t.index ["outcome_enabled"], name: "index_payment_systems_on_outcome_enabled"
+    t.index ["reserves_aggregator_id"], name: "fk_rails_8d95b43a82"
+  end
+
   create_table "rate_sources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title", null: false
     t.string "type", null: false
@@ -253,8 +255,6 @@ ActiveRecord::Schema.define(version: 2018_11_28_080124) do
     t.index ["title"], name: "index_rate_sources_on_title", unique: true
   end
 
-  add_foreign_key "cms_exchange_rate", "cms_paymant_system", column: "id_ps1"
-  add_foreign_key "cms_exchange_rate", "cms_paymant_system", column: "id_ps2"
   add_foreign_key "cross_rate_modes", "currency_rate_modes"
   add_foreign_key "cross_rate_modes", "rate_sources"
   add_foreign_key "currency_rate_modes", "currency_rate_mode_snapshots"
@@ -268,14 +268,16 @@ ActiveRecord::Schema.define(version: 2018_11_28_080124) do
   add_foreign_key "currency_rates", "external_rates", column: "external_rate3_id"
   add_foreign_key "currency_rates", "external_rates", on_delete: :nullify
   add_foreign_key "currency_rates", "rate_sources"
-  add_foreign_key "direction_rate_history_intervals", "cms_paymant_system", column: "payment_system_from_id"
-  add_foreign_key "direction_rate_history_intervals", "cms_paymant_system", column: "payment_system_to_id"
+  add_foreign_key "direction_rate_history_intervals", "payment_systems", column: "payment_system_from_id"
+  add_foreign_key "direction_rate_history_intervals", "payment_systems", column: "payment_system_to_id"
   add_foreign_key "direction_rate_snapshot_to_records", "direction_rate_snapshots", on_delete: :cascade
   add_foreign_key "direction_rate_snapshot_to_records", "direction_rates"
-  add_foreign_key "direction_rates", "cms_exchange_rate", column: "exchange_rate_id"
-  add_foreign_key "direction_rates", "cms_paymant_system", column: "ps_from_id"
-  add_foreign_key "direction_rates", "cms_paymant_system", column: "ps_to_id"
   add_foreign_key "direction_rates", "currency_rates", on_delete: :cascade
+  add_foreign_key "direction_rates", "exchange_rates"
+  add_foreign_key "direction_rates", "payment_systems", column: "ps_from_id"
+  add_foreign_key "direction_rates", "payment_systems", column: "ps_to_id"
+  add_foreign_key "exchange_rates", "payment_systems", column: "id_ps1"
+  add_foreign_key "exchange_rates", "payment_systems", column: "id_ps2"
   add_foreign_key "external_rates", "external_rate_snapshots", column: "snapshot_id", on_delete: :cascade
   add_foreign_key "external_rates", "rate_sources", column: "source_id"
 end

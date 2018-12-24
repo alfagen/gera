@@ -18,7 +18,7 @@ module Gera
     include Mathematic
     include DirectionSupport
 
-    self.table_name = :cms_exchange_rate
+    self.table_name = :exchange_rates
 
     belongs_to :payment_system_from, foreign_key: :id_ps1, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :id_ps2, class_name: 'Gera::PaymentSystem'
@@ -34,8 +34,8 @@ module Gera
     scope :available, -> {
       with_payment_systems.
       enabled.
-      where('cms_paymant_system.income_enabled and payment_system_tos_cms_exchange_rate.outcome_enabled').
-      where('cms_exchange_rate.id_ps1 <> cms_exchange_rate.id_ps2')
+      where('payment_systems.income_enabled and payment_system_tos_exchange_rates.outcome_enabled').
+      where("#{table_name}.id_ps1 <> #{table_name}.id_ps2")
     }
 
     after_commit :update_direction_rates, on: :create

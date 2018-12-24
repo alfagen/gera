@@ -5,7 +5,7 @@ module Gera
     include ::Archivable
     include Gera::Mathematic
 
-    self.table_name = :cms_paymant_system
+    self.table_name = :payment_systems
 
     scope :ordered, -> { order :priority }
     scope :enabled,  -> { where 'income_enabled>0 or outcome_enabled>0' }
