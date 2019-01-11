@@ -123,6 +123,11 @@ module Gera
       # <CBRRatesWorker::WrongDate: Дата запроса и дата ответа от cbr.ru не совпадают 22.03.2018 <> 21.03.2018>
     rescue WrongDate => err
       logger.warn err
+
+      # HTTP redirection loop: http://www.cbr.ru/scripts/XML_daily.asp?date_req=09/01/2019
+    rescue RuntimeError => err
+      raise err unless err.message.include? 'HTTP redirection loop'
+      logger.error err
     end
 
     def cbr_avg
