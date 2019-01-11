@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_09_065732) do
+ActiveRecord::Schema.define(version: 2019_01_11_081029) do
 
   create_table "cbr_external_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
@@ -237,6 +237,7 @@ ActiveRecord::Schema.define(version: 2019_01_09_065732) do
     t.integer "minimal_outcome_amount_cents"
     t.boolean "validate_income_account", default: true
     t.boolean "validate_outcome_account", default: true
+    t.boolean "require_verify", default: false, null: false
     t.index ["content_path_slug"], name: "index_payment_systems_on_content_path_slug", unique: true
     t.index ["income_enabled"], name: "index_payment_systems_on_income_enabled"
     t.index ["outcome_enabled"], name: "index_payment_systems_on_outcome_enabled"
