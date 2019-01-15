@@ -135,7 +135,7 @@ module Gera
     private
 
     def amounts_range_calculator
-      @amounts_range_calculator ||= AmountsRangeCalculator.new(direction_rate: self)
+      @amounts_range_calculator ||= Gera.amounts_range_calculator_class.new(direction_rate: self)
     end
 
     def calculate_rate

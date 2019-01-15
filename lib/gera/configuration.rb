@@ -34,6 +34,13 @@ module Gera
       end
       h
     end
+
+    # @param [Class]
+    mattr_accessor :amounts_range_calculator_class
+
+    def amounts_range_calculator_class
+      @@amounts_range_calculator_class || raise("Not specified: amounts_range_calculator_class")
+    end
 	end
 end
 
