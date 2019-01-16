@@ -1,5 +1,8 @@
 # Gera
 
+[![Build Status](https://travis-ci.org/finfex/gera.svg?branch=master)](https://travis-ci.org/finfex/gera)
+
+
 Генератор курсов для крипто-обменников и бирж.
 
 ## Осуществляет
