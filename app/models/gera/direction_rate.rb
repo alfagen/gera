@@ -14,6 +14,7 @@ module Gera
     belongs_to :ps_to, class_name: 'Gera::PaymentSystem'
     belongs_to :currency_rate, class_name: 'Gera::CurrencyRate'
     belongs_to :exchange_rate
+    belongs_to :snapshot, class_name: 'Gera::DirectionRateSnapshot'
 
     has_many :direction_rate_snapshot_to_records
     has_many :direction_rate_snapshots, through: :direction_rate_snapshot_to_records
@@ -62,7 +63,7 @@ module Gera
     end
 
     def snapshot
-      @snapshot ||= direction_rate_snapshots.last
+      @snapshot ||= super || direction_rate_snapshots.last
     end
 
     def ps_comission
