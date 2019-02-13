@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_12_083609) do
+ActiveRecord::Schema.define(version: 2019_02_13_071916) do
 
   create_table "cbr_external_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
@@ -117,13 +117,6 @@ ActiveRecord::Schema.define(version: 2019_02_12_083609) do
     t.index ["interval_from", "payment_system_from_id", "payment_system_to_id"], name: "drhi_uniq", unique: true
     t.index ["payment_system_from_id"], name: "fk_rails_70f35124fc"
     t.index ["payment_system_to_id"], name: "fk_rails_5c92dd1b7f"
-  end
-
-  create_table "direction_rate_snapshot_to_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "direction_rate_id", null: false
-    t.bigint "direction_rate_snapshot_id", null: false
-    t.index ["direction_rate_id"], name: "drstr_dr_id"
-    t.index ["direction_rate_snapshot_id", "direction_rate_id"], name: "drstr_unique_index", unique: true
   end
 
   create_table "direction_rate_snapshots", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -275,8 +268,6 @@ ActiveRecord::Schema.define(version: 2019_02_12_083609) do
   add_foreign_key "currency_rates", "rate_sources"
   add_foreign_key "direction_rate_history_intervals", "payment_systems", column: "payment_system_from_id"
   add_foreign_key "direction_rate_history_intervals", "payment_systems", column: "payment_system_to_id"
-  add_foreign_key "direction_rate_snapshot_to_records", "direction_rate_snapshots", on_delete: :cascade
-  add_foreign_key "direction_rate_snapshot_to_records", "direction_rates"
   add_foreign_key "direction_rates", "currency_rates", on_delete: :cascade
   add_foreign_key "direction_rates", "direction_rate_snapshots", column: "snapshot_id", on_delete: :cascade
   add_foreign_key "direction_rates", "exchange_rates"
