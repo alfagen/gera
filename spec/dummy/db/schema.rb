@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_11_081029) do
+ActiveRecord::Schema.define(version: 2019_02_13_071916) do
 
   create_table "cbr_external_rates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
@@ -119,13 +119,6 @@ ActiveRecord::Schema.define(version: 2019_01_11_081029) do
     t.index ["payment_system_to_id"], name: "fk_rails_5c92dd1b7f"
   end
 
-  create_table "direction_rate_snapshot_to_records", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "direction_rate_id", null: false
-    t.bigint "direction_rate_snapshot_id", null: false
-    t.index ["direction_rate_id"], name: "drstr_dr_id"
-    t.index ["direction_rate_snapshot_id", "direction_rate_id"], name: "drstr_unique_index", unique: true
-  end
-
   create_table "direction_rate_snapshots", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
@@ -140,11 +133,13 @@ ActiveRecord::Schema.define(version: 2019_01_11_081029) do
     t.timestamp "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.integer "exchange_rate_id", null: false, unsigned: true
     t.boolean "is_used", default: false, null: false
+    t.bigint "snapshot_id"
     t.index ["created_at", "ps_from_id", "ps_to_id"], name: "direction_rates_created_at"
     t.index ["currency_rate_id"], name: "fk_rails_d6f1847478"
     t.index ["exchange_rate_id", "id"], name: "index_direction_rates_on_exchange_rate_id_and_id"
     t.index ["ps_from_id", "ps_to_id", "id"], name: "index_direction_rates_on_ps_from_id_and_ps_to_id_and_id"
     t.index ["ps_to_id"], name: "fk_rails_fbaf7f33e1"
+    t.index ["snapshot_id"], name: "fk_rails_392aafe0ef"
   end
 
   create_table "exchange_rates", id: :integer, unsigned: true, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -273,9 +268,8 @@ ActiveRecord::Schema.define(version: 2019_01_11_081029) do
   add_foreign_key "currency_rates", "rate_sources"
   add_foreign_key "direction_rate_history_intervals", "payment_systems", column: "payment_system_from_id"
   add_foreign_key "direction_rate_history_intervals", "payment_systems", column: "payment_system_to_id"
-  add_foreign_key "direction_rate_snapshot_to_records", "direction_rate_snapshots", on_delete: :cascade
-  add_foreign_key "direction_rate_snapshot_to_records", "direction_rates"
   add_foreign_key "direction_rates", "currency_rates", on_delete: :cascade
+  add_foreign_key "direction_rates", "direction_rate_snapshots", column: "snapshot_id", on_delete: :cascade
   add_foreign_key "direction_rates", "exchange_rates"
   add_foreign_key "direction_rates", "payment_systems", column: "ps_from_id"
   add_foreign_key "direction_rates", "payment_systems", column: "ps_to_id"

@@ -33,6 +33,7 @@ module Gera
 
     def safe_create(exchange_rate)
       direction_rates.create!(
+        snapshot: snapshot,
         exchange_rate: exchange_rate,
         currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
       )
