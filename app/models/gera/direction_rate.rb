@@ -37,8 +37,6 @@ module Gera
     alias_attribute :comission, :rate_percent
     alias_attribute :finite_rate, :rate_value
 
-    delegate :minimal_income_amount, :maximal_income_amount, to: :amounts_range_calculator
-
     def exchange(amount)
       rate.exchange amount, outcome_currency
     end
@@ -124,12 +122,6 @@ module Gera
         income_payment_system_id: nil,
         outcome_payment_system_id: outcome_payment_system_id
       )
-    end
-
-    private
-
-    def amounts_range_calculator
-      @amounts_range_calculator ||= Gera.amounts_range_calculator_class.new(direction_rate: self)
     end
 
     def calculate_rate
