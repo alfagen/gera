@@ -215,7 +215,6 @@ class Setup < ActiveRecord::Migration[5.2]
       t.string "outcome_account_format", null: false
       t.string "available_outcome_card_brands"
       t.boolean "require_unique_income", default: false, null: false
-      t.integer "minimal_income_amount_cents"
       t.string "maximal_income_amount_cents"
       t.string "bestchange_key"
       t.boolean "manual_confirmation_available", default: false, null: false
