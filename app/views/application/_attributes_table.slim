@@ -1,0 +1,5 @@
+table.table.table-condensed.table-narrow
+  - columns.each do |column|
+    tr
+      th= object.class.attribute_title column
+      td= object.send column

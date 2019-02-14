@@ -1,0 +1,12 @@
+= render 'menu'
+
+= render layout: 'currencies_table' do |pair|
+  - rate_value2 = rates1.find_by_currency_pair(pair)
+  - rate_value1 = rates2.find_by_currency_pair(pair).rate_value
+  td.text-nowrap.text-right.v-middle 
+    - if pair.same?
+      .text-muted &middot;
+    - else
+      = rate_diff rate_value1, rate_value2
+
+p.text-muted От текущего отнимаем курсы Gera

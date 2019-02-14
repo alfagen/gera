@@ -1,0 +1,6 @@
+= link_to 'Создать новый', currency_rate_mode_snapshots_path, method: :post, class: 'btn btn-success'
+ul.nav.nav-pills.nav-stacked.m-t-lg
+  - Gera::CurrencyRateModeSnapshot.ordered.each do |crms|
+    = active_link_to currency_rate_mode_snapshot_path(crms), wrap_tag: :li, active: current_snapshot == crms do 
+      = crms.title
+      span.m-l-md= crms_status_label crms.status

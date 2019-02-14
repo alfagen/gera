@@ -1,0 +1,25 @@
+.container-fluid
+  = "Курс актуален на #{l created_at, format: :long}"
+  .row
+    .col-md-12
+      .text-small= render layout: 'currencies_table' do |pair|
+        - rate = rates.find_by_currency_pair pair
+        - rate_d = Gera::CurrencyRateDecorator.decorate rate
+        - if rate.present?
+          td.text-nowrap.text-right.v-middle.rate-popover class=currency_rate_class(rate) data=currency_rate_cell_data_attr(rate) title=rate_d.title
+            - if pair.same?
+              .text-muted &middot;
+            - else
+              = humanized_rate rate.rate_value, rate.currency_to
+        - else
+          td.text-nowrap.text-right.v-middle data-toggle=:tooltip data-container=:body data-html='true' title='курс отсутсвует'
+            .text-muted &middot;
+
+
+
+  .panel.panel-default.m-t-md
+    .panel-body
+      p
+        span.text-success Зеленым
+        span.m-l-md отмечены кросс-курсы
+      p Наведите или нажмите чтобы увидеть метод расчета

@@ -1,0 +1,7 @@
+- if currency_rate_mode.present?
+  - if currency_rate_mode.mode_cross?
+    = currency_rate_mode.cross_rate_modes.map(&:title).join(' * ')
+  - else
+    = currency_rate_mode.mode
+- else
+  .text-warning не установлен

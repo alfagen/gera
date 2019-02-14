@@ -1,0 +1,14 @@
+.container-fluid
+  .row
+    .col-md-12
+      - snapshot = Gera::Universe.direction_rates_repository.snapshot
+      = "Дата расчета матрицы (##{snapshot.id}) #{l snapshot.created_at, format: :long}"
+
+= render layout: 'directions_table' do |direction|
+  - dr = Gera::Universe.direction_rates_repository.find_by_direction direction
+  - er = Gera::Universe.exchange_rates_repository.find_by_direction direction
+  td.text-nowrap.cell-small.text-center.rate-popover.v-middle data=direction_rate_cell_data_attr(direction)
+    - if dr.present? && er.available?
+      = humanized_rate dr.rate_value
+    - else
+      .text-muted= ion_icon 'ios-close-empty'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module Gera
@@ -6,7 +8,7 @@ module Gera
     let(:cp2) { CurrencyPair.new 'USD_RUB' }
     let(:cp3) { CurrencyPair.new cur_from: Money::Currency.find(:usd), cur_to: Money::Currency.find(:rub) }
 
-    it "identicaly" do
+    it 'identicaly' do
       expect(cp1).to eq cp2
       expect(cp3).to eq cp2
 

@@ -1,0 +1,6 @@
+- object = ExchangeRateDecorator.decorate exchange_rate
+
+h2 Курс направления (#{object.title})
+- columns = %i(id comission_percents)
+
+= render 'attributes_table', object: object, columns: columns

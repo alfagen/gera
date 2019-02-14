@@ -1,0 +1,11 @@
+h1.m-b-md Управление обменом
+hr
+ul.nav.nav-tabs
+    -# TODO
+    -# = active_link_to 'Управление обменом', operator_exchange_managers_url, wrap_tag: :li
+    - if Gera::DirectionRate.readable_by? current_user
+      = active_link_to 'Конечные курсы', direction_rates_url, wrap_tag: :li, active: controller_name == 'direction_rates' && action_name == 'index'
+
+    -# TODO minimals
+    /- if Gera::DirectionRate.readable_by? current_user
+      /= active_link_to 'Минималки', minimals_direction_rates_url, wrap_tag: :li, active: controller_name == 'direction_rates' && action_name == 'minimals'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   #
   # Строит текущие базовые курсы на основе источников и методов расчета
@@ -36,8 +38,8 @@ module Gera
       CurrencyRateSnapshot.create! currency_rate_mode_snapshot: Universe.currency_rate_modes_repository.snapshot
     end
 
-    def create_rate pair
-      crm =  Universe.currency_rate_modes_repository.find_currency_rate_mode_by_pair pair
+    def create_rate(pair)
+      crm = Universe.currency_rate_modes_repository.find_currency_rate_mode_by_pair pair
 
       logger.debug "build_rate(#{pair}, #{crm || :default})"
 
@@ -49,13 +51,16 @@ module Gera
 
       cr.snapshot = snapshot
       cr.save!
-    rescue => err
+    rescue StandardError => err
       raise err if !err.is_a?(Error) && Rails.env.test?
+
       logger.error err
       Rails.logger.error err if Rails.env.development?
-      Bugsnag.notify err do |b|
-        b.meta_data = { pair: pair }
-      end if defined? Bugsnag
+      if defined? Bugsnag
+        Bugsnag.notify err do |b|
+          b.meta_data = { pair: pair }
+        end
+      end
     end
   end
 end

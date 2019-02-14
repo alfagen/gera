@@ -1,0 +1,23 @@
+= render 'topnav' do
+  = active_link_to 'Валюты', currencies_path, wrap_tag: :li
+  = active_link_to 'Платежные системы', payment_systems_path, wrap_tag: :li
+
+  li.dropdown
+    = link_to '#', class: 'dropdown-toggle', data: { toggle: :dropdown }, role: :button, 'aria-haspopup' => true, 'aria-expanded' => false do
+      | Базовый курс
+      .m-l-sm.span.caret
+    ul.dropdown-menu
+      = active_link_to 'Котировки', currency_rates_path, wrap_tag: :li
+      = active_link_to 'Методы расчета', currency_rate_mode_snapshots_path, wrap_tag: :li
+      = active_link_to 'Источники курсов', rate_sources_path, wrap_tag: :li
+      = active_link_to 'История', currency_rate_history_intervals_path, wrap_tag: :li
+
+  li.dropdown
+    = link_to '#', class: 'dropdown-toggle', data: { toggle: :dropdown }, role: :button, 'aria-haspopup' => true, 'aria-expanded' => false do
+      | Конечный курс
+      .m-l-sm.span.caret
+    ul.dropdown-menu
+      = active_link_to 'Котировки', direction_rates_path, wrap_tag: :li
+      = active_link_to 'Методы расчета', currency_rate_mode_snapshots_path, wrap_tag: :li
+      = active_link_to 'Источники курсов', rate_sources_path, wrap_tag: :li
+      = active_link_to 'История', direction_rate_history_intervals_path, wrap_tag: :li

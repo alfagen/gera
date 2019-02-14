@@ -1,0 +1,12 @@
+h2 Методы расчета (#{snapshot.status})
+
+h3= l snapshot.created_at, format: :long
+
+.row
+  .col-md-9
+    = render 'currency_rate_mode_snapshots/snapshot', snapshot: snapshot
+  .col-md-3
+    = render 'currency_rate_mode_snapshots', current_snapshot: snapshot
+hr
+p
+  = link_to 'Методы расчетов курсов', 'https://docs.google.com/spreadsheets/d/1ySSUNaQRO5Fthg1QUTnnrfBFreWErH3585HalFBlONI/edit?usp=sharing', target: '_blank'

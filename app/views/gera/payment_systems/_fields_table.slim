@@ -1,0 +1,18 @@
+- columns = %i(key i18n_key title checkbox_title is_required field_type actions)
+h3= title
+
+= render 'table',
+  scope: scope,
+  decorator_class: PaymentSystemFormFieldDecorator,
+  parent: payment_system,
+  columns: columns,
+  allow_edit: true
+
+- if current_user.has_permission?(payment_system, :update)
+  - if unused_payment_system_form_fields_collection(payment_system, direction).any?
+    = link_to 'Добавить поле',
+      new_payment_system_payment_system_form_field_path(payment_system, payment_system_form_field: { direction: direction }),
+      class: 'btn btn-sm btn-success'
+  - else
+    .alert.alert-info Поля всех видов добавлены
+hr

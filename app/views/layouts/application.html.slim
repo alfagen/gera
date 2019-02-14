@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    title= app_title
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  body
+    = render 'header'
+
+    .container-fluid.container-margin-bottom style='margin-top: 80px'
+      - if breadcrumbs.nil?
+        ol.breadcrumb= render_breadcrumbs tag: :li, separator: '', class: '', item_class: '', divider_class: '', active_class: 'active'
+      = yield
+    = noty_flashes

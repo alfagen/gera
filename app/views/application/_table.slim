@@ -1,0 +1,28 @@
+- allow_edit = false unless defined? :allow_edit
+- parent = nil unless defined? :parent
+- if scope.empty?
+  p.text-info Пусто
+- else
+  .table-sticky-container
+    table.table.table-condensed.table-striped.table-narrow
+      thead.bg-white
+        tr
+          - columns.each do |column|
+            th title=column
+              = decorator_class.attribute_title column
+              - if params[:show_attribute]
+                br
+                code.text-small= column
+      tbody
+        - scope.each do |record|
+          - decorated = decorator_class.decorate record
+          tr class=decorated.try(:row_class)
+            - columns.each do |column|
+              td class=(decorated.try(:column_class, column) || 'text-nowrap')
+                - if allow_edit && allow_edit_column?(record, column)
+                  - value = record.send column
+                  = smart_best_in_place [namespace, parent, decorated].compact, column, value
+                - else
+                  = decorated.send column
+
+  = paginate scope if scope.respond_to? :total_pages

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class CbrExternalRate < ApplicationRecord
     self.table_name = 'cbr_external_rates'

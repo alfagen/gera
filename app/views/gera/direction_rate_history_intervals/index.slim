@@ -1,0 +1,41 @@
+= render 'filter'
+
+#container style="height: 400px; min-width: 310px"
+
+= javascript_include_tag 'https://code.highcharts.com/stock/highstock.js'
+= javascript_include_tag 'https://code.highcharts.com/stock/modules/exporting.js'
+
+javascript:
+	$.getJSON('#{direction_rate_history_intervals_path(format: :json, direction_rate_history_interval_filter: filter.to_param)}', function (data) {
+		// create the chart
+		Highcharts.stockChart('container', {
+			rangeSelector: {
+				buttons: [{
+					type: 'hour',
+					count: 1,
+					text: '1ч'
+				}, {
+					type: 'day',
+					count: 1,
+					text: '1д'
+				}, {
+					type: 'all',
+					count: 1,
+					text: 'Всё'
+				}],
+				selected: 1,
+				inputEnabled: false
+			},
+
+			series: [{
+				name: 'Конечный курс',
+				type: 'candlestick',
+				data: data,
+				tooltip: {
+          valueDecimals: #{value_decimals}
+				}
+			}]
+		});
+	});
+
+

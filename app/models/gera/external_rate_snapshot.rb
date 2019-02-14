@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class ExternalRateSnapshot < ApplicationRecord
     self.table_name = 'external_rate_snapshots'

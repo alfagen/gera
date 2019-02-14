@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module Gera
@@ -10,11 +12,11 @@ module Gera
     end
 
     it do
-      expect( CurrencyRate.count ).to be_zero
+      expect(CurrencyRate.count).to be_zero
       VCR.use_cassette :exmo do
-        expect( EXMORatesWorker.new.perform ).to be_truthy
+        expect(EXMORatesWorker.new.perform).to be_truthy
       end
-      expect( CurrencyRate.count ).to eq 134
+      expect(CurrencyRate.count).to eq 134
     end
   end
 end

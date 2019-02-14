@@ -1,0 +1,23 @@
+h4
+  = source
+  span.m-l-md.text-small.text-muted= link_to 'Журнал курсов', external_rate_snapshots_path(rate_source_id: source.id)
+
+- snapshot = source.actual_snapshot
+
+p Дата создания #{l source.updated_at, format: :long}
+
+- if snapshot.present?
+  -# = render 'list', external_rates: snapshot.external_rates
+  = render layout: 'currencies_table', locals: { currencies: source.supported_currencies } do |pair|
+    td
+      - if pair.same?
+        .text-muted= '1'
+      - else
+        - er = snapshot.external_rates.find_by_currency_pair(pair)
+        - if er.present?
+          = humanized_rate er.rate_value
+        - else
+          .text-muted= middot
+
+- else
+  .alert.alert-warning Нет актуальных данных

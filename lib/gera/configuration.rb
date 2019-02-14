@@ -13,6 +13,12 @@ module Gera
 			yield self
 		end
 
+    # @param [Class] Декоратор для PaymentSystem
+    mattr_accessor :payment_system_decorator
+    def payment_system_decorator
+      @@payment_system_decorator || PaymentSystemDecorator
+    end
+
     # @param [Symbol] Валюта для кросс-расчетов по-умолчанию
     mattr_accessor :default_cross_currency
     @@default_cross_currency = :usd

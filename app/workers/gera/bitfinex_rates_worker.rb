@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   # Загрузка курсов из EXMO
   #
@@ -8,7 +10,7 @@ module Gera
     prepend RatesWorker
 
     # Stolen from: https://api.bitfinex.com/v1/symbols
-    TICKERS = %i(neousd neobtc neoeth neoeur)
+    TICKERS = %i[neousd neobtc neoeth neoeur].freeze
 
     private
 
@@ -31,7 +33,7 @@ module Gera
 
     def pair_from_ticker(ticker)
       ticker = ticker.to_s
-      CurrencyPair.new ticker[0,3], ticker[3,3]
+      CurrencyPair.new ticker[0, 3], ticker[3, 3]
     end
 
     def load_rates

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class CurrencyRateSnapshot < ApplicationRecord
     self.table_name = 'currency_rate_snapshots'

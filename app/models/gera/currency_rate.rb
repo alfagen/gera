@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Gera
   # Базовый курс
   class CurrencyRate < ApplicationRecord
     include CurrencyPairSupport
+    include Authority::Abilities
 
     self.table_name = 'currency_rates'
 
@@ -13,12 +16,13 @@ module Gera
     belongs_to :external_rate2, class_name: 'Gera::ExternalRate', optional: true
     belongs_to :external_rate3, class_name: 'Gera::ExternalRate', optional: true
 
-    scope :by_exchange_rate, -> (er) { by_currency_pair er.currency_pair }
+    scope :by_exchange_rate, ->(er) { by_currency_pair er.currency_pair }
 
-    enum mode: %i(direct inverse same cross), _prefix: true
+    enum mode: %i[direct inverse same cross], _prefix: true
 
     before_save do
       raise("У кросс-курса (#{currency_pair}) должно быть несколько external_rates (#{external_rates.count})") if mode_cross? && !external_rates.many?
+
       self.metadata ||= {}
     end
 
@@ -31,6 +35,10 @@ module Gera
     end
 
     def to_s
+      currency_pair.to_s
+    end
+
+    def inspect
       "#{currency_pair}:#{humanized_rate}"
     end
 
@@ -44,14 +52,14 @@ module Gera
 
     def humanized_rate
       if rate_value < 1
-        "#{rate_value} (1/#{1.0/rate_value})"
+        "#{rate_value} (1/#{1.0 / rate_value})"
       else
         rate_value
       end
     end
 
     def dump
-      as_json(only: [:created_at, :cur_from, :cur_to, :mode, :rate_value, :metadata, :rate_source_id]).merge external_rates: external_rates.map(&:dump)
+      as_json(only: %i[created_at cur_from cur_to mode rate_value metadata rate_source_id]).merge external_rates: external_rates.map(&:dump)
     end
 
     def meta

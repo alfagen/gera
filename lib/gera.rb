@@ -15,6 +15,7 @@ require 'gera/currency_pair'
 require 'gera/rate'
 require 'gera/money_support'
 
+
 module Gera
   CURRENCIES_PATH = File.expand_path("../config/currencies.yml", __dir__)
 

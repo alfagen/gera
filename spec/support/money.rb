@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 MoneyRails.configure do |config|
   config.default_bank = Money::Bank::VariableExchange.new(Gera::CurrencyExchange)
   config.amount_column = { postfix: '_cents', type: :integer, null: false, limit: 8, default: 0, present: true }
@@ -22,7 +24,7 @@ class Money::Currency
 
   def self.find_by_local_id(local_id)
     local_id = local_id.to_i
-    id, _ = self.table.find{|key, currency| currency[:local_id] == local_id}
+    id, = table.find { |_key, currency| currency[:local_id] == local_id }
     new(id)
   rescue UnknownCurrency
     nil
@@ -34,6 +36,7 @@ class Money
   # при приеме суммы от клиента
   def authorized_round
     return self unless currency.authorized_round.is_a? Numeric
+
     Money.from_amount to_f.round(currency.authorized_round), currency
   end
 end
@@ -55,7 +58,7 @@ end
 
 # Загружаем только нужные
 CURRENCIES_PATH = Rails.root.join './config/currencies.yml'
-Psych.load( File.read(CURRENCIES_PATH) ).each { |key, cur| Money::Currency.register cur.symbolize_keys }
+Psych.load(File.read(CURRENCIES_PATH)).each { |_key, cur| Money::Currency.register cur.symbolize_keys }
 
 # Создают константы-валюты, типа RUB, USD и тп
 Money::Currency.all.each do |cur|

@@ -1,0 +1,6 @@
+.pull-right
+  ul.nav
+    li= link_to 'Базовый курс', currency_rates_path
+
+- Gera::RateSource.ordered.each do |source|
+  = render 'rate_source', source: source

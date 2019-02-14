@@ -1,0 +1,29 @@
+= simple_form_for currency_rate_mode do |f|
+  = back_field
+  = f.input :currency_rate_mode_snapshot_id, as: :hidden
+  .row
+    .col-md-3
+      = f.input :cur_from, as: :hidden
+      = f.input :cur_to, as: :hidden
+
+      - key = f.object.currency_pair.to_a.join('-').downcase
+
+      = f.input :mode,
+        label: 'Режим',
+        collection: currency_rate_modes_enum,
+        include_blank: false,
+        wrapper_html: { data: { autoshow: key } }
+
+    .col-md-6
+      - cc_data = {}
+      - cc_data["autoshow-#{key}"] = :cross
+      div data=cc_data style=currency_rate_mode_autoshow_style(currency_rate_mode)
+        = f.simple_fields_for :cross_rate_modes do |crm|
+          = render 'cross_rate_mode_fields', f: crm
+        .links
+          = link_to_add_association 'Добавить кросс-курс', f, :cross_rate_modes, class: 'btn btn-sm btn-primary'
+
+  .row
+    .col-md-6
+      = f.button :submit, value: 'Сохранить', class: 'btn btn-primary'
+    .col-md-6

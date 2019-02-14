@@ -1,0 +1,21 @@
+.nested-fields
+  .row
+    .col-md-3
+      = f.input "cur_from",
+        collection: currencies_enum,
+        label: 'Вход',
+        include_blank: false
+    .col-md-3
+      = f.input "cur_to",
+        collection: currencies_enum,
+        label: 'Выход',
+        include_blank: false
+
+    .col-md-3
+      = f.input "rate_source_id",
+        collection: Gera::RateSource.all,
+        label: 'Из источника',
+        include_blank: 'Авто'
+
+    .col-md-3
+      = link_to_remove_association "Удалить", f, class: 'btn btn-sm btn-danger'

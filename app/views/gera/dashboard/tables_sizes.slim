@@ -1,0 +1,21 @@
+.row
+  .col-md-6
+    .table-sticky-container
+      table.table.table-striped.table-condensed.table-narrow
+        thead
+          tr
+            th Таблица
+            th Данные
+            th Индекс
+            th Вместе
+        tbody
+          - records.each do |r|
+            tr
+              th= r[0]
+              td= number_to_human_size r[1]
+              td= number_to_human_size r[2]
+              td= number_to_human_size r[1] + r[2]
+  .col-md-6
+    p Окружение: #{Rails.env}
+    p База: #{ApplicationRecord.database}
+    p Рабочий каталог: #{Rails.root}

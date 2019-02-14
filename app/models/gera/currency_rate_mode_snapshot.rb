@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class CurrencyRateModeSnapshot < ApplicationRecord
     self.table_name = 'currency_rate_mode_snapshots'
@@ -6,7 +8,7 @@ module Gera
 
     scope :ordered, -> { order('status desc').order('created_at desc') }
 
-    enum status: %i(draft active deactive), _prefix: true
+    enum status: %i[draft active deactive], _prefix: true
 
     accepts_nested_attributes_for :currency_rate_modes
 

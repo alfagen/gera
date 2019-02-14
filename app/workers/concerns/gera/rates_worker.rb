@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'rest-client'
 
@@ -29,6 +31,7 @@ module Gera
       # EXMORatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
       raise error if Rails.env.test?
+
       logger.error error
       Bugsnag.notify error do |b|
         b.severity = :warning
@@ -50,7 +53,7 @@ module Gera
       @rates ||= load_rates
     end
 
-    def create_external_rates( currency_pair, data, sell_price:, buy_price: )
+    def create_external_rates(currency_pair, data, sell_price:, buy_price:)
       return unless CurrencyPair.all.include? currency_pair
 
       logger.info "save_rate_for_date #{actual_for}, #{currency_pair} #{data}"
@@ -64,10 +67,11 @@ module Gera
         currency_pair: currency_pair.inverse,
         snapshot: snapshot,
         source: rate_source,
-        rate_value: 1.0 / sell_price.to_f,
+        rate_value: 1.0 / sell_price.to_f
       )
     rescue ActiveRecord::RecordNotUnique => err
       raise error if Rails.env.test?
+
       if err.message.include? 'external_rates_unique_index'
         logger.debug "save_rate_for_date: #{actual_for} , #{currency_pair} -> #{err}"
         Bugsnag.notify 'Попытка записать курс на существующую дату' do |b|

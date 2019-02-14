@@ -25,10 +25,12 @@ Gem::Specification.new do |s|
     s.add_dependency 'request_store'
     s.add_dependency 'business_time'
     s.add_dependency 'dapi-archivable'
+    s.add_dependency 'authority'
     s.add_dependency 'psych'
     s.add_dependency 'money'
     s.add_dependency 'money-rails'
     s.add_dependency 'percentable'
+    s.add_dependency 'draper', '~> 3.0.1'
 
     s.add_development_dependency 'rails-erd'
     s.add_development_dependency 'railroady'

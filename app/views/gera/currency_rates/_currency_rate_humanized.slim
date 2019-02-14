@@ -1,0 +1,35 @@
+tr
+  th= cur.to_s
+  - cp1 = Gera::CurrencyPair.new cur, cur2
+  - cr1 = Gera::Universe.currency_rates_repository.get_currency_rate_by_pair cp1
+  - r1 = cr1.rate_value
+
+  - cp2 = Gera::CurrencyPair.new cur2, cur
+  - cr2 = Gera::Universe.currency_rates_repository.get_currency_rate_by_pair cp2
+  - r2 = cr2.rate_value
+
+  td.text-right title=r1
+    - if cr1.persisted?
+      = link_to currency_rate_path(cr1) do
+        = humanized_currency_rate r1, cp1, cur2
+      br
+    - else
+      p.text-small Значение не найдено
+    .text-muted.text-small покупка
+
+  - if cr1.persisted? && cr2.persisted?
+    - if r1 < 1.0 / r2
+      td.bg-success= ' < '
+    - elsif r1 == 1.0 / r2
+      td.bg-warning= '='
+    - else
+      td.bg-danger= '>'
+  - else
+    td
+  td.text-right title=r2
+    - if cr2.persisted?
+      = link_to currency_rate_path(cr2) do
+        = humanized_currency_rate 1.0 / r2, cp2, cur2
+    - else
+      p.text-small Значение не найдено
+    .text-muted.text-small продажа

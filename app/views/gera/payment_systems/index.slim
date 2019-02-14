@@ -1,0 +1,3 @@
+= render 'table', scope: payment_systems, decorator_class: Gera.payment_system_decorator, columns: columns, allow_edit: true
+hr
+= link_to 'Добавить новую ПС', new_payment_system_path, class: 'btn btn-success' if current_user.has_permission?(Gera::PaymentSystem, :create)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class PurgeCurrencyRatesWorker
     include Sidekiq::Worker

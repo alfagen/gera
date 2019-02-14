@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class CBRAvgRatesWorker
     include Sidekiq::Worker
@@ -23,17 +25,17 @@ module Gera
       @snapshot ||= source.snapshots.create!
     end
 
-    def create_rate pair
+    def create_rate(pair)
       er = RateSource.cbr.find_rate_by_currency_pair pair
 
       price = (er.sell_price + er.buy_price) / 2.0
 
       ExternalRate.create!(
-        source:        source,
-        snapshot:      snapshot,
+        source: source,
+        snapshot: snapshot,
         currency_pair: pair,
-        sell_price:    price,
-        buy_price:     price,
+        sell_price: price,
+        buy_price: price
       )
     end
   end

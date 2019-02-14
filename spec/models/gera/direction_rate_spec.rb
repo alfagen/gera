@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gera::DirectionRate do
   before do
-    allow( Gera::DirectionsRatesWorker ).to receive :perform_async
+    allow(Gera::DirectionsRatesWorker).to receive :perform_async
   end
 
   subject { create :direction_rate }

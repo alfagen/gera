@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class DirectionRateHistoryInterval < ApplicationRecord
     include HistoryIntervalConcern
@@ -12,11 +14,11 @@ module Gera
 
     def self.create_by_interval!(interval_from, interval_to = nil)
       interval_to ||= interval_from + INTERVAL
-      DirectionRate.
-        where('created_at >= ? and created_at < ?', interval_from, interval_to).
-        group(:ps_from_id, :ps_to_id).
-        pluck(:ps_from_id, :ps_to_id, 'min(rate_value)', 'max(rate_value)', 'min(rate_percent)', 'max(rate_percent)').
-        each do |ps_from_id, ps_to_id, min_rate, max_rate, min_comission, max_comission|
+      DirectionRate
+        .where('created_at >= ? and created_at < ?', interval_from, interval_to)
+        .group(:ps_from_id, :ps_to_id)
+        .pluck(:ps_from_id, :ps_to_id, 'min(rate_value)', 'max(rate_value)', 'min(rate_percent)', 'max(rate_percent)')
+        .each do |ps_from_id, ps_to_id, min_rate, max_rate, min_comission, max_comission|
 
         next if ps_from_id == ps_to_id
 

@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 module Gera
   module CurrencyRateModeBuilderSupport
     def build_currency_rate
       @currency_rate ||= build_currency_rate!
-
     rescue CurrencyRateBuilder::Error
       nil
     end
@@ -26,6 +27,7 @@ module Gera
       else
         source = RateSource.find_by_key(mode)
         raise "not supported mode #{mode} for #{currency_pair}" unless source.present?
+
         CurrencyRateDirectBuilder.new currency_pair: currency_pair, source: source
       end
     end

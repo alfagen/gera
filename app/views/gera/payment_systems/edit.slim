@@ -1,0 +1,7 @@
+= link_to '&larr; назад в список платежных систем'.html_safe, payment_systems_path
+.page-header
+  h2 Редактируем платежную систему #{ps_icon payment_system} ##{payment_system.id}
+
+.row
+  .col-md-9
+    = render 'form', payment_system: payment_system, columns: columns

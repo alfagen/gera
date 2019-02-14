@@ -1,0 +1,22 @@
+h1 Снимок внешних курсов (#{snapshot.rate_source}) от #{l snapshot.created_at, format: :long}
+
+table.table.table-condensed.table-striped.table-narrow
+  thead
+    tr
+      th Вход
+      th Выход
+      th Значение курса источника
+      th Человеческое значение
+      th Расшифровочка
+  tbody
+    - snapshot.external_rates.ordered.each do |er|
+      tr
+        th= er.cur_from
+        th= er.cur_to
+        th= er.rate_value
+        th= humanized_rate er.rate_value
+        th
+          - if er.rate_value < 1
+            span Продаем #{er.cur_to} за #{1.0/er.rate_value} #{er.cur_from}
+          - else
+            span Покупаем #{er.cur_from} за #{er.rate_value} #{er.cur_to}

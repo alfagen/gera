@@ -1,0 +1,13 @@
+= link_to 'Обновить', last_direction_rate_path(direction_rate), class: 'btn btn-success'
+.row
+  .col-md-6
+    = render 'direction_rate', direction_rate: direction_rate
+  /.col-md-6
+    /= render 'currency_rate', currency_rate: direction_rate.currency_rate
+
+  .col-md-6
+    = render 'bestchange_widget', exchange_rate_id: direction_rate.exchange_rate.id
+
+.m-t-lg
+  hr
+  = render 'direction_rate_example_calculator', direction_rate: direction_rate

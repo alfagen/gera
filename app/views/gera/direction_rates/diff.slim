@@ -1,0 +1,19 @@
+= render 'directions_submenu'
+
+= render layout: 'directions_table' do |direction|
+  - dr = Gera::Universe.direction_rates_repository.get_by_direction direction
+  - ps_from = direction.ps_from; ps_to = direction.ps_to
+  - drl = (legacy_direction_rates[ps_from.id] || {})[ps_to.id]
+  td.text-nowrap.text-right.rate-popover.v-middle data=direction_rate_cell_data_attr(dr, ps_from, ps_to, drl)
+    - if dr.present? && dr.exchange_rate.available?
+      - if drl.present?
+        - diff = dr.rate_value - drl
+        - res = (diff * 100.0 / dr.rate_value).round(2)
+        = "#{res}%"
+      - else
+        .text-danger Нет в PHP
+    - else
+      - if drl.present?
+        .text-danger Нет в Gera
+      - else
+        .text-muted= ion_icon 'ios-close-empty'

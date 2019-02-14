@@ -20,7 +20,7 @@ module Gera
     end
 
     def get_by_direction direction
-      get_matrix[direction.ps_from_id][direction.ps_to_id]
+      get_matrix.fetch(direction.ps_from_id, {}).fetch(direction.ps_to_id, nil)
     end
 
     def get_matrix

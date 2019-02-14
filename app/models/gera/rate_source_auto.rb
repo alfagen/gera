@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class RateSourceAuto < RateSource
     def build_currency_rate(pair)
@@ -10,12 +12,13 @@ module Gera
 
     private
 
-    def build_from_source source, pair, allow_inverse = true
+    def build_from_source(source, pair, allow_inverse = true)
       source.build_currency_rate pair, allow_inverse
     end
 
     def build_same(pair)
       return unless pair.same?
+
       CurrencyRate.new currency_pair: pair, rate_value: 1, mode: :same
     end
   end

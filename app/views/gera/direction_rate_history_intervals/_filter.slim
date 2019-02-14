@@ -1,0 +1,11 @@
+= simple_form_for filter, url: direction_rate_history_intervals_path, method: :GET do |f|
+  .row
+    .col-md-3
+      = f.input :payment_system_from_id, collection: Gera::PaymentSystem.ordered, include_blank: false, label: false, hint: 'Входящая ПС'
+    .col-md-3
+      = f.input :payment_system_to_id, collection: Gera::PaymentSystem.ordered, include_blank: false, label: false, hint: 'Исходящая ПС'
+    .col-md-3
+      = f.input :value_type, collection: [['Значение курса','rate'],['Комиссия','comission']], include_blank: false, label: false, hint: 'Что смотрим?'
+    .col-md-3
+      = f.button :submit, 'Обновить', class: 'btn btn-primary'
+

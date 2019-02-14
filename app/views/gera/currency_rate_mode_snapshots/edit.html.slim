@@ -1,0 +1,30 @@
+.row
+  .col-md-10
+    .row.m-b-md
+      .col-md-6
+        h2
+          | Матрица методов расчета
+
+        p Название:
+        = best_in_place snapshot, :title
+        hr
+        p Описание:
+        = best_in_place snapshot, :details
+      .col-md-3
+        = crms_status_label snapshot.status
+      .col-md-3
+        - unless snapshot.status_active?
+          = link_to 'Активировать', activate_currency_rate_mode_snapshot_path(snapshot), method: :post, class: 'btn btn-primary'
+
+    ul.nav.nav-tabs
+      = active_link_to 'Режимы', url_for(view_mode: :methods), wrap_tag: :li, active: view_mode == :methods
+      = active_link_to 'Расчеты', url_for(view_mode: :calculations), wrap_tag: :li, active: view_mode == :calculations
+
+    = render 'snapshot', snapshot: snapshot
+  .col-md-2
+    = render 'currency_rate_mode_snapshots', current_snapshot: snapshot
+ul
+  - if view_mode == :calculations
+    li.text-success Зеленым цветом автоматический расчет
+  li.text-muted Создан: #{l snapshot.created_at, format: :long}
+  li.text-muted Изменен: #{l snapshot.updated_at, format: :long}

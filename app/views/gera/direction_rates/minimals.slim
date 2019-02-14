@@ -1,0 +1,5 @@
+= render 'directions_submenu'
+
+= render layout: 'directions_table' do |direction|
+  td.text-nowrap.cell-small.text-center.rate-popover.v-middle data=direction_rate_cell_data_attr(direction)
+    = humanized_money_with_currency direction.minimal_income_amount

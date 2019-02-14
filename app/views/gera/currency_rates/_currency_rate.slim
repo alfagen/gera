@@ -1,0 +1,10 @@
+- object = Gera::CurrencyRateDecorator.decorate currency_rate
+h3 Базовый обменный курс (#{object.title})
+hr
+.row
+  .col-md-6
+    = render 'attributes_table', object: object, columns: currency_rate_columns(currency_rate)
+  .col-md-6
+    .panel.panel-default
+      .panel-heading Расчёт
+      .panel-body= currency_rate_mode_detailed currency_rate

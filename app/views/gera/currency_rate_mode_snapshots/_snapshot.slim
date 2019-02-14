@@ -1,0 +1,20 @@
+= render layout: 'currencies_table', locals: { min_width: 50 } do |pair|
+  - currency_rate_mode = snapshot.currency_rate_modes.find_by_currency_pair(pair) || snapshot.currency_rate_modes.build(currency_pair: pair)
+  td.rate-popover data=crms_cell_data_attr(currency_rate_mode) class=(currency_rate_mode.build_result.error? ? 'text-danger' : '')
+    - if currency_rate_mode.currency_pair.same?
+      .text-muted 1
+    - elsif currency_rate_mode.persisted?
+      - if view_mode == :calculations
+        - if currency_rate_mode.build_result.error?
+          .text-danger= currency_rate_mode.build_result.error
+        - else
+          - buffer = currency_rate_mode_detailed(currency_rate_mode.build_result.currency_rate).html_safe
+          - if currency_rate_mode.mode_auto?
+            .text-success
+              = buffer
+          - else
+            = buffer
+      - else
+        = render currency_rate_mode
+    - else
+      | авто

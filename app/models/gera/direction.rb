@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Gera
   # Направление обмена
   #
   class Direction
     include Virtus.model
 
-    attribute :ps_from #, PaymentSystem
-    attribute :ps_to   #, PaymentSystem
+    attribute :ps_from # , PaymentSystem
+    attribute :ps_to   # , PaymentSystem
 
     alias_attribute :payment_system_from, :ps_from
     alias_attribute :payment_system_to, :ps_to

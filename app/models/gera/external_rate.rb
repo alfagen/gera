@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Курсы внешних систем
 
 module Gera
@@ -17,7 +19,7 @@ module Gera
 
     before_validation :upcase_currencies
 
-    # TODO validate cur_from, cur_to из списка разрешенных
+    # TODO: validate cur_from, cur_to из списка разрешенных
 
     delegate :actual_for, to: :snapshot
 
@@ -26,7 +28,7 @@ module Gera
     end
 
     def dump
-      as_json(only: [:id, :cur_from, :cur_to, :rate_value, :source_id, :created_at])
+      as_json(only: %i[id cur_from cur_to rate_value source_id created_at])
     end
 
     private

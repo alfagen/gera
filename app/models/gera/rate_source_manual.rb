@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class RateSourceManual < RateSource
     def self.supported_currencies

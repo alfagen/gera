@@ -1,0 +1,13 @@
+table.table.table-condensed.table-hover.table-striped.table-narrow.text-small
+  thead
+    tr
+      th.text-right Принимаем
+      th.text-right Отдаем
+      th.text-right Актуальность
+  tbody
+    - external_rates.each do |er|
+      tr
+        td.text-right= er.currency_pair.first
+        td.text-right= rate_cell_with_currency er.rate_value, er.currency_to
+        td.text-right.text-muted= l er.created_at, format: :long
+

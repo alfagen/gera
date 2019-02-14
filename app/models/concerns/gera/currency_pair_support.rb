@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Gera
   module CurrencyPairSupport
     extend ActiveSupport::Concern
 
     included do
       if ancestors.include? ActiveRecord::Base
-        scope :by_currency_pair, -> (pair) { where cur_from: pair.cur_from.to_s, cur_to: pair.cur_to.to_s }
+        scope :by_currency_pair, ->(pair) { where cur_from: pair.cur_from.to_s, cur_to: pair.cur_to.to_s }
 
         def self.find_by_currency_pair(pair)
           by_currency_pair(pair).take

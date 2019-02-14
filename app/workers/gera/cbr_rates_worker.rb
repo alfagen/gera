@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'business_time'
 
@@ -10,15 +12,15 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
-    CURRENCIES = %w(USD KZT EUR)
+    CURRENCIES = %w[USD KZT EUR].freeze
 
     CBR_IDS = {
-      'USD' => 'R01235'.freeze,
-      'KZT' => 'R01335'.freeze,
-      'EUR' => 'R01239'.freeze
-    }
+      'USD' => 'R01235',
+      'KZT' => 'R01335',
+      'EUR' => 'R01239'
+    }.freeze
 
-    ROUND  = 15
+    ROUND = 15
 
     Error = Class.new StandardError
     WrongDate = Class.new Error
@@ -62,43 +64,43 @@ module Gera
     def save_snapshot_rate(cur_from, cur_to)
       pair = CurrencyPair.new cur_from, cur_to
 
-      min_rate, max_rate = CbrExternalRate.
-        where(cur_from: cur_from.iso_code, cur_to: cur_to.iso_code).
-        order('date asc').
-        last(2).
-        sort
+      min_rate, max_rate = CbrExternalRate
+                           .where(cur_from: cur_from.iso_code, cur_to: cur_to.iso_code)
+                           .order('date asc')
+                           .last(2)
+                           .sort
 
       raise "Нет минимального курса #{cur_from}, #{cur_to}" unless min_rate
       raise "Нет максимального курса #{cur_from}, #{cur_to}" unless max_rate
 
       ExternalRate.create!(
-        source:        cbr,
-        snapshot:      snapshot,
+        source: cbr,
+        snapshot: snapshot,
         currency_pair: pair,
-        rate_value:    min_rate.rate
+        rate_value: min_rate.rate
       )
 
       ExternalRate.create!(
-        source:        cbr,
-        snapshot:      snapshot,
+        source: cbr,
+        snapshot: snapshot,
         currency_pair: pair.inverse,
-        rate_value:    1.0 / max_rate.rate
+        rate_value: 1.0 / max_rate.rate
       )
 
       avg_rate = (max_rate.rate + min_rate.rate) / 2.0
 
       ExternalRate.create!(
-        source:        cbr_avg,
-        snapshot:      avg_snapshot,
+        source: cbr_avg,
+        snapshot: avg_snapshot,
         currency_pair: pair,
-        rate_value:    avg_rate
+        rate_value: avg_rate
       )
 
       ExternalRate.create!(
-        source:        cbr_avg,
-        snapshot:      avg_snapshot,
+        source: cbr_avg,
+        snapshot: avg_snapshot,
         currency_pair: pair.inverse,
-        rate_value:    1.0 / avg_rate
+        rate_value: 1.0 / avg_rate
       )
     end
 
@@ -127,6 +129,7 @@ module Gera
       # HTTP redirection loop: http://www.cbr.ru/scripts/XML_daily.asp?date_req=09/01/2019
     rescue RuntimeError => err
       raise err unless err.message.include? 'HTTP redirection loop'
+
       logger.error err
     end
 
@@ -138,7 +141,7 @@ module Gera
       @cbr ||= RateSourceCBR.get!
     end
 
-    def fetch_rates date
+    def fetch_rates(date)
       if CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
         logger.info "Данные по валютам на дату #{date} уже есть в базе"
         return
@@ -174,8 +177,8 @@ module Gera
 
     def get_rate(root, id)
       valute = root.xpath("Valute[@ID=\"#{id}\"]")
-      original_rate = valute.xpath('Value').text.sub(',','.').to_f
-      nominal = valute.xpath('Nominal').text.sub(',','.').to_f
+      original_rate = valute.xpath('Value').text.sub(',', '.').to_f
+      nominal = valute.xpath('Nominal').text.sub(',', '.').to_f
       OpenStruct.new original_rate: original_rate, nominal: nominal
     end
 

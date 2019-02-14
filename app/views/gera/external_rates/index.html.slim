@@ -1,0 +1,28 @@
+.page-header
+  h1 Журнал приема курсов
+
+table.table.table-condensed.table-hover.table-striped.table-narrow
+  thead
+    tr
+      th Источник
+      th Дата курса
+      - available_pairs.each do |pair|
+        th= pair.to_s
+  tbody
+    - timestamps.each do |ts|
+      tr
+        td= ts[:source]
+        td.text-nowrap= l ts[:snapshot].actual_for, format: :long
+        - available_pairs.each do |pair|
+          td
+            - er = ts[:rates][pair.key]
+            - if er.present?
+              - if er.same_rates?
+                .text-nowrap= er.rate
+              - else
+                .text-nowrap= er.sell_price
+                .text-nowrap.text-muted= er.rate
+                .text-nowrap= er.buy_price
+            - else
+              = '-'
+

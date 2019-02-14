@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class PurgeDirectionRatesWorker
     include Sidekiq::Worker
@@ -13,7 +15,7 @@ module Gera
       # с direction_rate_snapshot через кросс-таблицу
       direction_rates.batch_purge
 
-      # TODO Тут не плохо было бы добить direction_rates которые не входят в snapshot-ы и в actual
+      # TODO: Тут не плохо было бы добить direction_rates которые не входят в snapshot-ы и в actual
     end
 
     private

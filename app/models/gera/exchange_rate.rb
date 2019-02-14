@@ -1,4 +1,6 @@
-# TODO Пеерименовать в Direction
+# frozen_string_literal: true
+
+# TODO: Пеерименовать в Direction
 # Комиссии по направлениям платежных систем
 # если в парсере операторы изменили курс/комиссию, то эта комиссия
 # устанвливается сначала сюда, потом растекается по остальным
@@ -12,6 +14,7 @@
 # * on_corridor - в коридоре?
 module Gera
   class ExchangeRate < ApplicationRecord
+    include Authority::Abilities
 
     DEFAULT_COMISSION = 50
 
@@ -26,16 +29,16 @@ module Gera
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
 
-    scope :with_payment_systems, -> {
-      includes(:payment_system_from, :payment_system_to).
-      joins(:payment_system_from, :payment_system_to)
+    scope :with_payment_systems, lambda {
+      includes(:payment_system_from, :payment_system_to)
+        .joins(:payment_system_from, :payment_system_to)
     }
 
-    scope :available, -> {
-      with_payment_systems.
-      enabled.
-      where('payment_systems.income_enabled and payment_system_tos_exchange_rates.outcome_enabled').
-      where("#{table_name}.id_ps1 <> #{table_name}.id_ps2")
+    scope :available, lambda {
+      with_payment_systems
+        .enabled
+        .where('payment_systems.income_enabled and payment_system_tos_exchange_rates.outcome_enabled')
+        .where("#{table_name}.id_ps1 <> #{table_name}.id_ps2")
     }
 
     after_commit :update_direction_rates, on: :create
@@ -75,18 +78,18 @@ module Gera
       is_enabled?
     end
 
-    def update_finite_rate! finite_rate
+    def update_finite_rate!(finite_rate)
       update! comission: calculate_comission(finite_rate, currency_rate.rate_value)
     end
 
     def custom_inspect
       {
-        value_ps:            value_ps,
-        exchange_rate_id:    id,
-        payment_system_to:   payment_system_to.to_s,
+        value_ps: value_ps,
+        exchange_rate_id: id,
+        payment_system_to: payment_system_to.to_s,
         payment_system_from: payment_system_from.to_s,
-        out_currency:        out_currency.to_s,
-        in_currency:         in_currency.to_s,
+        out_currency: out_currency.to_s,
+        in_currency: in_currency.to_s
       }.to_s
     end
 
@@ -118,7 +121,7 @@ module Gera
       [in_currency, out_currency].join '/'
     end
 
-    # TODO rename to comission
+    # TODO: rename to comission
     def comission_percents
       value_ps
     end

@@ -1,0 +1,18 @@
+- currencies ||= Money::Currency.all
+- min_width ||= 80
+
+.table-sticky-container
+  table.table.table-condensed.table-narrow.text-right.table-cross
+    thead.bg-white
+      tr
+        th.text-center colspan=currencies.count+1 Отдаем &rarr;
+      tr
+        th.text-nowrap Получаем &darr;
+        - currencies.each do |cur|
+          th.text-right style="min-width: #{min_width}px"= cur
+    tbody
+      - currencies.each do |cur2|
+        tr
+          th.text-right= cur2
+          - currencies.each do |cur1|
+            = yield Gera::CurrencyPair.new cur2, cur1

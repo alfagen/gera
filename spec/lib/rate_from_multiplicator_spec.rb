@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Gera::RateFromMultiplicator do
@@ -23,4 +25,3 @@ RSpec.describe Gera::RateFromMultiplicator do
     expect(rate.in_amount).to eq 5
   end
 end
-

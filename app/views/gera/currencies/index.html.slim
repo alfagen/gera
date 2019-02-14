@@ -1,0 +1,20 @@
+h1 Валюта
+
+table.table.table-narrow.table-striped.table-condensed
+  thead.bg-white
+    tr
+      th Валюта
+      th iso number
+      th Локальный ID
+      th Минимальная сумма на ввод
+      th Минимальная сумма на вывод
+      th Знаков после запятой для хранения
+      th Разрешенное округление
+  - Money::Currency.each do |c|
+    tr
+      td= c
+      td= c.iso_numeric
+      td= c.local_id
+      td= c.minimal_input_value.format
+      td= c.minimal_output_value.format
+      td= c.decimal_places

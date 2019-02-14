@@ -1,0 +1,28 @@
+- income_amount = direction_rate.rate_value.to_rate.in_amount
+- profit = direction_rate.get_profit_result income_amount
+table.table.table-narrow
+  thead
+    tr
+      th Базовый курс
+      th Комиссия обменника
+      th Конечный курс
+      th Сумма на входе
+      th Сумма на выходе (клиент получит на счете, сумма к отправке)
+      th Комиссия ПС (%)
+      th Комиссия ПС (абс.)
+      th Сумма которая уйдет с выходящего кошелька (что получит клиент + комиссия ПС)
+      th Чистая прибыль системы
+  tbody
+    tr
+      td= profit.base_rate.to_rate.format direction_rate.payment_system_from.currency, direction_rate.payment_system_to.currency
+      td= profit.comission.to_percent
+      td= profit.finite_rate.to_rate.format direction_rate.payment_system_from.currency, direction_rate.payment_system_to.currency
+
+      td= humanized_money_with_currency Money.from_amount(profit.income_amount, direction_rate.payment_system_from.currency)
+      td= humanized_money_with_currency Money.from_amount(profit.finite_amount, direction_rate.payment_system_to.currency)
+
+      td= profit.ps_interest.to_percent
+      td= humanized_money_with_currency Money.from_amount(profit.ps_amount, direction_rate.payment_system_to.currency)
+
+      td= humanized_money_with_currency Money.from_amount(profit.outcome_amount, direction_rate.payment_system_to.currency)
+      td= humanized_money_with_currency Money.from_amount(profit.profit_amount, direction_rate.payment_system_from.currency)

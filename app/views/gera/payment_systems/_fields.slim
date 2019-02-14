@@ -1,0 +1,4 @@
+h2 Поля в заявках
+
+= render 'fields_table', title: 'Входящие поля', direction: :income, scope: payment_system.income_form_fields, payment_system: payment_system
+= render 'fields_table', title: 'Иходящие поля', direction: :outcome, scope: payment_system.outcome_form_fields, payment_system: payment_system

@@ -1,0 +1,22 @@
+table.table.table-condensed.table-hover.table-striped.table-narrow
+  thead
+    tr
+      th Источник
+      th Дата курса
+      th Валютная пара
+      th Курс продажи
+      th Курс средний
+      th Курс покупки
+      th Время загрузки
+  tbody
+    - external_rates.each do |er|
+      tr
+        td= er.source
+        td= l er.actual_for
+        td
+          = currency_rate_pair er.cur_from, er.cur_to
+        td.text-right= er.sell_price || '-'
+        td.text-right= er.rate || '-'
+        td.text-right= er.buy_price || '-'
+        td
+          .text-muted= l er.created_at

@@ -1,0 +1,11 @@
+= link_to "&larr; Назад в матрицу '#{currency_rate_mode.snapshot.title}'".html_safe, success_url
+
+h2.m-b-md Изменяем метод расчета для #{currency_rate_mode.currency_pair}
+hr
+
+.row
+  .col-md-9
+    = render 'form', currency_rate_mode: currency_rate_mode, success_url: success_url
+  .col-md-3
+    .alert class=(currency_rate_mode.build_result.error? ? 'alert-danger' : 'alert-success')
+      = currency_rate_mode_build_result_details currency_rate_mode.build_result

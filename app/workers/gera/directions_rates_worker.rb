@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   class DirectionsRatesWorker
     include Sidekiq::Worker
@@ -10,8 +12,8 @@ module Gera
     # exchange_rate_id - ID изменившегося направление
     # фактически не используется
     #
-    def perform(*args) # exchange_rate_id: nil)
-      logger.info "start"
+    def perform(*_args) # exchange_rate_id: nil)
+      logger.info 'start'
 
       DirectionRate.transaction do
         # Генерруем для всех, потому что так нужно старому пыху
@@ -20,7 +22,7 @@ module Gera
           safe_create(exchange_rate)
         end
       end
-      logger.info "finish"
+      logger.info 'finish'
     end
 
     private
@@ -37,7 +39,6 @@ module Gera
         exchange_rate: exchange_rate,
         currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
       )
-
     rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid, CurrencyRatesRepository::UnknownPair => err
       logger.error err
       Bugsnag.notify err do |b|

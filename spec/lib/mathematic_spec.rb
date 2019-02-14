@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module Gera
@@ -5,14 +7,14 @@ module Gera
     include Mathematic
     let(:rub) { Money::Currency.find :rub }
 
-    subject {
+    subject do
       calculate_profits(
         income_amount: income_amount,
-        base_rate:     base_rate,
-        comission:     comission,
-        ps_interest:   ps_interest
+        base_rate: base_rate,
+        comission: comission,
+        ps_interest: ps_interest
       )
-    }
+    end
 
     context 'отличие в процентах' do
       specify do
@@ -29,11 +31,11 @@ module Gera
         assert_equal percents.to_s, '5%'
       end
     end
-    #Принимаем USD
-    #отдаем rub
-    #0.018504 $
-    #1 руб
-    #курс 12.36
+    # Принимаем USD
+    # отдаем rub
+    # 0.018504 $
+    # 1 руб
+    # курс 12.36
 
     # Покупаем за 536621
     # Продаем за 717044
@@ -53,8 +55,8 @@ module Gera
     # Продажа - 537494 руб.; Покупка - 535308 руб.
     # 25%
     context 'рубль на биткойн' do
-      let(:finite_rate) { 1.0 / 716658.66 }
-      let(:base_rate) { 1.0 / 537494 }
+      let(:finite_rate) { 1.0 / 716_658.66 }
+      let(:base_rate) { 1.0 / 537_494 }
       let(:comission) { 25 }
       specify do
         c = calculate_comission(finite_rate, base_rate)
@@ -67,14 +69,14 @@ module Gera
     end
 
     # Покупаем доллары (дешево)
-    #Принимаем USD, отдаем rub
-    #Отдаем: 0.018504 или 1 $
-    #Принимаем: 1 руб и 54.0427 руб
-    #комиссия 12.36%
-    #25): 61.6644 руб.
-    #Продажа (2018-04-24): 61.7655 руб.
+    # Принимаем USD, отдаем rub
+    # Отдаем: 0.018504 или 1 $
+    # Принимаем: 1 руб и 54.0427 руб
+    # комиссия 12.36%
+    # 25): 61.6644 руб.
+    # Продажа (2018-04-24): 61.7655 руб.
     #
-    #61.6644 - 12.36.to_percent   = 54.04268016
+    # 61.6644 - 12.36.to_percent   = 54.04268016
     context 'доллар на рубль' do
       let(:base_rate) { 61.6644 }
       let(:finite_rate) { 54.0427 } # 0.018504 } # 54.0427
@@ -105,10 +107,10 @@ module Gera
       end
     end
 
-    describe "#calculate_total_using_regular_comission" do
+    describe '#calculate_total_using_regular_comission' do
       let(:base_amount) { 90 }
 
-      context "comission is zero" do
+      context 'comission is zero' do
         let(:comission) { 0 }
 
         specify do
@@ -116,7 +118,7 @@ module Gera
         end
       end
 
-      context "fee is not zero" do
+      context 'fee is not zero' do
         let(:comission) { 10 }
 
         specify do
@@ -125,10 +127,10 @@ module Gera
       end
     end
 
-    describe "#calculate_total_using_regular_comission" do
+    describe '#calculate_total_using_regular_comission' do
       let(:base_amount) { 90 }
 
-      context "comission is zero" do
+      context 'comission is zero' do
         let(:comission) { 0 }
 
         specify do
@@ -136,7 +138,7 @@ module Gera
         end
       end
 
-      context "fee is not zero" do
+      context 'fee is not zero' do
         let(:comission) { 10 }
 
         specify do

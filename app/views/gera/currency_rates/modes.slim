@@ -1,0 +1,14 @@
+- currencies = Money::Currency.all
+
+h2 Методы расчета
+
+= render layout: 'currencies_table' do |pair|
+  - rate = snapshot.rates.find_by_currency_pair pair
+  - if rate.present?
+    - rate_d = Gera::CurrencyRateDecorator.decorate rate
+    td.v-middle data-toggle=:tooltip data-container=:body data-html='true' title=rate_d.tooltip data-href=currency_rate_path(rate)
+      - unless pair.same?
+        .text-small
+          = rate_d.detailed
+  - else
+    td.text-muted &middot;

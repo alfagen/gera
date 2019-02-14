@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gera
   # Загрузка курсов из EXMO
   #
@@ -7,8 +9,8 @@ module Gera
 
     prepend RatesWorker
 
-    URL1 = 'https://api.exmo.com/v1/ticker/'.freeze
-    URL2 = 'https://api.exmo.me/v1/ticker/'.freeze
+    URL1 = 'https://api.exmo.com/v1/ticker/'
+    URL2 = 'https://api.exmo.me/v1/ticker/'
     URL = URL2
 
     private
@@ -18,18 +20,18 @@ module Gera
     end
 
     # Содержимое data
-    #{"buy_price"=>"8734.99986728",
-    #"sell_price"=>"8802.299431",
-    #"last_trade"=>"8789.71226599",
-    #"high"=>"9367.055011",
-    #"low"=>"8700.00000001",
-    #"avg"=>"8963.41293922",
-    #"vol"=>"330.70358291",
-    #"vol_curr"=>"2906789.33918745",
-    #"updated"=>1520415288},
+    # {"buy_price"=>"8734.99986728",
+    # "sell_price"=>"8802.299431",
+    # "last_trade"=>"8789.71226599",
+    # "high"=>"9367.055011",
+    # "low"=>"8700.00000001",
+    # "avg"=>"8963.41293922",
+    # "vol"=>"330.70358291",
+    # "vol_curr"=>"2906789.33918745",
+    # "updated"=>1520415288},
 
     def save_rate(raw_pair, data)
-      # TODO У EXMO такая причуда с DASH/DSH лучше это вынести в ExmoRatesWorker
+      # TODO: У EXMO такая причуда с DASH/DSH лучше это вынести в ExmoRatesWorker
       #
       cf, ct = raw_pair.split('_') .map { |c| c == 'DASH' ? 'DSH' : c }
 
@@ -50,9 +52,10 @@ module Gera
     end
 
     def load_rates
-      result = JSON.parse open(URI.parse URL).read
-      raise Error.new('Результат не хеш') unless result.is_a? Hash
-      raise Error.new(result['error']) if result['error'].present?
+      result = JSON.parse open(URI.parse(URL)).read
+      raise Error, 'Результат не хеш' unless result.is_a? Hash
+      raise Error, result['error'] if result['error'].present?
+
       result
     end
   end

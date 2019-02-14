@@ -1,0 +1,15 @@
+.container-scrollable
+  .table-sticky-container
+    table.table-condensed.table-comission.table-cross.table-bordered.table-directions
+      thead.bg-white
+        tr
+          th
+          - payment_systems.each do |ps_to|
+            th.text-center title="(#{ps_to.id}) #{ps_to.name}"
+              = ps_icon ps_to
+      tbody
+        - payment_systems.each do |ps_from|
+          tr
+            th.text-center title="(#{ps_from.id}) #{ps_from.name}"= ps_icon ps_from
+            - payment_systems.each do |ps_to|
+              = yield Gera::Direction.new(ps_from: ps_from, ps_to: ps_to).freeze

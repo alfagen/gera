@@ -1,0 +1,20 @@
+nav.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      button.navbar-toggle.collapsed aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button"
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      = link_to app_title, root_path, class: 'navbar-brand'
+    #navbar.collapse.navbar-collapse
+      ul.nav.navbar-nav
+        = yield
+
+      ul.nav.navbar-nav.navbar-right
+        li.dropdown
+          = link_to '#', class: 'dropdown-toggle', data: { toggle: 'dropdown' }, role: :button, 'aria-haspopup' => true, 'aria-expanded' => false do
+            = fa_icon :user, text: current_user.email
+            .m-l-sm.span.caret
+          ul.dropdown-menu
+            li= link_to 'Выйти', main_app.sessions_path, method: :delete

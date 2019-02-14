@@ -1,0 +1,25 @@
+h2 Журнал курсов #{rate_source}
+
+.table-sticky-container
+  table.table-condensed.table-comission.table-cross.text-small
+    thead.bg-white
+      tr
+        th Дата съема
+        - rate_source.available_pairs.each do |cp|
+          th.text-right style="font-size: 125%"= cp
+
+    tbody
+      - snapshots.each do |s|
+        tr
+          th.text-nowrap
+            = link_to external_rate_snapshot_path(s) do
+              = l s.created_at, format: :long
+          - rate_source.available_pairs.each do |cp|
+            - rate = s.external_rates.find_by_currency_pair(cp)
+            - if rate
+              td.text-right
+                = humanized_rate_detailed rate.rate_value, '<br/>'
+            - else
+              td 
+
+= paginate snapshots
