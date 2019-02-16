@@ -4,21 +4,32 @@
 #   Ensure the SQLite 3 gem is defined in your Gemfile
 #   gem 'sqlite3'
 #
-default: &default
+mysql: &mysql
   adapter: mysql2
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  timeout: 5000
   username: <%= ENV['MYSQL_USERNAME'] %>
+  database: gera_<%= Rails.env %>
   # The password associated with the postgres role (username).
   password: <%= ENV['MYSQL_PASSWORD'] %>
+  host: localhost
 
-development:
-  <<: *default
-  database: gera_dummy_development
+postgresq: &postgresql
+  adapter: postgresql
+  database: gera_<%= Rails.env %>
+  min_messages: ERROR
+
+defaults: &defaults
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  <<: *<%= ENV['DB'] || "postgresql" %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: gera_dummy_test
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+production:
+  <<: *defaults

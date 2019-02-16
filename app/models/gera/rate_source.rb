@@ -5,7 +5,6 @@ module Gera
     include Authority::Abilities
     extend CurrencyPairGenerator
     RateNotFound = Class.new StandardError
-    self.table_name = 'rate_sources'
 
     has_many :snapshots, class_name: 'ExternalRateSnapshot'
     has_many :external_rates, foreign_key: :source_id

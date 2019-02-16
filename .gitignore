@@ -9,3 +9,4 @@ spec/dummy/storage/
 spec/dummy/tmp/
 *.log
 .yardoc/
+.byebug_history

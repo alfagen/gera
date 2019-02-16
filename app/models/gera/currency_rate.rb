@@ -6,8 +6,6 @@ module Gera
     include CurrencyPairSupport
     include Authority::Abilities
 
-    self.table_name = 'currency_rates'
-
     belongs_to :snapshot, class_name: 'Gera::CurrencyRateSnapshot'
     belongs_to :external_rate, optional: true
     belongs_to :rate_source, optional: true

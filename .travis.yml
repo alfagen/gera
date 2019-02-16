@@ -2,11 +2,16 @@ language: ruby
 rvm:
   - 2.4.4
 env:
-  - RAILS_ENV=test
+  - DB=mysql
+  - DB=postgresql
+script:
+  - RAILS_ENV=test bundle exec rake --trace db:migrate spec
 before_script:
-  - bundle exec rake db:create db:migrate RAILS_ENV=test
+  - mysql -e 'create database gera_test'
+  - psql -c 'create database gera_test' -U postgres
 services:
   - mysql
+  - postgresql
 addons:
   apt:
     sources:

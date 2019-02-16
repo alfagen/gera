@@ -2,8 +2,6 @@
 
 module Gera
   class CurrencyRateModeSnapshot < ApplicationRecord
-    self.table_name = 'currency_rate_mode_snapshots'
-
     has_many :currency_rate_modes, dependent: :destroy
 
     scope :ordered, -> { order('status desc').order('created_at desc') }

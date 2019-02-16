@@ -6,8 +6,6 @@ module Gera
     include CurrencyRateModeBuilderSupport
     include Authority::Abilities
 
-    self.table_name = 'currency_rate_modes'
-
     belongs_to :snapshot, class_name: 'CurrencyRateModeSnapshot', foreign_key: :currency_rate_mode_snapshot_id
     has_many :cross_rate_modes
 

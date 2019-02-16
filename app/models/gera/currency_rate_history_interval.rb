@@ -3,8 +3,6 @@
 module Gera
   class CurrencyRateHistoryInterval < ApplicationRecord
     include HistoryIntervalConcern
-    self.table_name = 'currency_rate_history_intervals'
-
     def self.create_by_interval!(interval_from, interval_to = nil)
       interval_to ||= interval_from + INTERVAL
       CurrencyRate

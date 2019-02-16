@@ -5,8 +5,7 @@
 # если в парсере операторы изменили курс/комиссию, то эта комиссия
 # устанвливается сначала сюда, потом растекается по остальным
 #
-# * value_ps - само значение комиссии
-# * timec - временная метка (когда было изменение как я понимаю)
+# * value - само значение комиссии
 # * cor1/cor2 - границы коридора
 #
 # * position - позиция в best которую нужно установить?
@@ -21,10 +20,8 @@ module Gera
     include Mathematic
     include DirectionSupport
 
-    self.table_name = :exchange_rates
-
-    belongs_to :payment_system_from, foreign_key: :id_ps1, class_name: 'Gera::PaymentSystem'
-    belongs_to :payment_system_to, foreign_key: :id_ps2, class_name: 'Gera::PaymentSystem'
+    belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
+    belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
 
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
@@ -37,15 +34,11 @@ module Gera
     scope :available, lambda {
       with_payment_systems
         .enabled
-        .where('payment_systems.income_enabled and payment_system_tos_exchange_rates.outcome_enabled')
-        .where("#{table_name}.id_ps1 <> #{table_name}.id_ps2")
+        .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
+        .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
 
     after_commit :update_direction_rates, on: :create
-
-    after_save do
-      self.timec = Time.zone.now
-    end
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -57,20 +50,22 @@ module Gera
 
     delegate :rate, :currency_rate, to: :direction_rate
 
-    alias_attribute :ps_from_id, :id_ps1
-    alias_attribute :ps_to_id, :id_ps2
-    alias_attribute :payment_system_from_id, :id_ps1
-    alias_attribute :payment_system_to_id, :id_ps2
-    alias_attribute :comission, :value_ps
-    alias_attribute :commission, :value_ps
+    alias_attribute :ps_from_id, :income_payment_system_id
+    alias_attribute :ps_to_id, :outcome_payment_system_id
+    alias_attribute :payment_system_from_id, :income_payment_system_id
+    alias_attribute :payment_system_to_id, :outcome_payment_system_id
+
+    alias_attribute :comission, :value
+    alias_attribute :commission, :value
+    alias_attribute :comission_percents, :value
 
     alias_attribute :income_payment_system, :payment_system_from
     alias_attribute :outcome_payment_system, :payment_system_to
 
     def self.list_rates
       order('id asc').each_with_object({}) do |er, h|
-        h[er.id_ps1] ||= {}
-        h[er.id_ps1][er.id_ps2] = h.value_ps
+        h[er.income_payment_system_id] ||= {}
+        h[er.income_payment_system_id][er.outcome_payment_system_id] = h.value
       end
     end
 
@@ -84,7 +79,7 @@ module Gera
 
     def custom_inspect
       {
-        value_ps: value_ps,
+        value: value,
         exchange_rate_id: id,
         payment_system_to: payment_system_to.to_s,
         payment_system_from: payment_system_from.to_s,
@@ -119,11 +114,6 @@ module Gera
 
     def to_s
       [in_currency, out_currency].join '/'
-    end
-
-    # TODO: rename to comission
-    def comission_percents
-      value_ps
     end
 
     def direction_rate

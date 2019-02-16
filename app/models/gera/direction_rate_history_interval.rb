@@ -4,8 +4,6 @@ module Gera
   class DirectionRateHistoryInterval < ApplicationRecord
     include HistoryIntervalConcern
 
-    self.table_name = 'direction_rate_history_intervals'
-
     # Их не надо подключать, потому что иначе при создании записи
     # ActiveRercord проверяет есить ли они в базе
     #

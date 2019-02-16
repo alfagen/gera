@@ -6,8 +6,6 @@ module Gera
   class ExternalRate < ApplicationRecord
     include CurrencyPairSupport
 
-    self.table_name = 'external_rates'
-
     belongs_to :source, class_name: 'RateSource'
     belongs_to :snapshot, class_name: 'ExternalRateSnapshot'
 

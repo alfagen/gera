@@ -9,8 +9,6 @@ module Gera
     include DirectionSupport
     include Authority::Abilities
 
-    self.table_name = 'direction_rates'
-
     UnknownExchangeRate = Class.new StandardError
 
     belongs_to :ps_from, class_name: 'Gera::PaymentSystem'

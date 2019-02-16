@@ -32,8 +32,8 @@ Gem::Specification.new do |s|
     s.add_dependency 'percentable'
     s.add_dependency 'draper', '~> 3.0.1'
 
-    s.add_development_dependency 'rails-erd'
-    s.add_development_dependency 'railroady'
+    # s.add_development_dependency 'rails-erd'
+    # s.add_development_dependency 'railroady'
     s.add_development_dependency 'rubocop'
     s.add_development_dependency 'rubocop-rspec'
     s.add_development_dependency 'guard-bundler'
@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'rspec-rails', '~> 3.7'
     s.add_development_dependency 'database_rewinder'
     s.add_development_dependency 'mysql2'
+    s.add_development_dependency 'pg'
     s.add_development_dependency 'vcr'
     s.add_development_dependency 'webmock'
     s.add_development_dependency 'timecop'

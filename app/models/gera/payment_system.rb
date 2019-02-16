@@ -6,12 +6,11 @@ module Gera
     include Gera::Mathematic
     include Authority::Abilities
 
-    self.table_name = :payment_systems
-
     scope :ordered, -> { order :priority }
     scope :enabled, -> { where 'income_enabled>0 or outcome_enabled>0' }
     scope :disabled, -> { where income_enabled: false, outcome_enabled: false }
 
+    # TODO: move to kassa-admin
     enum total_computation_method: %i[regular_fee reverse_fee]
     enum transfer_comission_payer: %i[user shop], _prefix: :transfer_comission_payer
 
@@ -31,6 +30,7 @@ module Gera
     alias_attribute :enable_income, :income_enabled
     alias_attribute :enable_outcome, :outcome_enabled
 
+    # TODO: rename type_cy to currency
     def currency
       return unless type_cy
 
@@ -46,6 +46,7 @@ module Gera
       name
     end
 
+    # TODO: move to kassa-admin
     def total_with_fee(money)
       calculate_total(money: money, fee: transfer_fee)
     end

@@ -2,8 +2,6 @@
 
 module Gera
   class ExternalRateSnapshot < ApplicationRecord
-    self.table_name = 'external_rate_snapshots'
-
     belongs_to :rate_source
 
     has_many :external_rates, foreign_key: :snapshot_id

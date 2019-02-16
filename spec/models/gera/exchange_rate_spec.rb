@@ -7,7 +7,7 @@ module Gera
     before do
       allow(DirectionsRatesWorker).to receive(:perform_async)
     end
-    subject { create :exchange_rate }
+    subject { create :gera_exchange_rate }
     it { expect(subject).to be_persisted }
   end
 end
