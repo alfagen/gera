@@ -31,12 +31,10 @@ module Gera
     end
 
     def currency_rate_cell_data_attr(rate)
-      content = ''
-      content << "Метод расчета: #{currency_rate_mode_detailed rate}"
       {
         toggle: :popover,
         container: :body,
-        content: content, # .html_safe,
+        content: "Метод расчета: #{currency_rate_mode_detailed rate}",
         trigger: :hover,
         html: 'true',
         placement: :bottom,
