@@ -3,6 +3,8 @@
 require_relative 'application_controller'
 module Gera
   class ExternalRatesController < ApplicationController
+    authorize_actions_for ExchangeRate
+
     def index
       if params[:rate_source_id].present?
         redirect_to external_rate_snapshots_path(rate_source_id: params[:rate_source_id])

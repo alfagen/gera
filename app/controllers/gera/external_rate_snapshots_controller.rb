@@ -3,6 +3,8 @@
 require_relative 'application_controller'
 module Gera
   class ExternalRateSnapshotsController < ApplicationController
+    authorize_actions_for ExchangeRate
+
     PER_PAGE = 200
     helper_method :rate_source
 
