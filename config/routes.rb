@@ -1,6 +1,5 @@
 Gera::Engine.routes.draw do
   root 'direction_rates#index'
-  # get :tables_sizes, to: 'dashboard#tables_sizes'
   resources :payment_systems
 
   resources :currency_rate_history_intervals, only: [:index]
