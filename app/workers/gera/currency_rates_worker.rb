@@ -47,7 +47,7 @@ module Gera
 
       cr = crm.build_currency_rate
 
-      raise Error, "Не смог посчитать курс #{pair} для режима '#{crm.try :mode}'" unless cr.present?
+      raise Error, "Can not calculate rate of #{pair} for mode '#{crm.try :mode}'" unless cr.present?
 
       cr.snapshot = snapshot
       cr.save!
