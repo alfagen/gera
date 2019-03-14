@@ -4,7 +4,7 @@ module Gera
     NoActualSnapshot = Class.new StandardError
 
     def snapshot
-      @snapshot ||= DirectionRateSnapshot.last || raise(NoActualSnapshot, "Нет актуального snapshot-а")
+      @snapshot ||= DirectionRateSnapshot.last || raise(NoActualSnapshot, "No actual DirectionRate snapshot")
     end
 
     def all
@@ -12,7 +12,7 @@ module Gera
     end
 
     def find_direction_rate_by_exchange_rate_id er_id
-      rates_by_exchange_rate_id[er_id] || raise(FinitRateNotFound, "Не найден конечный курс обменя для exchange_rate_id=#{er_id} в direction_rate_snapshot_id=#{snapshot.id}")
+      rates_by_exchange_rate_id[er_id] || raise(FinitRateNotFound, "No DirectionRate for exchange_rate_id=#{er_id} in direction_rate_snapshot_id=#{snapshot.id}")
     end
 
     def find_by_direction direction

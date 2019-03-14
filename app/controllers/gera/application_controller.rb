@@ -5,15 +5,12 @@ module Gera
     helper Gera::ApplicationHelper
     helper Gera::CurrencyRateModesHelper
     helper Gera::DirectionRateHelper
-    # Gera::Engine.helpers
-    # helper Gera::Engine.helpers
-    # include ApplicationHelper
 
     protect_from_forgery with: :exception
 
-    before_action :require_login
+    # before_action :require_login
 
-    # authorize_actions_for Gera
+    # TODO authorize_actions_for Gera
     ensure_authorization_performed
 
     helper_method :payment_systems
@@ -23,10 +20,6 @@ module Gera
 
     def query_params
       params.fetch(:q, {}).permit!
-    end
-
-    def set_locale
-      I18n.locale = :ru
     end
 
     def app_title

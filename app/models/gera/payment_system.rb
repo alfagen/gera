@@ -9,6 +9,7 @@ module Gera
     scope :ordered, -> { order :priority }
     scope :enabled, -> { where 'income_enabled>0 or outcome_enabled>0' }
     scope :disabled, -> { where income_enabled: false, outcome_enabled: false }
+    scope :available, -> { where is_available: true }
 
     # TODO: move to kassa-admin
     enum total_computation_method: %i[regular_fee reverse_fee]

@@ -199,28 +199,28 @@ class Setup < ActiveRecord::Migration[5.2]
       t.index ["outcome_enabled"], name: "index_payment_systems_on_outcome_enabled"
     end
 
-    add_foreign_key "gera_exchange_rates", "gera_payment_systems", column: "income_payment_system_id"
-    add_foreign_key "gera_exchange_rates", "gera_payment_systems", column: "outcome_payment_system_id"
-    add_foreign_key "gera_cross_rate_modes", "gera_currency_rate_modes", column: :currency_rate_mode_id
-    add_foreign_key "gera_cross_rate_modes", "gera_rate_sources", column: :rate_source_id
-    add_foreign_key "gera_currency_rate_modes", "gera_currency_rate_mode_snapshots", column: :currency_rate_mode_snapshot_id
-    add_foreign_key "gera_currency_rate_modes", "gera_rate_sources", column: "cross_rate_source1_id"
-    add_foreign_key "gera_currency_rate_modes", "gera_rate_sources", column: "cross_rate_source2_id"
-    add_foreign_key "gera_currency_rate_modes", "gera_rate_sources", column: "cross_rate_source3_id"
-    add_foreign_key "gera_currency_rate_snapshots", "gera_currency_rate_mode_snapshots", column: :currency_rate_mode_snapshot_id
+    add_foreign_key "gera_exchange_rates", "gera_payment_systems", column: "income_payment_system_id", on_delete: :cascade
+    add_foreign_key "gera_exchange_rates", "gera_payment_systems", column: "outcome_payment_system_id", on_delete: :cascade
+    add_foreign_key "gera_cross_rate_modes", "gera_currency_rate_modes", column: :currency_rate_mode_id, on_delete: :cascade
+    add_foreign_key "gera_cross_rate_modes", "gera_rate_sources", column: :rate_source_id, on_delete: :cascade
+    add_foreign_key "gera_currency_rate_modes", "gera_currency_rate_mode_snapshots", column: :currency_rate_mode_snapshot_id, on_delete: :cascade
+    add_foreign_key "gera_currency_rate_modes", "gera_rate_sources", column: "cross_rate_source1_id", on_delete: :cascade
+    add_foreign_key "gera_currency_rate_modes", "gera_rate_sources", column: "cross_rate_source2_id", on_delete: :cascade
+    add_foreign_key "gera_currency_rate_modes", "gera_rate_sources", column: "cross_rate_source3_id", on_delete: :cascade
+    add_foreign_key "gera_currency_rate_snapshots", "gera_currency_rate_mode_snapshots", column: :currency_rate_mode_snapshot_id, on_delete: :cascade
     add_foreign_key "gera_currency_rates", "gera_currency_rate_snapshots", column: "snapshot_id", on_delete: :cascade
-    add_foreign_key "gera_currency_rates", "gera_external_rates", column: "external_rate1_id"
-    add_foreign_key "gera_currency_rates", "gera_external_rates", column: "external_rate2_id"
-    add_foreign_key "gera_currency_rates", "gera_external_rates", column: "external_rate3_id"
+    add_foreign_key "gera_currency_rates", "gera_external_rates", column: "external_rate1_id", on_delete: :cascade
+    add_foreign_key "gera_currency_rates", "gera_external_rates", column: "external_rate2_id", on_delete: :cascade
+    add_foreign_key "gera_currency_rates", "gera_external_rates", column: "external_rate3_id", on_delete: :cascade
     add_foreign_key "gera_currency_rates", "gera_external_rates", column: :external_rate_id, on_delete: :nullify
-    add_foreign_key "gera_currency_rates", "gera_rate_sources", column: :rate_source_id
-    add_foreign_key "gera_direction_rates", "gera_exchange_rates", column: "exchange_rate_id"
-    add_foreign_key "gera_direction_rates", "gera_payment_systems", column: "ps_from_id"
-    add_foreign_key "gera_direction_rates", "gera_payment_systems", column: "ps_to_id"
+    add_foreign_key "gera_currency_rates", "gera_rate_sources", column: :rate_source_id, on_delete: :cascade
+    add_foreign_key "gera_direction_rates", "gera_exchange_rates", column: "exchange_rate_id", on_delete: :cascade
+    add_foreign_key "gera_direction_rates", "gera_payment_systems", column: "ps_from_id", on_delete: :cascade
+    add_foreign_key "gera_direction_rates", "gera_payment_systems", column: "ps_to_id", on_delete: :cascade
     add_foreign_key "gera_direction_rates", "gera_currency_rates", column: :currency_rate_id, on_delete: :cascade
     add_foreign_key "gera_external_rates", "gera_external_rate_snapshots", column: "snapshot_id", on_delete: :cascade
-    add_foreign_key "gera_external_rates", "gera_rate_sources", column: "source_id"
-    add_foreign_key "gera_direction_rate_history_intervals", "gera_payment_systems", column: "payment_system_from_id"
-    add_foreign_key "gera_direction_rate_history_intervals", "gera_payment_systems", column: "payment_system_to_id"
+    add_foreign_key "gera_external_rates", "gera_rate_sources", column: "source_id", on_delete: :cascade
+    add_foreign_key "gera_direction_rate_history_intervals", "gera_payment_systems", column: "payment_system_from_id", on_delete: :cascade
+    add_foreign_key "gera_direction_rate_history_intervals", "gera_payment_systems", column: "payment_system_to_id", on_delete: :cascade
   end
 end

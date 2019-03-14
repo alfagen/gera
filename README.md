@@ -2,8 +2,7 @@
 
 [![Build Status](https://travis-ci.org/finfex/gera.svg?branch=master)](https://travis-ci.org/finfex/gera)
 
-
-Генератор курсов для крипто-обменников и бирж.
+Multiple rates generator for crypto changers and markets.
 
 ## Осуществляет
 
@@ -12,18 +11,6 @@
 * Построение и хранение матрицы конечных курсов (`DirectionRate`) для поддерживаемых платежных сервисов (`PaymentSystem`) с установленной комиссией (`ExchangeRate`) 
 * Регулярная группировка базовых и конечных курсов в N-минутные отрезки со свечками для истории (`CurrencyRateHistoryInterval` и `DirectionRateHistoryInterval`)
 * Регулярная очистка матриц ежесекундных курсов (за сутки накапливается несколько гигабайт)
-
-## Внешние источники базовых курсов
-
-* EXMO, ЦБ РФ, Bitfinex, Ручной
-
-## Поддерживаемые валюты
-
-* RUB, USD, BTC, LTC, ETH, DSH, KZT, XRP, ETC, XMR, BCH, EUR, NEO, ZEC
-
-## База данных
-
-Диаграма таблиц в SQL - https://github.com/finfex/gera/blob/master/doc/erd.pdf
 
 ## Installation
 
@@ -43,12 +30,38 @@ Or install it yourself as:
 $ gem install gera
 ```
 
+## Configuration
+
+Add `./config/initializers/gera.rb` with this content:
+
+```
+Gera.configure do |config|
+  config.cross_pairs = { kzt: :rub, eur: :rub }
+end
+```
+
+## Supported external sources of basic rates
+
+* EXMO, Russian Central Bank, Bitfinex, Manual
+
+## Supported currencies
+
+* RUB, USD, BTC, LTC, ETH, DSH, KZT, XRP, ETC, XMR, BCH, EUR, NEO, ZEC
+
+## Database 
+
+SQL tables diagram - https://github.com/finfex/gera/blob/master/doc/erd.pdf
+
 ## TODO
 
-* Уйти от STI в RateSource
+* move Authority to application level
+* Remove STI from RateSource
 
 ## Contributing
-Contribution directions go here.
+
+* Fork
+* Create Pull Request
 
 ## License
+
 The gem is available as open source under the terms of the [GPLv3](https://opensource.org/licenses/GPL-3.0).

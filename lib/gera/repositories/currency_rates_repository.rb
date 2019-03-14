@@ -3,11 +3,11 @@ module Gera
     UnknownPair = Class.new StandardError
 
     def snapshot
-      @snapshot ||= CurrencyRateSnapshot.last || raise("Нет актуального snapshot-а")
+      @snapshot ||= CurrencyRateSnapshot.last || raise("No actual snapshot")
     end
 
     def find_currency_rate_by_pair pair
-      rates_by_pair[pair] || raise(UnknownPair, "Не найдена валютная пара #{pair} в базовых курсах")
+      rates_by_pair[pair] || raise(UnknownPair, "Currency pair (#{pair}) is not found in currency rates")
     end
 
     def get_currency_rate_by_pair pair
