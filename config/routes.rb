@@ -12,6 +12,12 @@ Gera::Engine.routes.draw do
     end
   end
   resources :external_rates, only: [:index, :show]
+
+  resources :exchange_rates, only: [:show] do
+    member do
+      get :details
+    end
+  end
   resources :external_rate_snapshots, only: [:index, :show]
   resources :currency_rates
   resources :currency_rate_modes, only: [:edit, :update, :new, :create]

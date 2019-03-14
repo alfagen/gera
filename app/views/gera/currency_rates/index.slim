@@ -1,3 +1,4 @@
+= link_to 'История', currency_rate_history_intervals_path
 .container-fluid
   = "Курс актуален на #{l created_at, format: :long}"
   .row
@@ -10,7 +11,8 @@
             - if pair.same?
               .text-muted &middot;
             - else
-              = humanized_rate rate.rate_value, rate.currency_to
+              = link_to currency_rate_path(rate) do 
+                = humanized_rate rate.rate_value, rate.currency_to
         - else
           td.text-nowrap.text-right.v-middle data-toggle=:tooltip data-container=:body data-html='true' title='курс отсутсвует'
             .text-muted &middot;

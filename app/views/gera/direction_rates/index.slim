@@ -1,3 +1,4 @@
+= link_to 'История', direction_rate_history_intervals_path
 .container-fluid
   .row
     .col-md-12
@@ -8,7 +9,12 @@
   - dr = Gera::Universe.direction_rates_repository.find_by_direction direction
   - er = Gera::Universe.exchange_rates_repository.find_by_direction direction
   td.text-nowrap.cell-small.text-center.rate-popover.v-middle data=direction_rate_cell_data_attr(direction)
-    - if dr.present? && er.available?
-      = humanized_rate dr.rate_value
+    - if dr.nil? 
+      = link_to exchange_rate_path(er) do
+        .text-muted title='direction rate is unknown'= ion_icon 'ios-close-empty'
+    - elsif !er.available?
+      = link_to exchange_rate_path(er) do
+        .text-muted title='exchange rate is unavailable'= ion_icon 'ios-close-empty'
     - else
-      .text-muted= ion_icon 'ios-close-empty'
+      = link_to direction_rate_path(dr.id) do
+        = humanized_rate dr.rate_value

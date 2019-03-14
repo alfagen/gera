@@ -15,8 +15,7 @@ module Gera::DirectionRateHelper
     {
       toggle: 'ajax-popover',
       container: :body,
-      popover_content_url: details_operator_exchange_rate_path(direction.exchange_rate),
-      # content:   'Загружаю..',
+      popover_content_url: details_exchange_rate_path(direction.exchange_rate),
       trigger: :hover,
       html: 'true',
       placement: :bottom,

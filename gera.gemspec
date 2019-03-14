@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     s.add_dependency "rails", "~> 5.2.1"
     s.add_dependency 'best_in_place'
     s.add_dependency 'virtus'
+    s.add_dependency 'kaminari'
     s.add_dependency 'require_all'
     s.add_dependency 'rest-client', '~> 2.0'
     s.add_dependency 'sidekiq'

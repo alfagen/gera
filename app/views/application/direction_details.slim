@@ -1,0 +1,75 @@
+- ps_from = direction.ps_from
+- ps_to = direction.ps_to
+- exchange_rate = direction.exchange_rate
+- direction_rate = direction.direction_rate
+.row
+  .col-md-3
+    dl
+      dt Конечный курс
+      dd= rate_humanized_description(direction_rate.rate_value, ps_from.currency, ps_to.currency)
+      dt Направление
+      dd
+        = direction_with_icons direction
+      dt Статус
+      dd
+        - if exchange_rate.is_enabled?
+          .label.label-success Включено
+        - else
+          .label.label-default Отключено
+
+    /- if legacy_rate.present?
+      /dt В пыхе
+      /= rate_humanized_description(legacy_rate, ps_from.currency, ps_to.currency)
+
+  .col-md-3
+    dl
+      dt Базовый курс 
+      dd= rate_humanized_description direction_rate.base_rate_value, ps_from.currency, ps_to.currency
+      dt Комиссия 
+      dd= '%.3f%' % direction_rate.rate_percent
+
+      dt Обратный конечный курс: #{direction_with_icons direction_rate.inverse_direction_rate}
+      dd= rate_humanized_description(direction_rate.inverse_direction_rate.rate_value, ps_from.currency, ps_to.currency)
+  .col-md-3
+    - status = BestChangeService.new( exchange_rate: exchange_rate ).status
+    dt
+      dt На bestchange.ru
+      - if status.present?
+        dd
+          span.m-r-md = '%.3f%' % status.bestchange_base_percent_rate
+          - if status.state == BestChangeStatus::STATE_ACTUAL
+            span.label.label.success OK
+          - else
+            span.label.label-danger Комиссия отличается (#{status.state})
+        =
+        dt Позиция
+        dd= status.position + 1
+        dt Курс
+        dd= status.finite_rate
+      - else
+        dd
+          span.label.label-warning В списке отсутствует
+  .col-md-3
+    dl
+      dt Публичные резервы
+      dd= humanized_money_with_currency ps_to.reserve_amount
+
+      dt Минимальная сумма на обмен (расчет)
+      dd= humanized_money_with_currency direction_rate.minimal_income_amount
+
+      dt Максимальная сумма на обмен (расчет)
+      dd= humanized_money_with_currency direction_rate.maximal_income_amount
+
+      /dt Минималка на прием (#{direction.currency_from})
+      /dd
+        /= humanized_money_with_currency direction.minimal_income_amount
+        /span.m-l-md= "(#{humanized_money_with_currency direction.minimal_income_amount.exchange_to(direction.currency_to)})".html_safe
+
+      /dt Минималка на отдачу (#{direction.currency_to})
+      /dd
+        /= humanized_money_with_currency direction.minimal_out_amount
+        /span.m-l-md= "(#{humanized_money_with_currency direction.minimal_out_amount.exchange_to(direction.currency_from)})".html_safe
+
+
+    
+div.text-small.text-muted Расчет за #{l direction_rate.created_at, format: :long}, direction_rate_snapshot_id=#{Gera::Universe.direction_rates_repository.snapshot.id}
