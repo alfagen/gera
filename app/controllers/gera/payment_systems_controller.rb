@@ -11,7 +11,7 @@ module Gera
     ].freeze
 
     SHOW_COLUMNS = %i[
-      id icon name currency
+      id icon_url name currency
       income_enabled outcome_enabled
       actions
     ].freeze
