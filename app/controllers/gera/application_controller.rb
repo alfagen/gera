@@ -8,9 +8,6 @@ module Gera
 
     protect_from_forgery with: :exception
 
-    # before_action :require_login
-
-    # TODO authorize_actions_for Gera
     ensure_authorization_performed
 
     helper_method :payment_systems
