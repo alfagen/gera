@@ -5,9 +5,7 @@ module Gera
     delegate_all
 
     def icon
-      return unless object.respond_to?(:icon) && object.icon.present?
-
-      h.image_tag(object.icon_url, width: 32)
+      h.ps_icon object, size: 32
     end
 
     def actions
