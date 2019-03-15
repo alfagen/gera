@@ -26,7 +26,6 @@ module Gera
 
     delegate :iso_code, to: :currency, prefix: true, allow_nil: true
 
-    alias_attribute :commission, :commision
     alias_attribute :archived_at, :deleted_at
     alias_attribute :enable_income, :income_enabled
     alias_attribute :enable_outcome, :outcome_enabled

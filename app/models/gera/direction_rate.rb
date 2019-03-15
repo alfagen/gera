@@ -59,7 +59,7 @@ module Gera
     end
 
     def ps_comission
-      ps_to.commision
+      ps_to.commission
     end
 
     def in_money
