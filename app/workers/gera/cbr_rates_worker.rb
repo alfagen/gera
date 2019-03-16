@@ -4,8 +4,7 @@ require 'open-uri'
 require 'business_time'
 
 module Gera
-  # Загрузчик курсов из ЦБ РФ
-  # по адресу
+  # Import rates from Russian Central Bank
   # http://www.cbr.ru/scripts/XML_daily.asp?date_req=08/04/2018
   #
   class CBRRatesWorker
@@ -70,8 +69,8 @@ module Gera
                            .last(2)
                            .sort
 
-      raise "Нет минимального курса #{cur_from}, #{cur_to}" unless min_rate
-      raise "Нет максимального курса #{cur_from}, #{cur_to}" unless max_rate
+      raise "No minimal rate #{cur_from}, #{cur_to}" unless min_rate
+      raise "No maximal rate #{cur_from}, #{cur_to}" unless max_rate
 
       ExternalRate.create!(
         source: cbr,
@@ -106,7 +105,7 @@ module Gera
 
     def days
       today = Date.today
-      logger.info "Стартуем на дату #{today}"
+      logger.info "Start import for #{today}"
 
       [
         1.business_day.ago(today),
@@ -120,9 +119,6 @@ module Gera
 
     def fetch_and_save_rate(date)
       fetch_rates date
-
-      # Например
-      # <CBRRatesWorker::WrongDate: Дата запроса и дата ответа от cbr.ru не совпадают 22.03.2018 <> 21.03.2018>
     rescue WrongDate => err
       logger.warn err
 
@@ -142,19 +138,12 @@ module Gera
     end
 
     def fetch_rates(date)
-      if CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
-        logger.info "Данные по валютам на дату #{date} уже есть в базе"
-        return
-      end
+      return if CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
 
       root = build_root date
 
       currencies.each do |cur|
-        if CbrExternalRate.where(date: date, cur_from: cur.iso_code).exists?
-          logger.info "Данные по валюте #{cur} на дату #{date} уже есть в базе"
-        else
-          save_rate get_rate(root, CBR_IDS[cur.iso_code]), cur, date
-        end
+        save_rate get_rate(root, CBR_IDS[cur.iso_code]), cur, date unless CbrExternalRate.where(date: date, cur_from: cur.iso_code).exists?
       end
     end
 
@@ -172,7 +161,7 @@ module Gera
 
       return root if validate_date == root_date
 
-      raise WrongDate, "Дата запроса и дата ответа #{uri} не совпадают #{validate_date} <> #{root_date}"
+      raise WrongDate, "Request and response dates are different #{uri}: #{validate_date} <> #{root_date}"
     end
 
     def get_rate(root, id)

@@ -9,7 +9,6 @@ module Gera
     KEEP_PERIOD = 3.hours
 
     def perform
-      # Удаляем меньшими пачками, потому что каскадом удаляются прямая зависимость (currency_rates)
       currency_rate_snapshots.batch_purge batch_size: 100
     end
 

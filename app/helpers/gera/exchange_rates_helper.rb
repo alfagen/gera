@@ -1,19 +1,21 @@
 # frozen_string_literal: true
 
-module Gera::ExchangeRatesHelper
-  def exchange_rate_cell_class(er)
-    return unless er
+module Gera
+  module ExchangeRatesHelper
+    def exchange_rate_cell_class(er)
+      return unless er
 
-    classes = []
+      classes = []
 
-    classes << 'rate-popover' if show_direction_popover?
+      classes << 'rate-popover' if show_direction_popover?
 
-    classes << if er.comission_percents <= 0
-                 'text-danger'
-               else
-                 'text-success'
-               end
+      classes << if er.comission_percents <= 0
+                   'text-danger'
+                 else
+                   'text-success'
+      end
 
-    classes.join ' '
+      classes.join ' '
+    end
   end
 end

@@ -34,7 +34,7 @@ module Gera
       {
         toggle: :popover,
         container: :body,
-        content: "Метод расчета: #{currency_rate_mode_detailed rate}",
+        content: "Calculation method: #{currency_rate_mode_detailed rate}",
         trigger: :hover,
         html: 'true',
         placement: :bottom,
@@ -71,7 +71,7 @@ module Gera
     def humanized_rate(rate, _currency = nil)
       rate = rate.to_f if rate.is_a? Gera::Rate
       if rate.is_a? Money
-        raise 'Валюту отдавать запрещено, она округляет не удачно'
+        raise 'Dont use Money, it has bad round'
         currency = rate.currency
         rate = rate.to_f
       end

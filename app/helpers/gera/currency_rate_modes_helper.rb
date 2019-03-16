@@ -20,7 +20,7 @@ module Gera::CurrencyRateModesHelper
         buffer << "#{er.currency_pair}(#{er.source})<sup>#{humanized_rate er.rate_value}</sup>"
       end
     elsif currency_rate.mode_same?
-      buffer << 'одинаковая валюта'
+      buffer << t('.same_currency')
     else
       buffer << "#{currency_rate.currency_pair}(#{currency_rate.rate_source})"
     end
@@ -33,7 +33,7 @@ module Gera::CurrencyRateModesHelper
   def currency_rate_mode_build_result_details(build_result)
     return build_result.error.message if build_result.error?
 
-    "Метод расчета: #{currency_rate_mode_detailed build_result.currency_rate}".html_safe
+    raw t('.calculation_method', rate: currency_rate_mode_detailed(build_result.currency_rate))
   end
 
   def crms_cell_data_attr(crm)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
-  # Конечный курс обмена по направлениями
+  # Finite direction rate
   #
   class DirectionRate < ApplicationRecord
     include Mathematic
@@ -100,7 +100,7 @@ module Gera
 
       diff = res.finite_rate.to_f.as_percentage_of(rate_value.to_f) - 100
 
-      logger.warn "direction_rate_id=#{id} Расчитанная конечная ставка (#{res.finite_rate}) не соответсвует текущей (#{rate_value}). Разница #{diff}" if diff.abs > 0
+      logger.warn "direction_rate_id=#{id} Calculates finite rate (#{res.finite_rate}) does not equal to current (#{rate_value}). Difference is #{diff}" if diff.abs > 0
 
       res
     end
@@ -127,7 +127,7 @@ module Gera
 
     def calculate_rate
       self.base_rate_value = currency_rate.rate_value
-      raise UnknownExchangeRate, "Нет exchange_rate для #{ps_from}->#{ps_to}" unless exchange_rate
+      raise UnknownExchangeRate, "No exchange_rate for #{ps_from}->#{ps_to}" unless exchange_rate
 
       self.rate_percent = exchange_rate.comission_percents
       self.rate_value = calculate_finite_rate base_rate_value, rate_percent unless rate_percent.nil?

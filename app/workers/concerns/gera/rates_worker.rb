@@ -4,16 +4,16 @@ require 'open-uri'
 require 'rest-client'
 
 module Gera
-  # Сливает курсы со всех источников
+  # Import rates from all sources
   #
   module RatesWorker
     Error = Class.new StandardError
 
     def perform
-      # Альтернативнвы подход: Model.uncached do
+      # Alternative approach is `Model.uncached do`
       ActiveRecord::Base.connection.clear_query_cache
 
-      rates # Подгружаем до транзакции
+      rates # Load before a translaction
 
       rate_source.with_lock do
         create_snapshot
@@ -23,7 +23,6 @@ module Gera
         rate_source.update actual_snapshot_id: snapshot.id
       end
 
-      # CurrencyRatesWorker.perform_async
       CurrencyRatesWorker.new.perform
 
       snapshot.id
@@ -54,9 +53,7 @@ module Gera
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
-      unless CurrencyPair.all.include? currency_pair
-        logger.warn "Ignore #{currency_pair}"
-      end
+      logger.warn "Ignore #{currency_pair}" unless CurrencyPair.all.include? currency_pair
 
       logger.info "save_rate_for_date #{actual_for}, #{currency_pair} #{data}"
       ExternalRate.create!(
@@ -76,8 +73,10 @@ module Gera
 
       if err.message.include? 'external_rates_unique_index'
         logger.debug "save_rate_for_date: #{actual_for} , #{currency_pair} -> #{err}"
-        Bugsnag.notify 'Попытка записать курс на существующую дату' do |b|
-          b.meta_data = { actual_for: actual_for, snapshot_id: snapshot.id, currency_pair: currency_pair }
+        if defined? Bugsnag
+          Bugsnag.notify 'Try to rewrite rates' do |b|
+            b.meta_data = { actual_for: actual_for, snapshot_id: snapshot.id, currency_pair: currency_pair }
+          end
         end
       else
         logger.error "save_rate_for_date: #{actual_for} , #{pair} -> #{err}"

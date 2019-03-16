@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
-  # Направление обмена
+  # Exchange Direction
   #
   class Direction
     include Virtus.model

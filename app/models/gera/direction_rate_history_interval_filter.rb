@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Gera
   class DirectionRateHistoryIntervalFilter
     include Virtus.model strict: true

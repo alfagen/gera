@@ -1,10 +1,22 @@
 - object = Gera::CurrencyRateDecorator.decorate currency_rate
-h3 Базовый обменный курс (#{object.title})
+h3
+  = t '.title', title: object.title
 hr
 .row
   .col-md-6
     = render 'attributes_table', object: object, columns: currency_rate_columns(currency_rate)
+
+    - if currency_rate.direction_rates.any?
+      h4= t '.used_direction_rates', count:  currency_rate.direction_rates.count
+      - currency_rate.direction_rates.each do |direction_rate|
+        - object = Gera::DirectionRateDecorator.decorate (direction_rate)
+
+        - columns = %i(created_at rate_percent ps_comission rate_value )
+
+        = render 'attributes_table', object: object, columns: columns
+    - else
+      h4= t '.not_used_in_direction_rates'
   .col-md-6
     .panel.panel-default
-      .panel-heading Расчёт
+      .panel-heading Calculation
       .panel-body= currency_rate_mode_detailed currency_rate

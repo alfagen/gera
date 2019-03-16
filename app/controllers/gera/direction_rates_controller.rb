@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'application_controller'
-
 module Gera
-  class DirectionRatesController < ApplicationController
-    # unloadable
+  class DirectionRatesController < Gera::ApplicationController
     authorize_actions_for DirectionRate
     authority_actions last: :read
 

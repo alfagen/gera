@@ -1,3 +1,4 @@
 .container-fluid
-  = link_to '&larr; в матрицу базовых курсов'.html_safe, currency_rates_path
+  -# = link_to '&larr; в матрицу базовых курсов'.html_safe, currency_rates_path
+  = link_to t('.back_to_currency_rates').html_safe, currency_rates_path
   = render currency_rate

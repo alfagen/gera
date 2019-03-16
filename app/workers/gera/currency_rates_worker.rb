@@ -2,7 +2,7 @@
 
 module Gera
   #
-  # Строит текущие базовые курсы на основе источников и методов расчета
+  # Build currency rates on base of imported rates and calculation modes
   #
   class CurrencyRatesWorker
     include Sidekiq::Worker
@@ -23,8 +23,6 @@ module Gera
 
       logger.info 'finish'
 
-      # Запускаем перерасчет конечных курсов
-      #
       DirectionsRatesWorker.perform_async
 
       true

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
-  # Загрузка курсов из EXMO
+  # Import rates from EXMO
   #
   class EXMORatesWorker
     include Sidekiq::Worker
@@ -19,7 +19,7 @@ module Gera
       @rate_source ||= RateSourceEXMO.get!
     end
 
-    # Содержимое data
+    # data contains
     # {"buy_price"=>"8734.99986728",
     # "sell_price"=>"8802.299431",
     # "last_trade"=>"8789.71226599",
@@ -31,7 +31,7 @@ module Gera
     # "updated"=>1520415288},
 
     def save_rate(raw_pair, data)
-      # TODO: У EXMO такая причуда с DASH/DSH лучше это вынести в ExmoRatesWorker
+      # TODO: Best way to move this into ExmoRatesWorker
       #
       cf, ct = raw_pair.split('_') .map { |c| c == 'DASH' ? 'DSH' : c }
 
@@ -53,7 +53,7 @@ module Gera
 
     def load_rates
       result = JSON.parse open(URI.parse(URL)).read
-      raise Error, 'Результат не хеш' unless result.is_a? Hash
+      raise Error, 'Result is not a hash' unless result.is_a? Hash
       raise Error, result['error'] if result['error'].present?
 
       result

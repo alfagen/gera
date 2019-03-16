@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
-  # Базовый курс
+  # Basic currency rate
   class CurrencyRate < ApplicationRecord
     include CurrencyPairSupport
     include Authority::Abilities
@@ -13,6 +13,8 @@ module Gera
     belongs_to :external_rate1, class_name: 'Gera::ExternalRate', optional: true
     belongs_to :external_rate2, class_name: 'Gera::ExternalRate', optional: true
     belongs_to :external_rate3, class_name: 'Gera::ExternalRate', optional: true
+
+    has_many :direction_rates, class_name: 'Gera::DirectionRate'
 
     scope :by_exchange_rate, ->(er) { by_currency_pair er.currency_pair }
 

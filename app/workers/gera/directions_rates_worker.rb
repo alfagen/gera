@@ -9,15 +9,12 @@ module Gera
 
     sidekiq_options queue: :critical
 
-    # exchange_rate_id - ID изменившегося направление
-    # фактически не используется
+    # exchange_rate_id - ID of changes exchange_rate
     #
     def perform(*_args) # exchange_rate_id: nil)
       logger.info 'start'
 
       DirectionRate.transaction do
-        # Генерруем для всех, потому что так нужно старому пыху
-        # ExchangeRate.available.find_each do |er|
         ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
           safe_create(exchange_rate)
         end

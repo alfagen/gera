@@ -10,7 +10,7 @@ module Gera
                   'cross'
                 else
                   object.rate_source.to_s # if object.rate_source.present?
-                end
+      end
 
       buffer.join(' × ').html_safe
     end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'application_controller'
 require 'csv'
+
 module Gera
-  class CurrencyRatesController < ApplicationController
+  class CurrencyRatesController < Gera::ApplicationController
     authorize_actions_for CurrencyRate
     authority_actions modes: :read
 
@@ -16,13 +16,11 @@ module Gera
           created_at: snapshot.created_at
         }
       else
-        render :page, locals: { message: 'Отсутствует текущий снимок курсов' }
+        render :page, locals: { message: 'No current currency rate snapshot found' }
       end
     end
 
     def show
-      # TODO: удалить
-      # ActiveRecord::Base.default_timezone = :utc
       render locals: {
         currency_rate: currency_rate,
         currency_pair: currency_rate.currency_pair
@@ -31,7 +29,7 @@ module Gera
 
     def modes
       body = CSV.generate do |csv|
-        line = ['принимаем\отдаем']
+        line = ['income\outcome']
         line += Money::Currency.all.map(&:to_s)
         csv << line
         Money::Currency.all.each do |cur_from|
@@ -46,7 +44,7 @@ module Gera
       end
 
       respond_to do |format|
-        format.html { raise 'Поддерживается только CSV' }
+        format.html { raise 'CSV only supported' }
         format.csv { send_data body, filename: "exchange_rates-modes-#{Date.today}.csv" }
       end
     end

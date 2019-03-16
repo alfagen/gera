@@ -10,12 +10,7 @@ module Gera
 
     def perform
       direction_rate_snapshots.batch_purge
-
-      # Удаляем отдельно, потому что они могут жить отдельно и связываются
-      # с direction_rate_snapshot через кросс-таблицу
       direction_rates.batch_purge
-
-      # TODO: Тут не плохо было бы добить direction_rates которые не входят в snapshot-ы и в actual
     end
 
     private
