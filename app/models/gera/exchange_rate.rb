@@ -38,7 +38,7 @@ module Gera
         .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
 
-    after_commit :update_direction_rates, on: :create
+    after_commit :update_direction_rates, if: -> (record) { record.previous_changes.key?(:commission) }
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
