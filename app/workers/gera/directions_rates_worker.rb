@@ -2,21 +2,26 @@
 
 module Gera
   class DirectionsRatesWorker
+    include ActiveSupport::Callbacks
     include Sidekiq::Worker
     include AutoLogger
 
     Error = Class.new StandardError
 
     sidekiq_options queue: :critical
+    define_callbacks :perform
 
     # exchange_rate_id - ID of changes exchange_rate
     #
     def perform(*_args) # exchange_rate_id: nil)
       logger.info 'start'
 
-      DirectionRate.transaction do
-        ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
-          safe_create(exchange_rate)
+
+      run_callbacks :perform do
+        DirectionRate.transaction do
+          ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
+            safe_create(exchange_rate)
+          end
         end
       end
       logger.info 'finish'
