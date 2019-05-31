@@ -42,6 +42,14 @@ module Gera
       "#{currency_pair}:#{humanized_rate}"
     end
 
+    def in_money
+      reverse_rate_money.to_d > 1 ? reverse_rate_money : 1
+    end
+
+    def out_money
+      rate_money.to_d > 1 ? rate_money : 1
+    end
+
     def rate_money
       Money.from_amount(rate_value, cur_to)
     end
