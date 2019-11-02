@@ -340,30 +340,3 @@ zec:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 0.004
-
-usdt:
-  priority: 15
-  iso_code: USDT
-  name: Tether
-  symbol: T
-  alternate_symbols: []
-  subunit: USDT Cent
-  subunit_to_unit: 100
-  symbol_first: true
-  html_entity: "$"
-  decimal_mark: "."
-  thousands_separator: ","
-  iso_numeric: ''
-  smallest_denomination: 1
-  is_crypto: true
-
-  # Местные настройки
-  #
-  # Идентфикатор в type_cy
-  local_id: 16
-
-  # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 3
-
-  # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 3
