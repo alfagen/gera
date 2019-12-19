@@ -11,12 +11,13 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
-    CURRENCIES = %w[USD KZT EUR].freeze
+    CURRENCIES = %w[USD KZT EUR UAH].freeze
 
     CBR_IDS = {
       'USD' => 'R01235',
       'KZT' => 'R01335',
-      'EUR' => 'R01239'
+      'EUR' => 'R01239',
+      'UAH' => 'R01720'
     }.freeze
 
     ROUND = 15
@@ -55,6 +56,7 @@ module Gera
       save_snapshot_rate USD, RUB
       save_snapshot_rate KZT, RUB
       save_snapshot_rate EUR, RUB
+      save_snapshot_rate UAH, RUB
 
       cbr.update_attribute :actual_snapshot_id, snapshot.id
       cbr_avg.update_attribute :actual_snapshot_id, avg_snapshot.id

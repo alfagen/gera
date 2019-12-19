@@ -367,3 +367,31 @@ usdt:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 3
+
+uah:
+  priority: 16
+  iso_code: UAH
+  name: Ukrainian hryvnia
+  symbol: "₴"
+  alternate_symbols:
+  - грн.
+  subunit: Kopiyka
+  subunit_to_unit: 100
+  symbol_first: false
+  html_entity: "&#x20B4;"
+  decimal_mark: ","
+  thousands_separator: "."
+  iso_numeric: '4217'
+  smallest_denomination: 1
+  is_crypto: false
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 16
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 100
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 100
