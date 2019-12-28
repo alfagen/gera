@@ -388,7 +388,7 @@ uah:
   # Местные настройки
   #
   # Идентфикатор в type_cy
-  local_id: 16
+  local_id: 17
 
   # минимальная сумма валюты на прием (из minGetSum)
   minimal_input_value: 100
