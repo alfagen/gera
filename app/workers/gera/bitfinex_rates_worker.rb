@@ -31,7 +31,8 @@ module Gera
                            gsdusd udcusd tsdusd paxusd rifusd rifbtc pasusd paseth vsyusd vsybtc zrxdai mkrdai omgdai bttusd bttbtc btcust ethust clousd
                            clobtc].freeze
 
-    TICKERS = %i[neousd neobtc neoeth neoeur].freeze
+    # NOTE: formar tickers neousd neobtc neoeth neoeur
+    TICKERS = %i[].freeze
 
     private
 

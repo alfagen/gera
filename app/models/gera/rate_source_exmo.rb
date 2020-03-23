@@ -3,7 +3,7 @@
 module Gera
   class RateSourceEXMO < RateSource
     def self.supported_currencies
-      %i[BTC BCH DSH ETH ETC LTC XRP XMR USD RUB ZEC EUR USDT].map { |m| Money::Currency.find! m }
+      %i[BTC BCH DSH ETH ETC LTC XRP XMR USD RUB ZEC EUR USDT NEO].map { |m| Money::Currency.find! m }
     end
   end
 end
