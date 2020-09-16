@@ -415,7 +415,7 @@ eos:
   # Местные настройки
   #
   # Идентфикатор в type_cy
-  local_id: 17
+  local_id: 18
 
   # минимальная сумма валюты на прием (из minGetSum)
   minimal_input_value: 0.01
@@ -442,7 +442,7 @@ ada:
   # Местные настройки
   #
   # Идентфикатор в type_cy
-  local_id: 18
+  local_id: 19
 
   # минимальная сумма валюты на прием (из minGetSum)
   minimal_input_value: 5
@@ -469,7 +469,7 @@ xem:
   # Местные настройки
   #
   # Идентфикатор в type_cy
-  local_id: 19
+  local_id: 20
 
   # минимальная сумма валюты на прием (из minGetSum)
   minimal_input_value: 10
@@ -496,7 +496,7 @@ waves:
   # Местные настройки
   #
   # Идентфикатор в type_cy
-  local_id: 20
+  local_id: 21
 
   # минимальная сумма валюты на прием (из minGetSum)
   minimal_input_value: 0.01
@@ -523,7 +523,7 @@ trx:
   # Местные настройки
   #
   # Идентфикатор в type_cy
-  local_id: 21
+  local_id: 22
 
   # минимальная сумма валюты на прием (из minGetSum)
   minimal_input_value: 1
