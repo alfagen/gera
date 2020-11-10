@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Gera
+  # Конечный курс
   # Finite direction rate
-  #
   class DirectionRate < ApplicationRecord
     include Mathematic
     include AutoLogger

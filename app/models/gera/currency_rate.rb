@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
+  # Базовый курс
   # Basic currency rate
   class CurrencyRate < ApplicationRecord
     include CurrencyPairSupport
