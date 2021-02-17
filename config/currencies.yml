@@ -530,3 +530,30 @@ trx:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 10
+
+doge:
+  priority: 21
+  iso_code: DOGE
+  name: Dogecoin
+  symbol: Ð
+  alternate_symbols: []
+  subunit: Microdoge
+  subunit_to_unit: 1000000
+  symbol_first: true
+  html_entity: ''
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: ''
+  smallest_denomination: 1
+  is_crypto: true
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 23
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 10
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 100
