@@ -20,7 +20,7 @@ module Gera
     end
 
     def load_rates
-      RateSourceBinance.available_pairs.each_with_object({}) { |pair, ag| ag[pair] = ::BinanceFetcher.new(pair: pair).perform }
+      RateSourceBinance.available_pairs.each_with_object({}) { |pair, ag| ag[pair] = BinanceFetcher.new(pair: pair).perform }
     end
   end
 end
