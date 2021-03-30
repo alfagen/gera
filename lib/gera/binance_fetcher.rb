@@ -5,7 +5,7 @@ require 'virtus'
 
 module Gera
   class BinanceFetcher
-    API_URL = 'https://api.binance.com/api/v3/ticker/24hr'
+    API_URL = 'https://api.binance.com/api/v3/ticker/bookTicker'
 
     def perform
       data.each_with_object({}) do |pair_data, ag|
@@ -32,7 +32,7 @@ module Gera
     end
 
     def find_cur_from(symbol)
-      supported_currencies.find { |currency| symbol.start_with?(currency.to_s) }
+      supported_currencies.find { |currency| symbol.start_with?(currency.to_s) || symbol.end_with?(currency.to_s) }
     end
 
     def find_cur_to(symbol, cur_from)
