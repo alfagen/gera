@@ -17,4 +17,5 @@ FactoryBot.define do
   factory :rate_source_cbr_avg, parent: :rate_source, class: Gera::RateSourceCBRAvg
   factory :rate_source_exmo, parent: :rate_source, class: Gera::RateSourceEXMO
   factory :rate_source_bitfinex, parent: :rate_source, class: Gera::RateSourceBitfinex
+  factory :rate_source_binance, parent: :rate_source, class: Gera::RateSourceBinance
 end

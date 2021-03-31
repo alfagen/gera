@@ -11,6 +11,7 @@ require 'gera/numeric'
 require "gera/configuration"
 require "gera/mathematic"
 require 'gera/bitfinex_fetcher'
+require 'gera/binance_fetcher'
 require 'gera/currency_pair'
 require 'gera/rate'
 require 'gera/money_support'
