@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'net/http'
 require 'rest-client'
@@ -8,8 +10,8 @@ module Gera
     API_URL = 'https://api.binance.com/api/v3/ticker/bookTicker'
 
     def perform
-      data.each_with_object({}) do |pair_data, ag|
-        symbol = pair_data['symbol']
+      rates.each_with_object({}) do |rate, memo|
+        symbol = rate['symbol']
 
         cur_from = find_cur_from(symbol)
         next unless cur_from
@@ -18,13 +20,13 @@ module Gera
         next unless cur_to
 
         pair = CurrencyPair.new(cur_from: cur_from, cur_to: cur_to)
-        ag[pair] = pair_data
+        memo[pair] = rate
       end
     end
 
     private
 
-    def data
+    def rates
       response = RestClient::Request.execute url: API_URL, method: :get, verify_ssl: false
 
       raise response.code unless response.code == 200
