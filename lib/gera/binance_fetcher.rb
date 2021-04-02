@@ -43,7 +43,10 @@ module Gera
     end
 
     def find_cur_to(symbol, cur_from)
-      Money::Currency.find(symbol.split(cur_from.to_s).last)
+      currency_name = cur_from.to_s
+      currency_name = 'DASH' if currency_name == 'DSH'
+
+      Money::Currency.find(symbol.split(currency_name).last)
     end
 
     def supported_currencies
