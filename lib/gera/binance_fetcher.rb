@@ -34,11 +34,19 @@ module Gera
     end
 
     def find_cur_from(symbol)
-      supported_currencies.find { |currency| symbol.start_with?(currency.to_s) }
+      supported_currencies.find do |currency|
+        symbol.start_with?(currency_name(currency))
+      end
     end
 
     def find_cur_to(symbol, cur_from)
-      Money::Currency.find(symbol.split(cur_from.to_s).last)
+      Money::Currency.find(symbol.split(currency_name(cur_from)).last)
+    end
+
+    def currency_name(currency)
+      name = currency.to_s
+      name = 'DASH' if name == 'DSH'
+      name
     end
 
     def supported_currencies
