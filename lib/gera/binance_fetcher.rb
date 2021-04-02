@@ -38,7 +38,7 @@ module Gera
         currency_name = currency.to_s
         currency_name = 'DASH' if currency_name == 'DSH'
 
-        symbol.start_with?(currency_name) || symbol.end_wuth?(currency_name)
+        symbol.start_with?(currency_name) || symbol.end_with?(currency_name)
       end
     end
 
