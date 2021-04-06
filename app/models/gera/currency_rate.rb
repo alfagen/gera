@@ -22,7 +22,7 @@ module Gera
     enum mode: %i[direct inverse same cross], _prefix: true
 
     before_save do
-      raise("У кросс-курса (#{currency_pair}) должно быть несколько external_rates (#{external_rates.count})") if mode_cross? && !external_rates.many?
+      raise("У кросс-курса (#{currency_pair}) должен быть минимум 1 external_rates (#{external_rates.count})") if mode_cross? && external_rates.blank?
 
       self.metadata ||= {}
     end
