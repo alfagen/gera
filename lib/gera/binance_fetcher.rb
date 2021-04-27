@@ -19,12 +19,21 @@ module Gera
         cur_to = find_cur_to(symbol, cur_from)
         next unless cur_to
 
+        next if price_is_missed?(rate: rate)
+
         pair = CurrencyPair.new(cur_from: cur_from, cur_to: cur_to)
         memo[pair] = rate
       end
     end
 
     private
+
+    # NOTE: for some pairs price is "0.00000000"
+    def price_is_missed?(rate:)
+      true if rate['askPrice'].to_f == 0.0 || rate['bidPrice'].to_f == 0.0
+
+      false
+    end
 
     def rates
       response = RestClient::Request.execute url: API_URL, method: :get, verify_ssl: false
