@@ -557,3 +557,31 @@ doge:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 100
+
+bnb:
+  priority: 22
+  iso_code: BNB
+  name: Binance Coin
+  symbol: ¤
+  alternate_symbols: []
+  subunit: Gwei
+  subunit_to_unit: 1000000000
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: ''
+  smallest_denomination: 1
+  authorized_round: 6
+  is_crypto: true
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 24
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 10
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 10
