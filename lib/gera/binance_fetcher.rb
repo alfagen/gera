@@ -30,7 +30,7 @@ module Gera
 
     # NOTE: for some pairs price is "0.00000000"
     def price_is_missed?(rate:)
-      true if rate['askPrice'].to_f == 0.0 || rate['bidPrice'].to_f == 0.0
+      return true if rate['askPrice'].to_f == 0.0 || rate['bidPrice'].to_f == 0.0
 
       false
     end
