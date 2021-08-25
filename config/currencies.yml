@@ -224,7 +224,7 @@ xmr:
   symbol: ɱ
   alternate_symbols: []
   subunit: piconero
-  subunit_to_unit: 1000000000000
+  subunit_to_unit: 100000000
   symbol_first: false
   html_entity: ''
   decimal_mark: "."
@@ -565,7 +565,7 @@ bnb:
   symbol: ¤
   alternate_symbols: []
   subunit: Gwei
-  subunit_to_unit: 1000000000
+  subunit_to_unit: 100000000
   symbol_first: false
   html_entity: ''
   decimal_mark: "."
