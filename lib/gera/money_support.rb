@@ -77,12 +77,28 @@ module Gera
     end
 
     class ::Money
+      DEFAULT_MONEY_PRECISION = 2
+      CRYPTO_MONEY_PRECISION = 8
       # TODO Отказаться
       # Это сумма, до которой разрешено безопасное округление
       # при приеме суммы от клиента
       def authorized_round
         return self unless currency.authorized_round.is_a? Numeric
         Money.from_amount to_f.round(currency.authorized_round), currency
+      end
+
+      def kassa_round
+        Money.from_amount to_f.round(money_precision), currency
+      end
+
+      private
+
+      def money_precision
+        if currency.is_crypto?
+          CRYPTO_MONEY_PRECISION
+        else
+          DEFAULT_MONEY_PRECISION
+        end
       end
     end
   end
