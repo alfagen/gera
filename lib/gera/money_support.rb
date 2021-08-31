@@ -94,7 +94,7 @@ module Gera
       private
 
       def money_precision
-        if is_crypto?
+        if currency.is_crypto?
           CRYPTO_MONEY_PRECISION
         else
           DEFAULT_MONEY_PRECISION
