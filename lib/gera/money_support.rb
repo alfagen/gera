@@ -48,10 +48,6 @@ module Gera
         @minimal_output_value = data[:minimal_output_value]
         @authorized_round = data[:authorized_round]
       end
-
-      def custom_round
-
-      end
     end
 
     class ::Money::Currency
