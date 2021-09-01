@@ -21,7 +21,7 @@
               td class=(decorated.try(:column_class, column) || 'text-nowrap')
                 - if allow_edit && allow_edit_column?(record, column)
                   - value = record.send column
-                  = smart_best_in_place [namespace, parent, decorated].compact, column, value
+                  = smart_best_in_place [namespace.to_sym, parent, decorated].compact, column, value
                 - else
                   = decorated.send column
 
