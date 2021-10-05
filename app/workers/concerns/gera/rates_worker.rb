@@ -15,7 +15,7 @@ module Gera
 
       rates # Load before a translaction
 
-      ::RateSource.transaction do
+      self.class.transaction do
         create_snapshot
         rates.each do |pair, data|
           save_rate pair, data
