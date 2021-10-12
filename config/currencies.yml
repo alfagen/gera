@@ -590,7 +590,7 @@ xlm:
   priority: 23
   iso_code: XLM
   name: Stellar
-  symbol:
+  symbol: "*"
   alternate_symbols: []
   subunit: Stroop
   subunit_to_unit: 10000000
@@ -617,7 +617,7 @@ dot:
   priority: 24
   iso_code: DOT
   name: Polkadot
-  symbol:
+  symbol: "P"
   alternate_symbols: []
   subunit: Dot
   subunit_to_unit: 10000000000
