@@ -122,6 +122,22 @@ module Gera
       Universe.direction_rates_repository.find_direction_rate_by_exchange_rate_id id
     end
 
+    def auto_rate_from
+      min = payment_system_from.auto_rate_settings.find_by(direction: :income).checkpoint.min_boundary
+      max = payment_system_from.auto_rate_settings.find_by(direction: :outcome).checkpoint.min_boundary
+      (min + max) / 2.0
+    end
+
+    def auto_rate_to
+      min = payment_system_from.auto_rate_settings.find_by(direction: :income).checkpoint.max_boundary
+      max = payment_system_from.auto_rate_settings.find_by(direction: :outcome).checkpoint.max_boundary
+      (min + max) / 2.0
+    end
+
+    def auto_rate
+      (auto_rate_from..auto_rate_to)
+    end
+
     private
 
     def update_direction_rates
