@@ -124,14 +124,14 @@ module Gera
 
     def auto_rate_from
       min = payment_system_from.auto_rate_settings.find_by(direction: :income).checkpoint.min_boundary
-      max = payment_system_from.auto_rate_settings.find_by(direction: :outcome).checkpoint.min_boundary
-      (min + max) / 2.0
+      max = payment_system_to.auto_rate_settings.find_by(direction: :outcome).checkpoint.min_boundary
+      ((min + max) / 2.0).round(2)
     end
 
     def auto_rate_to
       min = payment_system_from.auto_rate_settings.find_by(direction: :income).checkpoint.max_boundary
-      max = payment_system_from.auto_rate_settings.find_by(direction: :outcome).checkpoint.max_boundary
-      (min + max) / 2.0
+      max = payment_system_to.auto_rate_settings.find_by(direction: :outcome).checkpoint.max_boundary
+      ((min + max) / 2.0).round(2)
     end
 
     def auto_rate
