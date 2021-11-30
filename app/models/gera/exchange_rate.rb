@@ -138,6 +138,10 @@ module Gera
       ((auto_rate_from + auto_rate_to) / 2.0).round(2)
     end
 
+    def final_rate_percents
+      auto_rate_enabled? ? auto_rate : comission_percents
+    end
+
     private
 
     def update_direction_rates
