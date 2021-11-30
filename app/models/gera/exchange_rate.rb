@@ -135,7 +135,7 @@ module Gera
     end
 
     def auto_rate
-      (auto_rate_from..auto_rate_to)
+      ((auto_rate_from + auto_rate_to) / 2.0).round(2)
     end
 
     private
