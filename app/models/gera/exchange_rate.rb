@@ -182,11 +182,11 @@ module Gera
         else
           0
         end
-  
+
         if reserve_diff_in_percents.positive?
-          PaymentSystem.find(ps_from_id).auto_rate_checkpoints.where(direction: :plus, type: :base).min { |c1, c2| (c1.value_percents - reserve_diff_in_percents).abs <=> (c2.value_percents -  reserve_diff_in_percents).abs }
+          PaymentSystem.find(ps_from_id).auto_rate_checkpoints.where(direction: :plus, checkpoint_type: :base).min { |c1, c2| (c1.value_percents - reserve_diff_in_percents).abs <=> (c2.value_percents -  reserve_diff_in_percents).abs }
         else
-          PaymentSystem.find(ps_from_id).auto_rate_checkpoints.where(direction: :minus, type: :base).min { |c1, c2| (c1.value_percents - reserve_diff_in_percents.abs).abs <=> (c2.value_percents -  reserve_diff_in_percents.abs).abs }
+          PaymentSystem.find(ps_from_id).auto_rate_checkpoints.where(direction: :minus, checkpoint_type: :base).min { |c1, c2| (c1.value_percents - reserve_diff_in_percents.abs).abs <=> (c2.value_percents -  reserve_diff_in_percents.abs).abs }
         end
     end
   end
