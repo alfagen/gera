@@ -152,11 +152,10 @@ module Gera
 
     def final_rate_percents
       if auto_rate_enabled?
-        auto_rate_base_enabled? (auto_rate + auto_rate_base) : auto_rate
+        auto_rate_base_enabled? ? (auto_rate + auto_rate_base) : auto_rate
       else
         comission_percents
       end
-      auto_rate_enabled? ? auto_rate : comission_percents
     end
 
     def current_base
