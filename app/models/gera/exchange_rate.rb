@@ -190,14 +190,12 @@ module Gera
       return final_rate_percents_old if rows.nil? || rows.empty?
 
       in_interval = rows.select do |row|
-        _rate = (row.buy_price + row.sell_price) / 2
-        _rate >= from && _rate <= to
+        row.target_rate_percent >= from && row.target_rate_percent <= to
       end
       return final_rate_percents_old if in_interval.empty?
 
-      in_interval.sort! { |row1, row2| row1.buy_price <=> row2.buy_price }
-      last = in_interval.last
-      (last.buy_price + last.sell_price) / 2 - 0.01
+      in_interval.sort! { |row1, row2| row1.target_rate_percent <=> row2.target_rate_percent }
+      in_interval.last.target_rate_percent - 0.01
     end
 
     def update_direction_rates
