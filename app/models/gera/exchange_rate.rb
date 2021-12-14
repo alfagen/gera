@@ -154,12 +154,16 @@ module Gera
       ((auto_rate_base_from + auto_rate_base_to) / 2.0)
     end
 
-    def final_rate_percents
+    def final_rate_percents_old
       if auto_rate_enabled?
         auto_rate_base_enabled? ? (auto_rate + auto_rate_base) : auto_rate
       else
         comission_percents
       end
+    end
+
+    def final_rate_percents
+      best
     end
 
     def current_base
@@ -171,6 +175,27 @@ module Gera
     end
 
     private
+
+    def best
+      return final_rate_percents_old unless auto_rate_enabled?
+
+      from = auto_rate_from
+      to = auto_rate_to
+      if auto_rate_base_enabled?
+        from += auto_rate_base_from
+        to += auto_rate_base_to
+      end
+
+      rows = BestChange::Service.new(exchange_rate: self).rows
+      in_interval = rows.select do |row|
+        _rate = (row.buy_price + row.sell_price) / 2
+        _rate >= from && _rate <= to
+      end
+
+      in_interval.sort! { |row1, row2| row1.buy_price <=> row2.buy_price }
+      last = in_interval.last
+      (last.buy_price + last.sell_price) / 2 - 0.01
+    end
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
