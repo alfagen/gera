@@ -187,10 +187,13 @@ module Gera
       end
 
       rows = BestChange::Service.new(exchange_rate: self).rows
+      return final_rate_percents_old if rows.nil? || rows.empty?
+
       in_interval = rows.select do |row|
         _rate = (row.buy_price + row.sell_price) / 2
         _rate >= from && _rate <= to
       end
+      return final_rate_percents_old if in_interval.empty?
 
       in_interval.sort! { |row1, row2| row1.buy_price <=> row2.buy_price }
       last = in_interval.last
