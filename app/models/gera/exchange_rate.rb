@@ -57,7 +57,6 @@ module Gera
     alias_attribute :payment_system_from_id, :income_payment_system_id
     alias_attribute :payment_system_to_id, :outcome_payment_system_id
 
-    alias_attribute :comission, :value
     alias_attribute :commission, :value
     alias_attribute :comission_percents, :value
 
@@ -76,7 +75,7 @@ module Gera
     end
 
     def update_finite_rate!(finite_rate)
-      update! comission: calculate_comission(finite_rate, currency_rate.rate_value)
+      update! commission: calculate_comission(finite_rate, currency_rate.rate_value)
     end
 
     def custom_inspect
@@ -172,6 +171,10 @@ module Gera
 
     def avg_base
       Gera::DirectionRateHistoryInterval.where(payment_system_from_id: payment_system_from.id, payment_system_to_id: payment_system_to.id).where('interval_from > ?', DateTime.now.utc - 24.hours).average(:avg_rate)
+    end
+
+    def comission
+      final_rate_percents
     end
 
     private
