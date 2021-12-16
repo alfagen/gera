@@ -537,8 +537,8 @@ doge:
   name: Dogecoin
   symbol: Ð
   alternate_symbols: []
-  subunit: Microdoge
-  subunit_to_unit: 1000000
+  subunit: Nanodoge
+  subunit_to_unit: 1000000000
   symbol_first: true
   html_entity: ''
   decimal_mark: "."
