@@ -47,7 +47,7 @@ module Gera
       self.comission ||= DEFAULT_COMISSION
     end
 
-    validates :commission, presence: true
+    validates :commission, presence: true, comparison: { greater_than_or_equal_to: 0 }
 
     delegate :rate, :currency_rate, to: :direction_rate
 
