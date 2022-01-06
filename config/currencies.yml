@@ -639,3 +639,59 @@ dot:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 0.012
+
+uni:
+  priority: 25
+  iso_code: UNI
+  name: Uniswap
+  symbol:
+  alternate_symbols: []
+  subunit: Gwei
+  subunit_to_unit: 1000000000
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: ''
+  smallest_denomination: 1
+  authorized_round: 6
+  is_crypto: true
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 27
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 0.01
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 0.01
+
+link:
+  priority: 26
+  iso_code: LINK
+  name: Chainlink
+  symbol:
+  alternate_symbols: []
+  subunit: Gwei
+  subunit_to_unit: 1000000000
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: ''
+  smallest_denomination: 1
+  authorized_round: 6
+  is_crypto: true
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 28
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 0.01
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 0.01
