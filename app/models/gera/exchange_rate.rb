@@ -163,7 +163,8 @@ module Gera
     end
 
     def final_rate_percents
-      best
+      # best
+      final_rate_percents_old
     end
 
     def current_base
