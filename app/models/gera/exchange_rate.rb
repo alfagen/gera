@@ -48,7 +48,6 @@ module Gera
     end
 
     validates :commission, presence: true
-    validates :comission, numericality: { greater_than_or_equal_to: 0 }
 
     delegate :rate, :currency_rate, to: :direction_rate
 
