@@ -13,14 +13,14 @@ module Gera
       # Alternative approach is `Model.uncached do`
       ActiveRecord::Base.connection.clear_query_cache
 
-      rates # Load before a translaction
+      rates # Load before a transaction
 
       rate_source.class.transaction do
         create_snapshot
         rates.each do |pair, data|
           save_rate pair, data
         end
-        rate_source.update actual_snapshot_id: snapshot.id
+        rate_source.update_attribute :actual_snapshot_id, snapshot.id
       end
 
       CurrencyRatesWorker.new.perform
