@@ -7,7 +7,7 @@ module Gera
 
     def perform
       ActiveRecord::Base.connection.clear_query_cache
-      source.with_lock do
+      ActiveRecord::Base.transaction do
         source.available_pairs.each do |pair|
           create_rate pair
         end

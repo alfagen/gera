@@ -29,7 +29,7 @@ module Gera
 
     def perform
       ActiveRecord::Base.connection.clear_query_cache
-      cbr.with_lock do
+      ActiveRecord::Base.transaction do
         days.each do |date|
           fetch_and_save_rate date
         end
