@@ -20,8 +20,8 @@ module Gera
         rates.each do |pair, data|
           save_rate pair, data
         end
-        rate_source.update_column :actual_snapshot_id, snapshot.id
       end
+      rate_source.update_attribute(:actual_snapshot_id, snapshot.id) if snapshot.present?
 
       CurrencyRatesWorker.new.perform
 

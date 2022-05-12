@@ -11,7 +11,7 @@ module Gera
         source.available_pairs.each do |pair|
           create_rate pair
         end
-        source.update_column :actual_snapshot_id, snapshot.id
+        source.update_attribute :actual_snapshot_id, snapshot.id
       end
     end
 

@@ -58,8 +58,8 @@ module Gera
       save_snapshot_rate EUR, RUB
       save_snapshot_rate UAH, RUB
 
-      cbr.update_column :actual_snapshot_id, snapshot.id
-      cbr_avg.update_column :actual_snapshot_id, avg_snapshot.id
+      cbr.update_attribute :actual_snapshot_id, snapshot.id
+      cbr_avg.update_attribute :actual_snapshot_id, avg_snapshot.id
     end
 
     def save_snapshot_rate(cur_from, cur_to)
