@@ -129,7 +129,7 @@ module Gera
       self.base_rate_value = currency_rate.rate_value
       raise UnknownExchangeRate, "No exchange_rate for #{ps_from}->#{ps_to}" unless exchange_rate
 
-      self.rate_percent = exchange_rate.comission_percents
+      self.rate_percent = exchange_rate.final_rate_percents
       self.rate_value = calculate_finite_rate base_rate_value, rate_percent unless rate_percent.nil?
     end
   end
