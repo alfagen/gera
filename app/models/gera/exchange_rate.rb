@@ -126,12 +126,6 @@ module Gera
       auto_rate_enabled? ? auto_rate_value_by_reserve : comission_percents
     end
 
-    private
-
-    def update_direction_rates
-      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
-    end
-
     def auto_rate_value_by_reserve
       ((auto_rate_by_reserve_from_boundary + auto_rate_by_reserve_to_boundary) / 2.0).round(2)
     end
@@ -150,6 +144,12 @@ module Gera
       return 0.0 if min_checkpoint.nil? || max_checkpoint.nil?
 
       ((min_checkpoint.max_boundary + max_checkpoint.max_boundary) / 2.0).round(2)
+    end
+
+    private
+
+    def update_direction_rates
+      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
     end
   end
 end
