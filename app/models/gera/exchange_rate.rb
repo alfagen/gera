@@ -38,6 +38,7 @@ module Gera
         .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
         .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
+    scope :with_auto_rates, -> { where(auto_rate_enabled: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
 
@@ -121,10 +122,34 @@ module Gera
       Universe.direction_rates_repository.find_direction_rate_by_exchange_rate_id id
     end
 
+    def final_rate_percents
+      auto_rate_enabled? ? auto_rate_value_by_reserve : comission_percents
+    end
+
     private
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+    end
+
+    def auto_rate_value_by_reserve
+      ((auto_rate_by_reserve_from_boundary + auto_rate_by_reserve_to_boundary) / 2.0).round(2)
+    end
+
+    def auto_rate_by_reserve_from_boundary
+      min_checkpoint = payment_system_from.auto_rate_settings.find_by(direction: :income)&.checkpoint
+      max_checkpoint = payment_system_to.auto_rate_settings.find_by(direction: :outcome)&.checkpoint
+      return 0.0 if min_checkpoint.nil? || max_checkpoint.nil?
+
+      ((min_checkpoint.min_boundary + max_checkpoint.min_boundary) / 2.0).round(2)
+    end
+
+    def auto_rate_by_reserve_to_boundary
+      min_checkpoint = payment_system_from.auto_rate_settings.find_by(direction: :income)&.checkpoint
+      max_checkpoint = payment_system_to.auto_rate_settings.find_by(direction: :outcome)&.checkpoint
+      return 0.0 if min_checkpoint.nil? || max_checkpoint.nil?
+
+      ((min_checkpoint.max_boundary + max_checkpoint.max_boundary) / 2.0).round(2)
     end
   end
 end
