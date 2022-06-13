@@ -38,7 +38,7 @@ module Gera
         .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
         .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
-    scope :with_auto_rates, -> { where(auto_rate_enabled: true) }
+    scope :with_auto_rates, -> { where(auto_rate: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
 
@@ -123,7 +123,7 @@ module Gera
     end
 
     def final_rate_percents
-      auto_rate_enabled? ? auto_rate_value_by_reserve : comission_percents
+      auto_rate? ? auto_rate_value_by_reserve : comission_percents
     end
 
     def auto_rate_value_by_reserve
