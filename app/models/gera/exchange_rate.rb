@@ -123,7 +123,11 @@ module Gera
     end
 
     def final_rate_percents
-      auto_rate? ? auto_rate_value_by_reserve : comission_percents
+      if auto_rate? 
+        auto_rate_by_base_rate? ? auto_rate_by_base_rate_value + auto_rate_value_by_reserve : auto_rate_value_by_reserve
+      else
+        comission_percents
+      end
     end
 
     def auto_rate_value_by_reserve
@@ -146,10 +150,52 @@ module Gera
       ((min_checkpoint.max_boundary + max_checkpoint.max_boundary) / 2.0).round(2)
     end
 
+    def auto_rate_base_from
+      base_checkpoint&.min_boundary || 0.0
+    end
+
+    def auto_rate_base_to
+      base_checkpoint&.max_boundary || 0.0
+    end
+
+    def auto_rate_by_base_rate_value
+      ((auto_rate_base_from + auto_rate_base_to) / 2.0)
+    end
+
+    def current_base
+      Gera::DirectionRateHistoryInterval.where(payment_system_from_id: payment_system_from.id, payment_system_to_id: payment_system_to.id).last.avg_rate
+    end
+
+    def avg_base
+      Gera::DirectionRateHistoryInterval.where(payment_system_from_id: payment_system_from.id, payment_system_to_id: payment_system_to.id).where('interval_from > ?', DateTime.now.utc - 24.hours).average(:avg_rate)
+    end
+
     private
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+    end
+
+    def base_checkpoint
+      reserve_diff = current_base / avg_base
+      reserve_diff_in_percents = 
+        if reserve_diff > 1
+          (reserve_diff - 1) * 100
+        elsif reserve_diff < 1
+          ((avg_base / current_base) - 1) * -100
+        else
+          0
+        end
+
+      if reserve_diff_in_percents.positive?
+        checkpoints = Gera::PaymentSystem.find(ps_from_id).auto_rate_settings.find_by(direction: :income).auto_rate_checkpoints.where(direction: :plus, checkpoint_type: :base)
+        checkpoints = Gera::PaymentSystem.find(ps_to_id).auto_rate_settings.find_by(direction: :outcome).auto_rate_checkpoints.where(direction: :plus, checkpoint_type: :base) if checkpoints.empty?
+        checkpoints.min { |c1, c2| (c1.value_percents - reserve_diff_in_percents).abs <=> (c2.value_percents -  reserve_diff_in_percents).abs }
+      else
+        checkpoints = Gera::PaymentSystem.find(ps_from_id).auto_rate_settings.find_by(direction: :income).auto_rate_checkpoints.where(direction: :minus, checkpoint_type: :base)
+        checkpoints = Gera::PaymentSystem.find(ps_to_id).auto_rate_settings.find_by(direction: :outcome).auto_rate_checkpoints.where(direction: :minus, checkpoint_type: :base) if checkpoints.empty?
+        checkpoints.min { |c1, c2| (c1.value_percents - reserve_diff_in_percents.abs).abs <=> (c2.value_percents -  reserve_diff_in_percents.abs).abs }
+      end
     end
   end
 end
