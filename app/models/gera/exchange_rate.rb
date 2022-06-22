@@ -131,22 +131,26 @@ module Gera
     end
 
     def auto_rate_by_reserve_from_boundary
-      min_checkpoint = payment_system_from.auto_rate_settings.find_by(direction: :income)&.checkpoint
-      max_checkpoint = payment_system_to.auto_rate_settings.find_by(direction: :outcome)&.checkpoint
-      return 0.0 if min_checkpoint.nil? || max_checkpoint.nil?
+      return 0.0 if min_auto_rate_checkpoint.nil? || max_auto_rate_checkpoint.nil?
 
-      ((min_checkpoint.min_boundary + max_checkpoint.min_boundary) / 2.0).round(2)
+      ((min_auto_rate_checkpoint.min_boundary + max_auto_rate_checkpoint.min_boundary) / 2.0).round(2)
     end
 
     def auto_rate_by_reserve_to_boundary
-      min_checkpoint = payment_system_from.auto_rate_settings.find_by(direction: :income)&.checkpoint
-      max_checkpoint = payment_system_to.auto_rate_settings.find_by(direction: :outcome)&.checkpoint
-      return 0.0 if min_checkpoint.nil? || max_checkpoint.nil?
+      return 0.0 if min_auto_rate_checkpoint.nil? || max_auto_rate_checkpoint.nil?
 
-      ((min_checkpoint.max_boundary + max_checkpoint.max_boundary) / 2.0).round(2)
+      ((min_auto_rate_checkpoint.max_boundary + max_auto_rate_checkpoint.max_boundary) / 2.0).round(2)
     end
 
     private
+
+    def min_auto_rate_checkpoint
+      @min_auto_rate_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: :income)&.checkpoint
+    end
+
+    def max_auto_rate_checkpoint
+      @max_auto_rate_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: :outcome)&.checkpoint
+    end
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
