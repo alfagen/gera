@@ -145,11 +145,11 @@ module Gera
     private
 
     def min_auto_rate_checkpoint
-      @min_auto_rate_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: :income)&.checkpoint
+      @min_auto_rate_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')&.checkpoint
     end
 
     def max_auto_rate_checkpoint
-      @max_auto_rate_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: :outcome)&.checkpoint
+      @max_auto_rate_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
     end
 
     def update_direction_rates
