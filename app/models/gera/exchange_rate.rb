@@ -127,7 +127,7 @@ module Gera
       auto_rate? ? auto_comission_by_reserve : comission_percents
     end
 
-    def auto_rate_value_by_reserve
+    def auto_comission_by_reserve
       ((auto_rate_by_reserve_from + auto_rate_by_reserve_to) / 2.0).round(2)
     end
 
