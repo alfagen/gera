@@ -60,6 +60,7 @@ module Gera
     alias_attribute :comission, :value
     alias_attribute :commission, :value
     alias_attribute :comission_percents, :value
+    alias_attribute :comission_percents, :fixed_comission
 
     alias_attribute :income_payment_system, :payment_system_from
     alias_attribute :outcome_payment_system, :payment_system_to
@@ -123,33 +124,37 @@ module Gera
     end
 
     def final_rate_percents
-      auto_rate? ? auto_rate_value_by_reserve : comission_percents
+      auto_rate? ? auto_comission_by_reserve : comission_percents
     end
 
     def auto_rate_value_by_reserve
-      ((auto_rate_by_reserve_from_boundary + auto_rate_by_reserve_to_boundary) / 2.0).round(2)
+      ((auto_rate_by_reserve_from + auto_rate_by_reserve_to) / 2.0).round(2)
     end
 
-    def auto_rate_by_reserve_from_boundary
-      return 0.0 if min_auto_rate_checkpoint.nil? || max_auto_rate_checkpoint.nil?
+    def auto_rate_by_reserve_from
+      return 0.0 unless auto_rates_ready?
 
-      ((min_auto_rate_checkpoint.min_boundary + max_auto_rate_checkpoint.min_boundary) / 2.0).round(2)
+      ((income_direction_checkpoint.min_boundary + outcome_direction_checkpoint.min_boundary) / 2.0).round(2)
     end
 
-    def auto_rate_by_reserve_to_boundary
-      return 0.0 if min_auto_rate_checkpoint.nil? || max_auto_rate_checkpoint.nil?
+    def auto_rate_by_reserve_to
+      return 0.0 unless auto_rates_ready?
 
-      ((min_auto_rate_checkpoint.max_boundary + max_auto_rate_checkpoint.max_boundary) / 2.0).round(2)
+      ((income_direction_checkpoint.max_boundary + outcome_direction_checkpoint.max_boundary) / 2.0).round(2)
     end
 
     private
 
-    def min_auto_rate_checkpoint
-      @min_auto_rate_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')&.checkpoint
+    def auto_rates_ready?
+      income_direction_checkpoint.present? && outcome_direction_checkpoint.present?
     end
 
-    def max_auto_rate_checkpoint
-      @max_auto_rate_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
+    def income_direction_checkpoint
+      @income_direction_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')&.checkpoint
+    end
+
+    def outcome_direction_checkpoint
+      @outcome_direction_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
     end
 
     def update_direction_rates
