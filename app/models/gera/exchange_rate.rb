@@ -134,13 +134,13 @@ module Gera
     def auto_rate_by_reserve_from
       return 0.0 unless auto_rates_ready?
 
-      ((income_direction_checkpoint.min_boundary + outcome_direction_checkpoint.min_boundary) / 2.0).round(2)
+      calculate_auto_rate_min_boundary
     end
 
     def auto_rate_by_reserve_to
       return 0.0 unless auto_rates_ready?
 
-      ((income_direction_checkpoint.max_boundary + outcome_direction_checkpoint.max_boundary) / 2.0).round(2)
+      calculate_auto_rate_max_boundary
     end
 
     private
@@ -155,6 +155,14 @@ module Gera
 
     def outcome_direction_checkpoint
       @outcome_direction_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
+    end
+
+    def calculate_auto_rate_min_boundary
+      ((income_direction_checkpoint.min_boundary + outcome_direction_checkpoint.min_boundary) / 2.0).round(2)
+    end
+
+    def calculate_auto_rate_max_boundary
+      ((income_direction_checkpoint.max_boundary + outcome_direction_checkpoint.max_boundary) / 2.0).round(2)
     end
 
     def update_direction_rates
