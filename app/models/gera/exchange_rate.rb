@@ -60,7 +60,7 @@ module Gera
     alias_attribute :comission, :value
     alias_attribute :commission, :value
     alias_attribute :comission_percents, :value
-    alias_attribute :comission_percents, :fixed_comission
+    alias_attribute :fixed_comission, :value
 
     alias_attribute :income_payment_system, :payment_system_from
     alias_attribute :outcome_payment_system, :payment_system_to
@@ -124,7 +124,7 @@ module Gera
     end
 
     def final_rate_percents
-      auto_rate? ? auto_comission_by_reserve : comission_percents
+      auto_rate? ? auto_comission_by_reserve : fixed_comission
     end
 
     def auto_comission_by_reserve
