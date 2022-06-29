@@ -38,6 +38,7 @@ module Gera
         .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
         .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
+    scope :with_auto_rates, -> { where(auto_rate: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
 
@@ -59,6 +60,7 @@ module Gera
     alias_attribute :comission, :value
     alias_attribute :commission, :value
     alias_attribute :comission_percents, :value
+    alias_attribute :fixed_comission, :value
 
     alias_attribute :income_payment_system, :payment_system_from
     alias_attribute :outcome_payment_system, :payment_system_to
@@ -121,7 +123,47 @@ module Gera
       Universe.direction_rates_repository.find_direction_rate_by_exchange_rate_id id
     end
 
+    def final_rate_percents
+      auto_rate? ? auto_comission_by_reserve : fixed_comission
+    end
+
+    def auto_comission_by_reserve
+      ((auto_rate_by_reserve_from + auto_rate_by_reserve_to) / 2.0).round(2)
+    end
+
+    def auto_rate_by_reserve_from
+      return 0.0 unless auto_rates_ready?
+
+      calculate_auto_rate_min_boundary
+    end
+
+    def auto_rate_by_reserve_to
+      return 0.0 unless auto_rates_ready?
+
+      calculate_auto_rate_max_boundary
+    end
+
     private
+
+    def auto_rates_ready?
+      income_direction_checkpoint.present? && outcome_direction_checkpoint.present?
+    end
+
+    def income_direction_checkpoint
+      @income_direction_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')&.checkpoint
+    end
+
+    def outcome_direction_checkpoint
+      @outcome_direction_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
+    end
+
+    def calculate_auto_rate_min_boundary
+      ((income_direction_checkpoint.min_boundary + outcome_direction_checkpoint.min_boundary) / 2.0).round(2)
+    end
+
+    def calculate_auto_rate_max_boundary
+      ((income_direction_checkpoint.max_boundary + outcome_direction_checkpoint.max_boundary) / 2.0).round(2)
+    end
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
