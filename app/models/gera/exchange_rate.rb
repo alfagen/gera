@@ -183,10 +183,6 @@ module Gera
       income_base_rate_checkpoint.present? && outcome_base_rate_checkpoint.present?
     end
 
-    def base_rate_checkpoint_ready?
-      base_rate_checkpoint.present?
-    end
-
     def income_auto_rate_setting
       @income_auto_rate_setting ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')
     end
