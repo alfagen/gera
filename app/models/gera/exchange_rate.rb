@@ -41,6 +41,7 @@ module Gera
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
+    before_save :turn_off_auto_comission_by_base_rate_flag_in_an_hour, if: -> { auto_comission_by_base_rate_changed?(from: false, to: true) }
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -136,86 +137,103 @@ module Gera
     end
 
     def comission_by_base_rate
-      ((auto_rate_by_base_from + auto_rate_by_base_to) / 2.0)
+      ((auto_rate_by_base_from + auto_rate_by_base_to) / 2.0).round(2)
     end
 
     def auto_rate_by_base_from
-      return 0.0 unless base_rate_checkpoint_ready?
+      return 0.0 unless auto_rates_by_base_rate_ready?
 
+      calculate_auto_rate_by_base_rate_min_boundary
       base_rate_checkpoint.min_boundary
     end
 
     def auto_rate_by_base_to
-      return 0.0 unless base_rate_checkpoint_ready?
+      return 0.0 unless auto_rates_by_base_rate_ready?
 
+      calculate_auto_rate_by_base_rate_max_boundary
       base_rate_checkpoint.max_boundary
     end
 
     def auto_rate_by_reserve_from
-      return 0.0 unless auto_rates_ready?
+      return 0.0 unless auto_rates_by_reserve_ready?
 
-      calculate_auto_rate_min_boundary
+      calculate_auto_rate_by_reserve_min_boundary
     end
 
     def auto_rate_by_reserve_to
-      return 0.0 unless auto_rates_ready?
+      return 0.0 unless auto_rates_by_reserve_ready?
 
-      calculate_auto_rate_max_boundary
+      calculate_auto_rate_by_reserve_max_boundary
     end
 
     def current_base_rate
-      @current_base_rate ||= Gera::DirectionRateHistoryInterval.where(payment_system_from_id: payment_system_from.id, payment_system_to_id: payment_system_to.id).last.avg_rate
+      @current_base_rate ||= Gera::CurrencyRateHistoryInterval.where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).last.avg_rate
     end
 
     def average_base_rate
-      @average_base_rate ||= Gera::DirectionRateHistoryInterval.where(payment_system_from_id: payment_system_from.id, payment_system_to_id: payment_system_to.id).where('interval_from > ?', DateTime.now.utc - 96.hours).average(:avg_rate)
+      @average_base_rate ||= Gera::CurrencyRateHistoryInterval.where('interval_from > ?', DateTime.now.utc - 24.hours).where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).average(:avg_rate)
     end
 
     private
 
-    def auto_rates_ready?
-      income_direction_checkpoint.present? && outcome_direction_checkpoint.present?
+    def auto_rates_by_reserve_ready?
+      income_reserve_checkpoint.present? && outcome_reserve_checkpoint.present?
+    end
+
+    def auto_rates_by_base_rate_ready?
+      income_base_rate_checkpoint.present? && outcome_base_rate_checkpoint.present?
     end
 
     def base_rate_checkpoint_ready?
       base_rate_checkpoint.present?
     end
 
-    def income_direction_checkpoint
-      @income_direction_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')&.checkpoint
+    def income_auto_rate_setting
+      @income_auto_rate_setting ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')
     end
 
-    def outcome_direction_checkpoint
-      @outcome_direction_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
+    def outcome_auto_rate_setting
+      @outcome_auto_rate_setting ||= payment_system_from.auto_rate_settings.find_by(direction: 'outcome')
     end
 
-    def calculate_auto_rate_min_boundary
-      ((income_direction_checkpoint.min_boundary + outcome_direction_checkpoint.min_boundary) / 2.0).round(2)
+    def income_reserve_checkpoint
+      @income_reserve_checkpoint ||= income_auto_rate_setting&.reserve_checkpoint
     end
 
-    def calculate_auto_rate_max_boundary
-      ((income_direction_checkpoint.max_boundary + outcome_direction_checkpoint.max_boundary) / 2.0).round(2)
+    def outcome_reserve_checkpoint
+      @outcome_reserve_checkpoint ||= outcome_auto_rate_setting&.reserve_checkpoint
+    end
+
+    def income_base_rate_checkpoint
+      @income_base_rate_checkpoint ||= income_auto_rate_setting&.base_rate_checkpoint(current_base_rate: current_base_rate, average_base_rate: average_base_rate)
+    end
+
+    def outcome_base_rate_checkpoint
+      @outcome_base_rate_checkpoint ||= outcome_auto_rate_setting&.base_rate_checkpoint(current_base_rate: current_base_rate, average_base_rate: average_base_rate)
+    end
+
+    def calculate_auto_rate_by_reserve_min_boundary
+      ((income_reserve_checkpoint.min_boundary + outcome_reserve_checkpoint.min_boundary) / 2.0).round(2)
+    end
+
+    def calculate_auto_rate_by_reserve_max_boundary
+      ((income_reserve_checkpoint.max_boundary + outcome_reserve_checkpoint.max_boundary) / 2.0).round(2)
+    end
+
+    def calculate_auto_rate_by_base_rate_min_boundary
+      ((income_base_rate_checkpoint.min_boundary + outcome_base_rate_checkpoint.min_boundary) / 2.0).round(2)
+    end
+
+    def calculate_auto_rate_by_base_rate_max_boundary
+      ((income_base_rate_checkpoint.max_boundary + outcome_base_rate_checkpoint.max_boundary) / 2.0).round(2)
     end
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
     end
 
-    def calculate_diff_in_percents(a, b)
-      max, min = a > b ? [a, b] : [b, a]
-      (max - min) / min * 100
-    end
-
-    def base_rate_checkpoint
-      reserve_ratio_in_percents = calculate_diff_in_percents(current_base_rate, average_base_rate)
-      direction = current_base_rate > average_base_rate ? 'plus' : 'minus'
-      find_checkpoint(reserve_ratio: reserve_ratio_in_percents, direction: direction)
-    end
-
-    def find_checkpoint(reserve_ratio:, direction:)
-      checkpoints = Gera::PaymentSystem.find(ps_from_id).auto_rate_settings.find_by(direction: 'income').auto_rate_checkpoints.where(direction: direction, checkpoint_type: 'by_base_rate').order(:value_percents)
-      checkpoints = Gera::PaymentSystem.find(ps_to_id).auto_rate_settings.find_by(direction: 'outcome').auto_rate_checkpoints.where(direction: direction, checkpoint_type: 'by_base_rate').order(:value_percents) if checkpoints.empty?
-      checkpoints.where('value_percents > ?', reserve_ratio).first || checkpoints.last
+    def turn_off_auto_comission_by_base_rate_flag_in_an_hour
+      AutoComissionByBaseRateFlagWorker.perform_in(1.minute, id)
     end
   end
 end
