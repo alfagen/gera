@@ -17,6 +17,7 @@ module Gera
     include Authority::Abilities
 
     DEFAULT_COMISSION = 50
+    AUTO_COMISSION_BY_BASE_RATE_UPTIME = 1.hour
 
     include Mathematic
     include DirectionSupport
@@ -41,7 +42,7 @@ module Gera
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
-    before_save :turn_off_auto_comission_by_base_rate_flag_in_an_hour, if: -> { auto_comission_by_base_rate_changed?(from: false, to: true) }
+    before_save :turn_off_auto_comission_by_base_rate_flag_with_delay, if: -> { auto_comission_by_base_rate_changed?(from: false, to: true) }
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -144,14 +145,12 @@ module Gera
       return 0.0 unless auto_rates_by_base_rate_ready?
 
       calculate_auto_rate_by_base_rate_min_boundary
-      base_rate_checkpoint.min_boundary
     end
 
     def auto_rate_by_base_to
       return 0.0 unless auto_rates_by_base_rate_ready?
 
       calculate_auto_rate_by_base_rate_max_boundary
-      base_rate_checkpoint.max_boundary
     end
 
     def auto_rate_by_reserve_from
@@ -232,8 +231,8 @@ module Gera
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
     end
 
-    def turn_off_auto_comission_by_base_rate_flag_in_an_hour
-      AutoComissionByBaseRateFlagWorker.perform_in(1.minute, id)
+    def turn_off_auto_comission_by_base_rate_flag_with_delay
+      AutoComissionByBaseRateFlagWorker.perform_in(AUTO_COMISSION_BY_BASE_RATE_UPTIME, id)
     end
   end
 end
