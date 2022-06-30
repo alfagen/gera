@@ -192,19 +192,19 @@ module Gera
     end
 
     def income_reserve_checkpoint
-      @income_reserve_checkpoint ||= income_auto_rate_setting&.reserve_checkpoint
+      @income_reserve_checkpoint ||= income_auto_rate_setting&.checkpoint(base_value: income_auto_rate_setting&.reserve, additional_value: income_auto_rate_setting&.base, type: 'reserve')
     end
 
     def outcome_reserve_checkpoint
-      @outcome_reserve_checkpoint ||= outcome_auto_rate_setting&.reserve_checkpoint
+      @outcome_reserve_checkpoint ||= outcome_auto_rate_setting&.checkpoint(base_value: outcome_auto_rate_setting&.reserve, additional_value: outcome_auto_rate_setting&.base, type: 'reserve')
     end
 
     def income_base_rate_checkpoint
-      @income_base_rate_checkpoint ||= income_auto_rate_setting&.base_rate_checkpoint(current_base_rate: current_base_rate, average_base_rate: average_base_rate)
+      @income_base_rate_checkpoint ||= income_auto_rate_setting&.checkpoint(base_value: current_base_rate, additional_value: average_base_rate, type: 'by_base_rate')
     end
 
     def outcome_base_rate_checkpoint
-      @outcome_base_rate_checkpoint ||= outcome_auto_rate_setting&.base_rate_checkpoint(current_base_rate: current_base_rate, average_base_rate: average_base_rate)
+      @outcome_base_rate_checkpoint ||= outcome_auto_rate_setting&.checkpoint(base_value: current_base_rate, additional_value: average_base_rate, type: 'by_base_rate')
     end
 
     def calculate_auto_rate_by_reserve_min_boundary
