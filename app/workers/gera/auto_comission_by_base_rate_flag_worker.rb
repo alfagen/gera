@@ -5,6 +5,8 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
+    UPTIME = 1.hour
+
     def perform(exchange_rate_id)
       ExchangeRate.find(exchange_rate_id).update(auto_comission_by_base_rate: false)
     end
