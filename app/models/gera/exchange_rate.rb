@@ -137,7 +137,7 @@ module Gera
     end
 
     def turn_off_auto_comission_by_base
-      AutoComissionByBaseRateFlagWorker.perform_in(AutoComissionByBaseRateFlagWorker::UPTIME, id)
+      AutoComissionByBaseRateFlagWorker.perform_async(id)
     end
 
     def auto_comission_by_base_rate_turned_on?

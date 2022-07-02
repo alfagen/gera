@@ -7,8 +7,12 @@ module Gera
 
     UPTIME = 1.hour
 
-    def perform(exchange_rate_id)
-      ExchangeRate.find(exchange_rate_id).update(auto_comission_by_base_rate: false)
+    def perform(exchange_rate_id, instant_start = false)
+      unless instant_start
+        self.class.perform_in(UPTIME, exchange_rate_id, true)
+      else
+        ExchangeRate.find(exchange_rate_id).update(auto_comission_by_base_rate: false)
+      end
     end
   end
 end
