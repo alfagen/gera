@@ -41,6 +41,7 @@ module Gera
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
+    before_save :turn_off_auto_comission_by_base, if: :auto_comission_by_base_rate_turned_on?
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -51,6 +52,10 @@ module Gera
     validates :commission, presence: true
 
     delegate :rate, :currency_rate, to: :direction_rate
+
+    delegate  :auto_comission_by_reserve, :comission_by_base_rate, :auto_rate_by_base_from,
+              :auto_rate_by_base_to, :auto_rate_by_reserve_from, :auto_rate_by_reserve_to,
+              :current_base_rate, :average_base_rate, to: :rate_comission_calculator
 
     alias_attribute :ps_from_id, :income_payment_system_id
     alias_attribute :ps_to_id, :outcome_payment_system_id
@@ -124,49 +129,23 @@ module Gera
     end
 
     def final_rate_percents
-      auto_rate? ? auto_comission_by_reserve : fixed_comission
-    end
-
-    def auto_comission_by_reserve
-      ((auto_rate_by_reserve_from + auto_rate_by_reserve_to) / 2.0).round(2)
-    end
-
-    def auto_rate_by_reserve_from
-      return 0.0 unless auto_rates_ready?
-
-      calculate_auto_rate_min_boundary
-    end
-
-    def auto_rate_by_reserve_to
-      return 0.0 unless auto_rates_ready?
-
-      calculate_auto_rate_max_boundary
-    end
-
-    private
-
-    def auto_rates_ready?
-      income_direction_checkpoint.present? && outcome_direction_checkpoint.present?
-    end
-
-    def income_direction_checkpoint
-      @income_direction_checkpoint ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')&.checkpoint
-    end
-
-    def outcome_direction_checkpoint
-      @outcome_direction_checkpoint ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')&.checkpoint
-    end
-
-    def calculate_auto_rate_min_boundary
-      ((income_direction_checkpoint.min_boundary + outcome_direction_checkpoint.min_boundary) / 2.0).round(2)
-    end
-
-    def calculate_auto_rate_max_boundary
-      ((income_direction_checkpoint.max_boundary + outcome_direction_checkpoint.max_boundary) / 2.0).round(2)
+      auto_rate? ? rate_comission_calculator.auto_comission : rate_comission_calculator.fixed_comission
     end
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+    end
+
+    def turn_off_auto_comission_by_base
+      AutoComissionByBaseRateFlagWorker.perform_async(id)
+    end
+
+    def auto_comission_by_base_rate_turned_on?
+      auto_comission_by_base_rate_changed?(from: false, to: true)
+    end
+
+    def rate_comission_calculator
+      @rate_comission_calculator ||= RateComissionCalculator.new(exchange_rate: self)
     end
   end
 end
