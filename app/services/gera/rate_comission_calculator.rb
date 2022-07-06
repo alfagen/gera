@@ -153,12 +153,11 @@ module Gera
     end
 
     def auto_commision_range
-      (auto_comission_from..auto_comission_to)
+      @auto_commision_range ||= (auto_comission_from..auto_comission_to)
     end
 
     def auto_comission_by_external_comissions
       @auto_comission_by_external_comissions ||= begin
-      auto_commision_range.include?(rrate.target_rate_percent)
         external_rates_with_similar_comissions = external_rates.select { |rate| auto_commision_range.include?(rate.target_rate_percent) }
         return commission if external_rates_with_similar_comissions.empty?
 
