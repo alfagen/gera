@@ -55,7 +55,8 @@ module Gera
 
     delegate  :auto_comission_by_reserve, :comission_by_base_rate, :auto_rate_by_base_from,
               :auto_rate_by_base_to, :auto_rate_by_reserve_from, :auto_rate_by_reserve_to,
-              :current_base_rate, :average_base_rate, to: :rate_comission_calculator
+              :current_base_rate, :average_base_rate, :auto_comission_from,
+              :auto_comission_to, :bestchange_delta, to: :rate_comission_calculator
 
     alias_attribute :ps_from_id, :income_payment_system_id
     alias_attribute :ps_to_id, :outcome_payment_system_id
@@ -145,7 +146,11 @@ module Gera
     end
 
     def rate_comission_calculator
-      @rate_comission_calculator ||= RateComissionCalculator.new(exchange_rate: self)
+      @rate_comission_calculator ||= RateComissionCalculator.new(exchange_rate: self, external_rates: external_rates)
+    end
+
+    def external_rates
+      @external_rates ||= BestChange::Service.new(exchange_rate: self).rows
     end
   end
 end

@@ -4,15 +4,18 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
+    BESTCHANGE_AUTO_COMISSION_GAP = 0.01
+
     attribute :exchange_rate
+    attribute :external_rates
 
     delegate  :auto_comission_by_base_rate?, :in_currency, :payment_system_from,
               :payment_system_to, :out_currency, :fixed_comission, to: :exchange_rate
 
     def auto_comission
-      commission = auto_comission_by_reserve
-      commission += comission_by_base_rate if auto_comission_by_base_rate?
-      commission
+      return commission unless external_rates_ready?
+
+      auto_comission_by_external_comissions
     end
 
     def auto_comission_by_reserve
@@ -53,6 +56,18 @@ module Gera
 
     def average_base_rate
       @average_base_rate ||= Gera::CurrencyRateHistoryInterval.where('interval_from > ?', DateTime.now.utc - 24.hours).where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).average(:avg_rate)
+    end
+
+    def auto_comission_from
+      @auto_comission_from ||= auto_rate_by_reserve_from + auto_rate_by_base_from
+    end
+
+    def auto_comission_to
+      @auto_comission_to_boundary ||= auto_rate_by_reserve_to + auto_rate_by_base_to
+    end
+
+    def bestchange_delta
+      auto_comission_by_external_comissions - commission
     end
 
     private
@@ -124,6 +139,32 @@ module Gera
 
     def average(a, b)
       ((a + b) / 2.0).round(2)
+    end
+
+    def commission
+      @commission ||= begin
+        comission_percents = auto_comission_by_reserve
+        comission_percents += comission_by_base_rate if auto_comission_by_base_rate?
+        comission_percents
+      end
+    end
+
+    def external_rates_ready?
+      external_rates.present?
+    end
+
+    def auto_commision_range
+      @auto_commision_range ||= (auto_comission_from..auto_comission_to)
+    end
+
+    def auto_comission_by_external_comissions
+      @auto_comission_by_external_comissions ||= begin
+        external_rates_with_similar_comissions = external_rates.select { |rate| auto_commision_range.include?(rate.target_rate_percent) }
+        return commission if external_rates_with_similar_comissions.empty?
+
+        external_rates_with_similar_comissions.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
+        external_rates_with_similar_comissions.last.target_rate_percent - BESTCHANGE_AUTO_COMISSION_GAP
+      end
     end
   end
 end
