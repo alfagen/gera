@@ -14,6 +14,7 @@ module Gera
 
     def auto_comission
       return commission unless external_rates_ready?
+
       auto_comission_by_external_comissions
     end
 
@@ -161,7 +162,7 @@ module Gera
         external_rates_with_similar_comissions = external_rates.select { |rate| auto_commision_range.include?(rate.target_rate_percent) }
         return commission if external_rates_with_similar_comissions.empty?
 
-        external_rates_with_similar_comissions.sort!
+        external_rates_with_similar_comissions.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
         external_rates_with_similar_comissions.last.target_rate_percent - BESTCHANGE_AUTO_COMISSION_GAP
       end
     end
