@@ -53,9 +53,6 @@ module Gera
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
-      logger.warn "Ignore #{currency_pair}" unless CurrencyPair.all.include? currency_pair
-
-      logger.info "save_rate_for_date #{actual_for}, #{currency_pair} #{data}"
       ExternalRate.create!(
         currency_pair: currency_pair,
         snapshot: snapshot,
@@ -69,19 +66,6 @@ module Gera
         rate_value: 1.0 / sell_price.to_f
       )
     rescue ActiveRecord::RecordNotUnique => err
-      raise error if Rails.env.test?
-
-      if err.message.include? 'external_rates_unique_index'
-        logger.debug "save_rate_for_date: #{actual_for} , #{currency_pair} -> #{err}"
-        if defined? Bugsnag
-          Bugsnag.notify 'Try to rewrite rates' do |b|
-            b.meta_data = { actual_for: actual_for, snapshot_id: snapshot.id, currency_pair: currency_pair }
-          end
-        end
-      else
-        logger.error "save_rate_for_date: #{actual_for} , #{pair} -> #{err}"
-        raise error
-      end
     end
   end
 end
