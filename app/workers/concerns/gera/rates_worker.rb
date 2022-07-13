@@ -67,6 +67,7 @@ module Gera
       )
     rescue ActiveRecord::RecordNotUnique => err
       raise error if Rails.env.test?
+
       if err.message.include? 'external_rates_unique_index'
         logger.debug "save_rate_for_date: #{actual_for} , #{currency_pair} -> #{err}"
         if defined? Bugsnag
