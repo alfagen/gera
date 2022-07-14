@@ -53,9 +53,6 @@ module Gera
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
-      logger.warn "Ignore #{currency_pair}" unless CurrencyPair.all.include? currency_pair
-
-      logger.info "save_rate_for_date #{actual_for}, #{currency_pair} #{data}"
       ExternalRate.create!(
         currency_pair: currency_pair,
         snapshot: snapshot,
