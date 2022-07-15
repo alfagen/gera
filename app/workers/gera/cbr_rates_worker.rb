@@ -28,14 +28,18 @@ module Gera
     URL = 'http://www.cbr.ru/scripts/XML_daily.asp'
 
     def perform
+      logger.debug 'CBRRatesWorker: before perform'
       ActiveRecord::Base.connection.clear_query_cache
+      rates_by_date = load_rates
+      logger.debug 'CBRRatesWorker: before transaction'
       ActiveRecord::Base.transaction do
-        days.each do |date|
-          fetch_and_save_rate date
+        rates_by_date.each do |date, rates|
+          save_rates(date, rates)
         end
-
-        make_snapshot
       end
+      logger.debug 'CBRRatesWorker: after transaction'
+      make_snapshot
+      logger.debug 'CBRRatesWorker: after perform'
     end
 
     private
@@ -58,8 +62,8 @@ module Gera
       save_snapshot_rate EUR, RUB
       save_snapshot_rate UAH, RUB
 
-      cbr.update_attribute :actual_snapshot_id, snapshot.id
-      cbr_avg.update_attribute :actual_snapshot_id, avg_snapshot.id
+      cbr.update_column :actual_snapshot_id, snapshot.id
+      cbr_avg.update_column :actual_snapshot_id, avg_snapshot.id
     end
 
     def save_snapshot_rate(cur_from, cur_to)
@@ -105,6 +109,14 @@ module Gera
       )
     end
 
+    def cbr_avg
+      @cbr_avg ||= RateSourceCBRAvg.get!
+    end
+
+    def cbr
+      @cbr ||= RateSourceCBR.get!
+    end
+
     def days
       today = Date.today
       logger.info "Start import for #{today}"
@@ -119,8 +131,12 @@ module Gera
       ].uniq.sort
     end
 
-    def fetch_and_save_rate(date)
-      fetch_rates date
+    def load_rates
+      rates_by_date = {}
+      days.each do |date|
+        rates_by_date[date] = fetch_rates(date)
+      end
+      rates_by_date
     rescue WrongDate => err
       logger.warn err
 
@@ -131,25 +147,7 @@ module Gera
       logger.error err
     end
 
-    def cbr_avg
-      @cbr_avg ||= RateSourceCBRAvg.get!
-    end
-
-    def cbr
-      @cbr ||= RateSourceCBR.get!
-    end
-
     def fetch_rates(date)
-      return if CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
-
-      root = build_root date
-
-      currencies.each do |cur|
-        save_rate get_rate(root, CBR_IDS[cur.iso_code]), cur, date unless CbrExternalRate.where(date: date, cur_from: cur.iso_code).exists?
-      end
-    end
-
-    def build_root(date)
       uri = URI.parse URL
       uri.query = 'date_req=' + date.strftime('%d/%m/%Y')
 
@@ -164,6 +162,14 @@ module Gera
       return root if validate_date == root_date
 
       raise WrongDate, "Request and response dates are different #{uri}: #{validate_date} <> #{root_date}"
+    end
+
+    def save_rates(date, rates)
+      return if CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
+
+      currencies.each do |cur|
+        save_rate get_rate(rates, CBR_IDS[cur.iso_code]), cur, date unless CbrExternalRate.where(date: date, cur_from: cur.iso_code).exists?
+      end
     end
 
     def get_rate(root, id)

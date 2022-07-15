@@ -10,23 +10,24 @@ module Gera
     Error = Class.new StandardError
 
     def perform
+      logger.debug 'RatesWorker: before perform'
       # Alternative approach is `Model.uncached do`
       ActiveRecord::Base.connection.clear_query_cache
 
-      rates # Load before a transaction
-
+      rates = load_rates # Load before a transaction
+      logger.debug 'RatesWorker: before transaction'
       rate_source.class.transaction do
         create_snapshot
         rates.each do |pair, data|
           save_rate pair, data
         end
       end
-      rate_source.update_attribute(:actual_snapshot_id, snapshot.id) if snapshot.present?
+      logger.debug 'RatesWorker: after transaction'
+      rate_source.update_column(:actual_snapshot_id, snapshot.id) if snapshot.present?
 
       CurrencyRatesWorker.new.perform
-
+      logger.debug 'RatesWorker: after perform'
       snapshot.id
-
       # EXMORatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
       raise error if Rails.env.test?
@@ -46,10 +47,6 @@ module Gera
 
     def create_snapshot
       @snapshot ||= rate_source.snapshots.create! actual_for: Time.zone.now
-    end
-
-    def rates
-      @rates ||= load_rates
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
