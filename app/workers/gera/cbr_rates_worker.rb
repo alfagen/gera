@@ -135,16 +135,16 @@ module Gera
       rates_by_date = {}
       days.each do |date|
         rates_by_date[date] = fetch_rates(date)
+      rescue WrongDate => err
+        logger.warn err
+  
+        # HTTP redirection loop: http://www.cbr.ru/scripts/XML_daily.asp?date_req=09/01/2019
+      rescue RuntimeError => err
+        raise err unless err.message.include? 'HTTP redirection loop'
+  
+        logger.error err
       end
       rates_by_date
-    rescue WrongDate => err
-      logger.warn err
-
-      # HTTP redirection loop: http://www.cbr.ru/scripts/XML_daily.asp?date_req=09/01/2019
-    rescue RuntimeError => err
-      raise err unless err.message.include? 'HTTP redirection loop'
-
-      logger.error err
     end
 
     def fetch_rates(date)
