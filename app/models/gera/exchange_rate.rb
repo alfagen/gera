@@ -17,6 +17,7 @@ module Gera
     include Authority::Abilities
 
     DEFAULT_COMISSION = 50
+    MIN_COMISSION = -9.9
 
     include Mathematic
     include DirectionSupport
@@ -50,6 +51,7 @@ module Gera
     end
 
     validates :commission, presence: true
+    validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
 
     delegate :rate, :currency_rate, to: :direction_rate
 
