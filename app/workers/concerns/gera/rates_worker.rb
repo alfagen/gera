@@ -28,7 +28,13 @@ module Gera
       snapshot.id
       # EXMORatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
-      true
+      raise error if Rails.env.test?
+
+      logger.error error
+      Bugsnag.notify error do |b|
+        b.severity = :warning
+        b.meta_data = { error: error }
+      end
     end
 
     private
