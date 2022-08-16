@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 module Gera
-  RSpec.describe EXMORatesWorker do
+  RSpec.describe BinanceRatesWorker do
     before do
-      create :rate_source_exmo
+      create :rate_source_binance
       create :rate_source_cbr_avg
       create :rate_source_cbr
       create :rate_source_manual
@@ -13,10 +13,18 @@ module Gera
 
     it do
       expect(CurrencyRate.count).to be_zero
-      VCR.use_cassette :exmo do
-        expect(EXMORatesWorker.new.perform).to be_truthy
+      threads = []
+      3.times do |i|
+        threads << Thread.new do
+          puts "START THREAD #{i + 1}"
+          sleep 0.013 * (i + 1)
+          VCR.use_cassette "binance#{i + 1}" do
+            expect(BinanceRatesWorker.new.perform).to be_truthy
+          end
+        end
       end
-      expect(CurrencyRate.count).to eq 134
+      threads.each(&:join)
+      expect(CurrencyRate.count).to eq 175
     end
   end
 end

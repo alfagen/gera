@@ -16,27 +16,19 @@ module Gera
 
       rates = load_rates # Load before a transaction
       logger.debug 'RatesWorker: before transaction'
-      rate_source.class.transaction do
         create_snapshot
         rates.each do |pair, data|
           save_rate pair, data
         end
-      end
       logger.debug 'RatesWorker: after transaction'
-      rate_source.update_column(:actual_snapshot_id, snapshot.id) if snapshot.present?
+      rate_source.update(actual_snapshot_id: snapshot.id) if snapshot.present?
 
       CurrencyRatesWorker.new.perform
       logger.debug 'RatesWorker: after perform'
       snapshot.id
       # EXMORatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
-      raise error if Rails.env.test?
-
-      logger.error error
-      Bugsnag.notify error do |b|
-        b.severity = :warning
-        b.meta_data = { error: error }
-      end
+      true
     end
 
     private
