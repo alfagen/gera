@@ -22,6 +22,7 @@ module Gera
       end
       logger.debug 'RatesWorker: after transaction'
       rate_source.update(actual_snapshot_id: snapshot.id) if snapshot.present?
+      snapshot.destroy if rate_source.invalid?
 
       CurrencyRatesWorker.new.perform
       logger.debug 'RatesWorker: after perform'
