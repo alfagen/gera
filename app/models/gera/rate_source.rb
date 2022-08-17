@@ -81,6 +81,7 @@ module Gera
       return true if actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
 
       errors.add :actual_snapshot_id, 'Некорректое к-во курсов'
+      candidate_snapshot.destroy
       false
     end
   end
