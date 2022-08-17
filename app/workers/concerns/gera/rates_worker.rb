@@ -16,14 +16,13 @@ module Gera
 
       rates = load_rates # Load before a transaction
       logger.debug 'RatesWorker: before transaction'
-      rate_source.class.transaction do
-        create_snapshot
-        rates.each do |pair, data|
-          save_rate pair, data
-        end
+      create_snapshot
+      rates.each do |pair, data|
+        save_rate pair, data
       end
       logger.debug 'RatesWorker: after transaction'
-      rate_source.update_column(:actual_snapshot_id, snapshot.id) if snapshot.present?
+      rate_source.update(actual_snapshot_id: snapshot.id) if snapshot.present?
+      snapshot.destroy if rate_source.invalid?
 
       CurrencyRatesWorker.new.perform
       logger.debug 'RatesWorker: after perform'
