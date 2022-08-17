@@ -4,7 +4,7 @@ module Gera
   class ExternalRateSnapshot < ApplicationRecord
     belongs_to :rate_source
 
-    has_many :external_rates, foreign_key: :snapshot_id, dependent: :destroy
+    has_many :external_rates, foreign_key: :snapshot_id, dependent: :delete_all
 
     scope :ordered, -> { order 'actual_for desc' }
     scope :last_actuals_by_rate_sources, -> { where id: group(:rate_source_id).maximum(:id).values }

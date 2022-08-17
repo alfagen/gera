@@ -1,0 +1,75 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.binance.com/api/v3/ticker/bookTicker
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - api.binance.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json;charset=UTF-8
+      Content-Length:
+      - '34021'
+      Connection:
+      - keep-alive
+      Date:
+      - Wed, 17 Aug 2022 12:34:34 GMT
+      Server:
+      - nginx
+      X-Mbx-Uuid:
+      - 70fbf9c1-a620-476f-94bd-2c826741bf42
+      X-Mbx-Used-Weight:
+      - '2'
+      X-Mbx-Used-Weight-1m:
+      - '2'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      Content-Security-Policy:
+      - default-src 'self'
+      X-Content-Security-Policy:
+      - default-src 'self'
+      X-Webkit-Csp:
+      - default-src 'self'
+      Cache-Control:
+      - no-cache, no-store, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - '0'
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET, HEAD, OPTIONS
+      X-Cache:
+      - Miss from cloudfront
+      Via:
+      - 1.1 ade2b5e2170ccd4f394b741b27bb0eec.cloudfront.net (CloudFront)
+      X-Amz-Cf-Pop:
+      - FRA56-P4
+      X-Amz-Cf-Id:
+      - 9LIfhkm3n34aqOfa73PX9RTGI-HJii_EFAxpge_cJEm46JCL0_5VPQ==
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"symbol":"ETHBTC","bidPrice":"0.07893200","bidQty":"18.88840000","askPrice":"0.07893300","askQty":"11.29040000"}]'
+  recorded_at: Wed, 17 Aug 2022 12:34:34 GMT
+recorded_with: VCR 6.1.0
