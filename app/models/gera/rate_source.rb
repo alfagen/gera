@@ -76,8 +76,7 @@ module Gera
     end
 
     def candidate_snapshot_rates_count_valid?
-      actual_snapshot_id, candidate_snapshot_id = actual_snapshot_id_change
-      actual_snapshot, candidate_snapshot = snapshots.find(actual_snapshot_id, candidate_snapshot_id)
+      actual_snapshot, candidate_snapshot = snapshots.find(actual_snapshot_id_change)
       return true if actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
 
       errors.add :actual_snapshot_id, 'Некорректое к-во курсов'
