@@ -86,7 +86,7 @@ module Gera
     end
 
     def update_finite_rate!(finite_rate)
-      redis_update(attributes: { comission: calculate_comission(finite_rate, currency_rate.rate_value }))
+      redis_update(attributes: { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
     end
 
     def custom_inspect
