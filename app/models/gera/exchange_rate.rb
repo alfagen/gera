@@ -18,6 +18,7 @@ module Gera
 
     DEFAULT_COMISSION = 50
     MIN_COMISSION = -9.9
+    REDIS_QUEUE = 'kassa.exchange_rates'
 
     include Mathematic
     include DirectionSupport
@@ -85,7 +86,7 @@ module Gera
     end
 
     def update_finite_rate!(finite_rate)
-      update! comission: calculate_comission(finite_rate, currency_rate.rate_value)
+      redis_update(attributes: { comission: calculate_comission(finite_rate, currency_rate.rate_value }))
     end
 
     def custom_inspect
@@ -153,6 +154,16 @@ module Gera
 
     def external_rates
       @external_rates ||= BestChange::Service.new(exchange_rate: self).rows
+    end
+
+    def redis_update(attributes:)
+      RabbitPublisher.publish(REDIS_QUEUE, message: attributes.merge(id: id))
+    end
+
+    def self.redis_list
+      $redis.lrange(REDIS_QUEUE, 0).map do |raw_exchange_rate|
+        JSON.parse(raw_exchange_rate)
+      end
     end
   end
 end

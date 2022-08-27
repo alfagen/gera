@@ -3,6 +3,8 @@
 # Курсы внешних систем
 module Gera
   class ExternalRate < ApplicationRecord
+    REDIS_QUEUE = 'kassa.external_rates'
+
     include CurrencyPairSupport
 
     belongs_to :source, class_name: 'RateSource'
@@ -26,6 +28,16 @@ module Gera
 
     def dump
       as_json(only: %i[id cur_from cur_to rate_value source_id created_at])
+    end
+
+    def self.redis_create(attributes:)
+      RabbitPublisher.publish(REDIS_QUEUE, message: attributes)
+    end
+
+    def self.redis_list
+      $redis.lrange(REDIS_QUEUE, 0).map do |raw_external_rate|
+        JSON.parse(raw_external_rate)
+      end
     end
 
     private

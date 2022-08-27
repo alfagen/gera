@@ -11,7 +11,7 @@ module Gera
       unless instant_start
         self.class.perform_in(UPTIME, exchange_rate_id, true)
       else
-        ExchangeRate.find(exchange_rate_id).update(auto_comission_by_base_rate: false)
+        ExchangeRate.find(exchange_rate_id).redis_update(attributes: { auto_comission_by_base_rate: false })
       end
     end
   end
