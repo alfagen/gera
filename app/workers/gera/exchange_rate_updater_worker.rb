@@ -7,7 +7,7 @@ module Gera
 
     sidekiq_options queue: :exchange_rates
 
-    def perform(exchange_rate_id, attributes:)
+    def perform(exchange_rate_id, attributes)
       ExchangeRate.find(exchange_rate_id).update!(attributes)
     end
   end
