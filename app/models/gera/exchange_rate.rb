@@ -85,7 +85,7 @@ module Gera
     end
 
     def update_finite_rate!(finite_rate)
-      update! comission: calculate_comission(finite_rate, currency_rate.rate_value)
+      ExchangeRateUpdaterWorker.perform_async(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
     end
 
     def custom_inspect
