@@ -14,7 +14,7 @@ module Gera
           currency_pair: currency_pair,
           snapshot: candidate_snapshot,
           source: rate_source,
-          rate_value: buy_price.to_f
+          rate_value: rate_value
         )
         if rate_source.actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
           rate_source.update(actual_snapshot_id: candidate_snapshot.id)
