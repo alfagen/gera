@@ -11,7 +11,7 @@ module Gera
         rate_source = source_type.constantize.find(source_id)
         candidate_snapshot = ExternalRateSnapshot.find(snapshot_id)
         ExternalRate.create!(
-          currency_pair: currency_pair,
+          currency_pair: CurrencyPair.new(currency_pair),
           snapshot: candidate_snapshot,
           source: rate_source,
           rate_value: rate_value
