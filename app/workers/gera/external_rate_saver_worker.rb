@@ -7,7 +7,7 @@ module Gera
 
     sidekiq_options queue: :external_rates
 
-    def perform(currency_pair:, candidate_snapshot_id:, rate_source_class_name:, rate_source_id:, rate_value:)
+    def perform(currency_pair, candidate_snapshot_id, rate_source_class_name, rate_source_id, rate_value)
       rate_source = rate_source_class_name.constantize.find(rate_source_id)
       candidate_snapshot = ExternalRateSnapshot.find(candidate_snapshot_id)
       ExternalRate.create!(

@@ -43,20 +43,8 @@ module Gera
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
-      ExternalRateSaverWorker.perform_async(
-        currency_pair: currency_pair,
-        candidate_snapshot_id: snapshot.id,
-        rate_source_class_name: rate_source.class.name, 
-        rate_source_id: rate_source.id, 
-        rate_value: buy_price.to_f
-      )
-      ExternalRateSaverWorker.perform_async(
-        currency_pair: currency_pair.inverse,
-        candidate_snapshot_id: snapshot.id,
-        rate_source_class_name: rate_source.class.name,
-        rate_source_id: rate_source.id,
-        rate_value: 1.0 / sell_price.to_f
-      )
+      ExternalRateSaverWorker.perform_async(currency_pair, candidate_snapshot_id: snapshot.id, rate_source_class_name: rate_source.class.name, rate_source.id, buy_price.to_f)
+      ExternalRateSaverWorker.perform_async(currency_pair.inverse, snapshot.id, rate_source.class.name, rate_source.id, 1.0 / sell_price.to_f)
     end
   end
 end
