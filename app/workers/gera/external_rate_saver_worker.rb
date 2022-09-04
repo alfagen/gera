@@ -46,7 +46,7 @@ module Gera
     end
 
     def update_currency_rates
-      CurrencyRatesWorker.new.perform_async
+      CurrencyRatesWorker.perform_async
     end
   end
 end
