@@ -61,7 +61,7 @@ module Gera
         end
       else
         logger.error error_message
-        raise error
+        raise err
       end
     end
   end
