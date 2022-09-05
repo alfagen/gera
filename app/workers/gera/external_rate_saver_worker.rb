@@ -10,7 +10,7 @@ module Gera
     def perform(currency_pair, candidate_snapshot_id, rate)
       rate_source = find_rate_source(rate)
       candidate_snapshot = ExternalRateSnapshot.find(candidate_snapshot_id)
-      create_external_rate(rate_source: rate_source, snapshot: candidate_snapshot, currency_pair: CurrencyPair.new(currency_pair), value: rate['value'])
+      create_external_rate(rate_source: rate_source, snapshot: candidate_snapshot, currency_pair: CurrencyPair.new(currency_pair), value: rate['rate_value'])
       update_actual_snapshot_if_candidate_filled_up(rate_source: rate_source, candidate_snapshot: candidate_snapshot)
     rescue ActiveRecord::RecordNotUnique => err
       raise err if Rails.env.test?
