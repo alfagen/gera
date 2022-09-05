@@ -17,7 +17,6 @@ module Gera
     scope :enabled_for_cross_rates, -> { enabled }
 
     validates :key, presence: true, uniqueness: true
-    validate :candidate_snapshot_rates_count_valid?, on: :update, if: :actual_snapshot_id_changed?
 
     before_create do
       self.priority ||= RateSource.maximum(:priority).to_i + 1
@@ -73,16 +72,6 @@ module Gera
       curs.each do |cur|
         raise "Источник #{self} не поддерживает валюту #{cur}" unless is_currency_supported? cur
       end
-    end
-
-    def candidate_snapshot_rates_count_valid?
-      actual_snapshot, candidate_snapshot = snapshots.find(actual_snapshot_id_change)
-      # TODO: нужно сравнивать с фактическим к-вом пар, который мы получили в воркере,
-      # чтобы при добавлении новых валют в этом месте не возникали проблемы 
-      return true if actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
-
-      errors.add :actual_snapshot_id, 'Некорректое к-во курсов'
-      false
     end
   end
 end
