@@ -7,35 +7,38 @@ module Gera
 
     sidekiq_options queue: :external_rates
 
-    def perform(currency_pair, candidate_snapshot_id, rate_source_class_name, rate_source_id, rate_value)
-      rate_source = rate_source_class_name.constantize.find(rate_source_id)
+    def perform(currency_pair, candidate_snapshot_id, rate)
+      rate_source = find_rate_source(rate)
       candidate_snapshot = ExternalRateSnapshot.find(candidate_snapshot_id)
-      ExternalRate.create!(
-        currency_pair: CurrencyPair.new(currency_pair),
-        snapshot: candidate_snapshot,
-        source: rate_source,
-        rate_value: rate_value
-      )
-      if candidate_snapshot_filled_up?(actual_snapshot: rate_source.actual_snapshot, candidate_snapshot: candidate_snapshot)
-        set_candidate_snapshot_as_actual(candidate_snapshot_id: candidate_snapshot.id, rate_source: rate_source)
-        update_currency_rates
-      end
+      create_external_rate(rate_source: rate_source, snapshot: candidate_snapshot, currency_pair: CurrencyPair.new(currency_pair), value: rate[:value])
+      update_actual_snapshot_if_candidate_filled_up(rate_source: rate_source, candidate_snapshot: candidate_snapshot)
     rescue ActiveRecord::RecordNotUnique => err
-      raise error if Rails.env.test?
+      raise err if Rails.env.test?
 
-      error_message = "save_rate_for_date: #{actual_for} , #{currency_pair} -> #{err}"
-      if err.message.include? 'external_rates_unique_index'
-        logger.debug error_message
-        Bugsnag.notify 'Try to rewrite rates' do |b|
-          b.meta_data = { actual_for: actual_for, snapshot_id: snapshot.id, currency_pair: currency_pair }
-        end
-      else
-        logger.error error_message
-        raise error
-      end
+      handle_record_non_uniq(err, currency_pair, candidate_snapshot)
     end
 
     private
+
+    def find_rate_source(rate)
+      rate[:source_class_name].constantize.find(rate[:source_id])
+    end
+
+    def create_external_rate(rate_source:, snapshot:, currency_pair:, value:)
+      ExternalRate.create!(
+        currency_pair: currency_pair,
+        snapshot: snapshot,
+        source: rate_source,
+        rate_value: value
+      )
+    end
+
+    def update_actual_snapshot_if_candidate_filled_up(rate_source:, candidate_snapshot:)
+      return unless candidate_snapshot_filled_up?(actual_snapshot: rate_source.actual_snapshot, candidate_snapshot: candidate_snapshot)
+
+      set_candidate_snapshot_as_actual(candidate_snapshot_id: candidate_snapshot.id, rate_source: rate_source)
+      update_currency_rates
+    end
 
     def candidate_snapshot_filled_up?(actual_snapshot:, candidate_snapshot:)
       actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
@@ -47,6 +50,19 @@ module Gera
 
     def update_currency_rates
       CurrencyRatesWorker.perform_async
+    end
+
+    def handle_record_non_uniq(err, currency_pair, snapshot)
+      error_message = "save_rate_for_date: #{snapshot.actual_for} , #{currency_pair} -> #{err}"
+      if err.message.include? 'external_rates_unique_index'
+        logger.debug error_message
+        Bugsnag.notify 'Try to rewrite rates' do |b|
+          b.meta_data = { actual_for: snapshot.actual_for, snapshot_id: snapshot.id, currency_pair: currency_pair }
+        end
+      else
+        logger.error error_message
+        raise error
+      end
     end
   end
 end
