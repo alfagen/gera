@@ -15,8 +15,6 @@ module Gera
       update_actual_snapshot_if_candidate_filled_up(rate_source: rate_source, candidate_snapshot: candidate_snapshot)
     rescue ActiveRecord::RecordNotUnique => err
       raise err if Rails.env.test?
-
-      handle_record_non_uniq(err, currency_pair, candidate_snapshot)
     end
 
     private
@@ -51,19 +49,6 @@ module Gera
 
     def update_currency_rates
       CurrencyRatesWorker.perform_async
-    end
-
-    def handle_record_non_uniq(err, currency_pair, snapshot)
-      error_message = "save_rate_for_date: #{snapshot.actual_for} , #{currency_pair} -> #{err}"
-      if err.message.include? 'external_rates_unique_index'
-        logger.debug error_message
-        Bugsnag.notify 'Try to rewrite rates' do |b|
-          b.meta_data = { actual_for: snapshot.actual_for, snapshot_id: snapshot.id, currency_pair: currency_pair }
-        end
-      else
-        logger.error error_message
-        raise err
-      end
     end
   end
 end
