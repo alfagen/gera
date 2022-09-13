@@ -78,35 +78,16 @@ module Gera
       raise "No minimal rate #{cur_from}, #{cur_to}" unless min_rate
       raise "No maximal rate #{cur_from}, #{cur_to}" unless max_rate
 
-      ExternalRate.create!(
-        source: cbr,
-        snapshot: snapshot,
-        currency_pair: pair,
-        rate_value: min_rate.rate
-      )
-
-      ExternalRate.create!(
-        source: cbr,
-        snapshot: snapshot,
-        currency_pair: pair.inverse,
-        rate_value: 1.0 / max_rate.rate
-      )
+      rate = { source_class_name: cbr.class.name, source_id: cbr.id, rate_value: min_rate.rate }
+      ExternalRateSaverWorker.perform_async(pair, snapshot.id, rate)
+      rate[:rate_value] = 1.0 / max_rate.rate
+      ExternalRateSaverWorker.perform_async(pair.inverse, snapshot.id, rate)
 
       avg_rate = (max_rate.rate + min_rate.rate) / 2.0
-
-      ExternalRate.create!(
-        source: cbr_avg,
-        snapshot: avg_snapshot,
-        currency_pair: pair,
-        rate_value: avg_rate
-      )
-
-      ExternalRate.create!(
-        source: cbr_avg,
-        snapshot: avg_snapshot,
-        currency_pair: pair.inverse,
-        rate_value: 1.0 / avg_rate
-      )
+      rate = { source_class_name: cbr_avg.class.name, source_id: cbr_avg.id, rate_value: avg_rate }
+      ExternalRateSaverWorker.perform_async(pair, avg_snapshot.id, rate)
+      rate[:rate_value] = 1.0 / avg_rate
+      ExternalRateSaverWorker.perform_async(pair.inverse, avg_snapshot.id, rate)
     end
 
     def cbr_avg

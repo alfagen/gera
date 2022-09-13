@@ -30,13 +30,8 @@ module Gera
 
       price = (er.sell_price + er.buy_price) / 2.0
 
-      ExternalRate.create!(
-        source: source,
-        snapshot: snapshot,
-        currency_pair: pair,
-        sell_price: price,
-        buy_price: price
-      )
+      rate = { source_class_name: source.class.name, source_id: source.id, sell_price: price, buy_price: price }
+      ExternalRateSaverWorker.perform_async(pair, snapshot.id, rate)
     end
   end
 end
