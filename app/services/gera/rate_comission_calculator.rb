@@ -55,7 +55,7 @@ module Gera
     end
 
     def average_base_rate
-      @average_base_rate ||= Gera::CurrencyRateHistoryInterval.where('interval_from > ?', DateTime.now.utc - 24.hours).where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).average(:avg_rate)
+      @average_base_rate ||= Gera::CurrencyRateHistoryInterval.where('interval_from > ?', DateTime.now.utc - 24.hours).where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).average(:avg_rate) || 0.0
     end
 
     def auto_comission_from
