@@ -39,7 +39,8 @@ module Gera
     end
 
     def candidate_snapshot_filled_up?(actual_snapshot:, candidate_snapshot:)
-      actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
+      # actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
+      true
     end
 
     def set_candidate_snapshot_as_actual(candidate_snapshot_id:, rate_source:)
