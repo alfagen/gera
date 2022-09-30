@@ -4,7 +4,8 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
-    BESTCHANGE_AUTO_COMISSION_GAP = 0.01
+    AUTO_COMISSION_GAP = 0.01
+    NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
 
     attribute :exchange_rate
     attribute :external_rates
@@ -13,9 +14,10 @@ module Gera
               :payment_system_to, :out_currency, :fixed_comission, to: :exchange_rate
 
     def auto_comission
-      return commission unless external_rates_ready?
+      target_value = external_rates_ready? ? auto_comission_by_external_comissions : commission
+      return target_value unless NOT_ALLOWED_COMISSION_RANGE.include?(target_value)
 
-      auto_comission_by_external_comissions
+      calibrated_comission_percents(target_value)
     end
 
     def auto_comission_by_reserve
@@ -163,8 +165,15 @@ module Gera
         return commission if external_rates_with_similar_comissions.empty?
 
         external_rates_with_similar_comissions.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
-        external_rates_with_similar_comissions.last.target_rate_percent - BESTCHANGE_AUTO_COMISSION_GAP
+        external_rates_with_similar_comissions.last.target_rate_percent - AUTO_COMISSION_GAP
       end
+    end
+
+    def calibrated_comission_percents(comission_percents)
+      max_range_value, min_range_value = NOT_ALLOWED_COMISSION_RANGE.max, NOT_ALLOWED_COMISSION_RANGE.min
+      max_range_value_diff = (max_range_value - comission_percents)
+      min_range_value_diff = (comission_percents - min_range_value)
+      min_range_diff < max_range_diff ? min_range_value - AUTO_COMISSION_GAP : max_range_value + AUTO_COMISSION_GAP
     end
   end
 end
