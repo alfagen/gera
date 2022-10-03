@@ -169,11 +169,11 @@ module Gera
       end
     end
 
-    def calibrated_comission_percents(comission_percents)
-      max_range_value, min_range_value = NOT_ALLOWED_COMISSION_RANGE.max, NOT_ALLOWED_COMISSION_RANGE.min
-      max_range_value_diff = (max_range_value - comission_percents)
-      min_range_value_diff = (comission_percents - min_range_value)
-      min_range_diff < max_range_diff ? min_range_value - AUTO_COMISSION_GAP : max_range_value + AUTO_COMISSION_GAP
+    def calibrated_comission_percents(comission)
+      max, min = NOT_ALLOWED_COMISSION_RANGE.max, NOT_ALLOWED_COMISSION_RANGE.min
+      distance_to_max = (max - comission).abs
+      distance_to_min = (min - comission).abs
+      distance_to_min < distance_to_max ? distance_to_min - AUTO_COMISSION_GAP : distance_to_max + AUTO_COMISSION_GAP
     end
   end
 end
