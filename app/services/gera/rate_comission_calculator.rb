@@ -168,7 +168,7 @@ module Gera
     end
 
     def calculate_allowed_comission(comission)
-      return comission unless comission.in?(NOT_ALLOWED_COMISSION_RANGE)
+      return comission unless NOT_ALLOWED_COMISSION_RANGE.include?(comission)
 
       comission_outside_disallowed_range(comission)
     end
