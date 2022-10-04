@@ -4,7 +4,8 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
-    BESTCHANGE_AUTO_COMISSION_GAP = 0.01
+    AUTO_COMISSION_GAP = 0.01
+    NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
 
     attribute :exchange_rate
     attribute :external_rates
@@ -13,9 +14,8 @@ module Gera
               :payment_system_to, :out_currency, :fixed_comission, to: :exchange_rate
 
     def auto_comission
-      return commission unless external_rates_ready?
-
-      auto_comission_by_external_comissions
+      target_value = external_rates_ready? ? auto_comission_by_external_comissions : commission
+      calculate_allowed_comission(target_value)
     end
 
     def auto_comission_by_reserve
@@ -163,8 +163,21 @@ module Gera
         return commission if external_rates_with_similar_comissions.empty?
 
         external_rates_with_similar_comissions.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
-        external_rates_with_similar_comissions.last.target_rate_percent - BESTCHANGE_AUTO_COMISSION_GAP
+        external_rates_with_similar_comissions.last.target_rate_percent - AUTO_COMISSION_GAP
       end
+    end
+
+    def calculate_allowed_comission(comission)
+      return comission unless NOT_ALLOWED_COMISSION_RANGE.include?(comission)
+
+      comission_outside_disallowed_range(comission)
+    end
+
+    def comission_outside_disallowed_range(comission)
+      max, min = NOT_ALLOWED_COMISSION_RANGE.max, NOT_ALLOWED_COMISSION_RANGE.min
+      distance_to_max = (max - comission).abs
+      distance_to_min = (min - comission).abs
+      distance_to_min < distance_to_max ? distance_to_min - AUTO_COMISSION_GAP : distance_to_max + AUTO_COMISSION_GAP
     end
   end
 end
