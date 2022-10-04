@@ -15,9 +15,7 @@ module Gera
 
     def auto_comission
       target_value = external_rates_ready? ? auto_comission_by_external_comissions : commission
-      return target_value unless NOT_ALLOWED_COMISSION_RANGE.include?(target_value)
-
-      calibrated_comission_percents(target_value)
+      calculate_allowed_comission(target_value)
     end
 
     def auto_comission_by_reserve
@@ -169,7 +167,13 @@ module Gera
       end
     end
 
-    def calibrated_comission_percents(comission)
+    def calculate_allowed_comission(comission)
+      return comission unless comission.in?(NOT_ALLOWED_COMISSION_RANGE)
+
+      comission_outside_disallowed_range(comission)
+    end
+
+    def comission_outside_disallowed_range(comission)
       max, min = NOT_ALLOWED_COMISSION_RANGE.max, NOT_ALLOWED_COMISSION_RANGE.min
       distance_to_max = (max - comission).abs
       distance_to_min = (min - comission).abs
