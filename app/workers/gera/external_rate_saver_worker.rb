@@ -33,7 +33,7 @@ module Gera
 
     def update_actual_snapshot_if_candidate_filled_up(rate_source:, candidate_snapshot:)
       return unless candidate_snapshot_filled_up?(actual_snapshot: rate_source.actual_snapshot, candidate_snapshot: candidate_snapshot)
-      return if rate_source.actual_snapshot.id == candidate_snapshot.id
+      return if rate_source.reload.actual_snapshot.id == candidate_snapshot.id
 
       set_candidate_snapshot_as_actual(candidate_snapshot_id: candidate_snapshot.id, rate_source: rate_source)
       update_currency_rates
