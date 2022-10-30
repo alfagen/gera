@@ -11,8 +11,6 @@ module Gera
       rate_source = find_rate_source(rate)
       candidate_snapshot = ExternalRateSnapshot.find(candidate_snapshot_id)
       create_external_rate(rate_source: rate_source, snapshot: candidate_snapshot, currency_pair: CurrencyPair.new(currency_pair), rate_value: rate['value'])
-      return if rate_source.reload.actual_snapshot.id == candidate_snapshot.id
-
       update_actual_snapshot_if_candidate_filled_up(rate_source: rate_source, candidate_snapshot: candidate_snapshot)
     rescue ActiveRecord::RecordNotUnique => err
       raise err if Rails.env.test?
@@ -35,7 +33,6 @@ module Gera
 
     def update_actual_snapshot_if_candidate_filled_up(rate_source:, candidate_snapshot:)
       return unless candidate_snapshot_filled_up?(actual_snapshot: rate_source.actual_snapshot, candidate_snapshot: candidate_snapshot)
-      return if rate_source.reload.actual_snapshot.id == candidate_snapshot.id
 
       set_candidate_snapshot_as_actual(candidate_snapshot_id: candidate_snapshot.id, rate_source: rate_source)
       update_currency_rates

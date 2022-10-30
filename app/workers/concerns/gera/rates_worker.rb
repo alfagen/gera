@@ -39,13 +39,15 @@ module Gera
     delegate :actual_for, to: :snapshot
 
     def create_snapshot
-      @snapshot ||= rate_source.snapshots.create! actual_for: Time.zone.now
+      @create_snapshot ||= rate_source.snapshots.create! actual_for: Time.zone.now
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
       rate = { source_class_name: rate_source.class.name, source_id: rate_source.id, value: buy_price.to_f }
       ExternalRateSaverWorker.perform_async(currency_pair, snapshot.id, rate)
       rate[:value] = 1.0 / sell_price.to_f
+      return if rate_source.reload.actual_snapshot.id == create_snapshot.id
+
       ExternalRateSaverWorker.perform_async(currency_pair.inverse, snapshot.id, rate)
     end
   end
