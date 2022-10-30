@@ -46,8 +46,6 @@ module Gera
       rate = { source_class_name: rate_source.class.name, source_id: rate_source.id, value: buy_price.to_f }
       ExternalRateSaverWorker.perform_async(currency_pair, snapshot.id, rate)
       rate[:value] = 1.0 / sell_price.to_f
-      return if rate_source.reload.actual_snapshot.id == create_snapshot.id
-
       ExternalRateSaverWorker.perform_async(currency_pair.inverse, snapshot.id, rate)
     end
   end
