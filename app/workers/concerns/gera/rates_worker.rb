@@ -39,7 +39,7 @@ module Gera
     delegate :actual_for, to: :snapshot
 
     def create_snapshot
-      @create_snapshot ||= rate_source.snapshots.create! actual_for: Time.zone.now
+      @snapshot ||= rate_source.snapshots.create! actual_for: Time.zone.now
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
