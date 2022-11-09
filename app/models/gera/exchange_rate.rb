@@ -34,7 +34,7 @@ module Gera
     }
 
     scope :available, -> {
-      .enabled
+      enabled
       .joins('INNER JOIN gera_payment_systems income_ps ON gera_exchange_rates.income_payment_system_id = income_ps.id')
       .joins('INNER JOIN gera_payment_systems outcome_ps ON gera_exchange_rates.outcome_payment_system_id = outcome_ps.id')
       .joins('INNER JOIN gera_payment_system_settings income_setting ON income_setting.payment_system_id = income_ps.id')
