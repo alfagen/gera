@@ -34,12 +34,14 @@ module Gera
     }
 
     scope :available, -> {
-      enabled
-      .joins(payment_system_from: :setting)
-      .where(payment_system_from: { gera_payment_system_settings: { income_enabled: true } })
-      .joins(payment_system_to: :setting)
-      .where(payment_system_to: { gera_payment_system_settings: { outcome_enabled: true } })
-      .where("gera_exchange_rates.income_payment_system_id <> gera_exchange_rates.outcome_payment_system_id")
+      .enabled
+      .joins('INNER JOIN gera_payment_systems income_ps ON gera_exchange_rates.income_payment_system_id = income_ps.id')
+      .joins('INNER JOIN gera_payment_systems outcome_ps ON gera_exchange_rates.outcome_payment_system_id = outcome_ps.id')
+      .joins('INNER JOIN gera_payment_system_settings income_setting ON income_setting.payment_system_id = income_ps.id')
+      .joins('INNER JOIN gera_payment_system_settings outcome_setting ON outcome_setting.payment_system_id = outcome_ps.id')
+      .where('income_setting.income_enabled = true')
+      .where('outcome_setting.outcome_enabled = true')
+      .where('gera_exchange_rates.income_payment_system_id <> gera_exchange_rates.outcome_payment_system_id')
     }
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
