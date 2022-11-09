@@ -33,11 +33,13 @@ module Gera
         .joins(:payment_system_from, :payment_system_to)
     }
 
-    scope :available, lambda {
-      with_payment_systems
-        .enabled
-        .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
-        .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
+    scope :available, -> {
+      enabled
+      .joins(payment_system_from: :setting)
+      .where(payment_system_from: { gera_payment_system_settings: { income_enabled: true } })
+      .joins(payment_system_to: :setting)
+      .where(payment_system_to: { gera_payment_system_settings: { outcome_enabled: true } })
+      .where("gera_exchange_rates.income_payment_system_id <> gera_exchange_rates.outcome_payment_system_id")
     }
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
