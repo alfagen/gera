@@ -15,8 +15,8 @@ module Gera
       @rate_source ||= RateSourceBinance.get!
     end
 
-    def save_rate(pair, data)
-      create_external_rates pair, data, sell_price: data['askPrice'], buy_price: data['bidPrice']
+    def save_rate(currency_pair, data)
+      create_external_rates(currency_pair, data, sell_price: data['askPrice'], buy_price: data['bidPrice'])
     end
 
     def load_rates

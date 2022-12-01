@@ -7,11 +7,20 @@ module Gera
 
     sidekiq_options queue: :external_rates
 
-    def perform(currency_pair, candidate_snapshot_id, rate)
+    def perform(currency_pair, candidate_snapshot_id, rate, total_rates_count)
       rate_source = find_rate_source(rate)
       candidate_snapshot = ExternalRateSnapshot.find(candidate_snapshot_id)
-      create_external_rate(rate_source: rate_source, snapshot: candidate_snapshot, currency_pair: CurrencyPair.new(currency_pair), rate_value: rate['value'])
-      update_actual_snapshot_if_candidate_filled_up(rate_source: rate_source, candidate_snapshot: candidate_snapshot)
+      create_external_rate(
+        rate_source: rate_source,
+        snapshot: candidate_snapshot,
+        currency_pair: CurrencyPair.new(currency_pair),
+        rate_value: rate['value']
+      )
+      update_actual_snapshot_if_candidate_filled_up(
+        rate_source: rate_source,
+        candidate_snapshot: candidate_snapshot,
+        total_rates_count: total_rates_count
+      )
     rescue ActiveRecord::RecordNotUnique => err
       raise err if Rails.env.test?
     end
@@ -31,19 +40,19 @@ module Gera
       )
     end
 
-    def update_actual_snapshot_if_candidate_filled_up(rate_source:, candidate_snapshot:)
-      return unless candidate_snapshot_filled_up?(actual_snapshot: rate_source.actual_snapshot, candidate_snapshot: candidate_snapshot)
+    def update_actual_snapshot_if_candidate_filled_up(rate_source:, candidate_snapshot:, total_rates_count:)
+      return unless snapshot_filled_up?(snapshot: candidate_snapshot, total_rates_count: total_rates_count)
 
-      set_candidate_snapshot_as_actual(candidate_snapshot_id: candidate_snapshot.id, rate_source: rate_source)
+      update_actual_snapshot(snapshot: candidate_snapshot, rate_source: rate_source)
       update_currency_rates
     end
 
-    def candidate_snapshot_filled_up?(actual_snapshot:, candidate_snapshot:)
-      actual_snapshot.external_rates.count == candidate_snapshot.external_rates.count
+    def snapshot_filled_up?(snapshot:, total_rates_count:)
+      snapshot.external_rates.count == total_rates_count
     end
 
-    def set_candidate_snapshot_as_actual(candidate_snapshot_id:, rate_source:)
-      rate_source.update!(actual_snapshot_id: candidate_snapshot_id)
+    def set_candidate_snapshot_as_actual(snapshot:, rate_source:)
+      rate_source.update!(actual_snapshot_id: snapshot.id)
     end
 
     def update_currency_rates
