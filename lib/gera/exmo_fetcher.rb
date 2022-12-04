@@ -11,9 +11,7 @@ module Gera
       raw_rates = load_rates.to_a
       rates = {}
       raw_rates.each do |currency_pair_keys, rate|
-        currency_key_from, currency_key_to = split_currency_pair_keys(currency_pair_keys)
-        currency_from = find_currency(currency_key_from)
-        currency_to = find_currency(currency_key_to)
+        currency_from, currency_to = find_currencies(currency_pair_keys)
         next if currency_from.nil? || currency_to.nil?
 
         currency_pair = Gera::CurrencyPair.new(cur_from: currency_from, cur_to: currency_to)
@@ -25,14 +23,17 @@ module Gera
 
     private
 
+    def find_currencies(currency_pair_keys)
+      currency_key_from, currency_key_to = split_currency_pair_keys(currency_pair_keys)
+      [find_currency(currency_key_from), find_currency(currency_key_to)]
+    end
+
     def split_currency_pair_keys(currency_pair_keys)
       currency_pair_keys.split('_') .map { |c| c == 'DASH' ? 'DSH' : c }
     end
 
-    def find_currency(currency_key)
-      currency = Money::Currency.find(currency_key)
-      logger.warn "Not supported currency #{currency_key}" if currency.nil?
-      currency
+    def find_currency(key)
+      Money::Currency.find(key)
     end
 
     def load_rates

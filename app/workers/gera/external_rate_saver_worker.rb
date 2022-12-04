@@ -7,20 +7,19 @@ module Gera
 
     sidekiq_options queue: :external_rates
 
-    def perform(currency_pair, candidate_snapshot_id, rate, total_rates_count)
+    def perform(currency_pair, snapshot_id, rate, source_rates_count)
       rate_source = find_rate_source(rate)
-      candidate_snapshot = ExternalRateSnapshot.find(candidate_snapshot_id)
+      snapshot = ExternalRateSnapshot.find(snapshot_id)
       create_external_rate(
         rate_source: rate_source,
-        snapshot: candidate_snapshot,
+        snapshot: snapshot,
         currency_pair: CurrencyPair.new(currency_pair),
         rate_value: rate['value']
       )
-      update_actual_snapshot_if_candidate_filled_up(
+      update_actual_snapshot_and_currency_rates(
         rate_source: rate_source,
-        candidate_snapshot: candidate_snapshot,
-        total_rates_count: total_rates_count
-      )
+        snapshot: snapshot,
+      ) if snapshot_filled_up?(snapshot: snapshot, source_rates_count: source_rates_count)
     rescue ActiveRecord::RecordNotUnique => err
       raise err if Rails.env.test?
     end
@@ -40,15 +39,13 @@ module Gera
       )
     end
 
-    def update_actual_snapshot_if_candidate_filled_up(rate_source:, candidate_snapshot:, total_rates_count:)
-      return unless snapshot_filled_up?(snapshot: candidate_snapshot, total_rates_count: total_rates_count)
-
-      update_actual_snapshot(snapshot: candidate_snapshot, rate_source: rate_source)
+    def update_actual_snapshot(rate_source:, snapshot:)
+      update_actual_snapshot(snapshot: snapshot, rate_source: rate_source)
       update_currency_rates
     end
 
-    def snapshot_filled_up?(snapshot:, total_rates_count:)
-      snapshot.external_rates.count == total_rates_count
+    def snapshot_filled_up?(snapshot:, source_rates_count:)
+      snapshot.external_rates.count == source_rates_count * 2
     end
 
     def set_candidate_snapshot_as_actual(snapshot:, rate_source:)
