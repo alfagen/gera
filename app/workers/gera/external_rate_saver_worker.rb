@@ -39,7 +39,7 @@ module Gera
       )
     end
 
-    def update_actual_snapshot(rate_source:, snapshot:)
+    def update_actual_snapshot_and_currency_rates(rate_source:, snapshot:)
       update_actual_snapshot(snapshot: snapshot, rate_source: rate_source)
       update_currency_rates
     end
@@ -48,7 +48,7 @@ module Gera
       snapshot.external_rates.count == source_rates_count * 2
     end
 
-    def set_candidate_snapshot_as_actual(snapshot:, rate_source:)
+    def update_actual_snapshot(snapshot:, rate_source:)
       rate_source.update!(actual_snapshot_id: snapshot.id)
     end
 
