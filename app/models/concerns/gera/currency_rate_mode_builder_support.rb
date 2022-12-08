@@ -21,9 +21,9 @@ module Gera
     def builder
       case mode
       when 'auto'
-        CurrencyRateAutoBuilder.new currency_pair: currency_pair
+        CurrencyRateAutoBuilder.new(currency_pair: currency_pair)
       when 'cross'
-        CurrencyRateCrossBuilder.new currency_pair: currency_pair, cross_rate_modes: cross_rate_modes
+        CurrencyRateCrossBuilder.new(currency_pair: currency_pair, cross_rate_modes: cross_rate_modes)
       else
         source = RateSource.find_by_key(mode)
         raise "not supported mode #{mode} for #{currency_pair}" unless source.present?

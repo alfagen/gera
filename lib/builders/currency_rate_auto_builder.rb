@@ -13,7 +13,7 @@ module Gera
 
     def build_from_sources
       RateSource.enabled.ordered.each do |rate_source|
-        result = build_from_source rate_source
+        result = build_from_source(rate_source)
         return result if result.present?
       end
 
@@ -26,13 +26,12 @@ module Gera
       result.currency_rate
     end
 
-    def build_from_source source
+    def build_from_source(source)
       CurrencyRateDirectBuilder.new(currency_pair: currency_pair, source: source).build_currency_rate.currency_rate
     end
 
     def build_same
-      return unless currency_pair.same?
-      CurrencyRate.new currency_pair: currency_pair, rate_value: 1, mode: :same
+      CurrencyRate.new(currency_pair: currency_pair, rate_value: 1, mode: :same) if currency_pair.same?
     end
   end
 end
