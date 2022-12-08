@@ -22,7 +22,11 @@ module Gera
     end
 
     def to_s
-      mode == "auto" && !persistent? ? "default" : mode
+      new_record? && mode.auto? ? "default" : mode
+    end
+
+    def mode
+      super.inquiry
     end
   end
 end
