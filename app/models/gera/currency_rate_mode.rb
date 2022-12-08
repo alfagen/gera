@@ -16,5 +16,17 @@ module Gera
     accepts_nested_attributes_for :cross_rate_modes, reject_if: :all_blank, allow_destroy: true
 
     delegate :to_s, to: :mode
+
+    def self.default_for_pair(pair)
+      new(currency_pair: pair, mode: :auto)
+    end
+
+    def to_s
+      new_record? && mode.auto? ? "default" : mode
+    end
+
+    def mode
+      super.inquiry
+    end
   end
 end

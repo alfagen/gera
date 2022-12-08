@@ -37,24 +37,17 @@ module Gera
     attribute :currency_pair, CurrencyPair
 
     def build_currency_rate
-      success build
-    rescue => err
-      Rails.logger.error err unless err.is_a? Error
-      failure err
+      currency_rate = build
+      SuccessResult.new(currency_rate: currency_rate).freeze
+    rescue => error
+      Rails.logger.error(error) unless error.is_a?(Error)
+      ErrorResult.new(error: error).freeze
     end
 
     private
 
     def build
       raise 'not implemented'
-    end
-
-    def success(currency_rate)
-      SuccessResult.new(currency_rate: currency_rate).freeze
-    end
-
-    def failure(error)
-      ErrorResult.new(error: error).freeze
     end
   end
 end

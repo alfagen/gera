@@ -12,53 +12,47 @@ module Gera
 
     def perform
       logger.info 'start'
-
       CurrencyRate.transaction do
-        @snapshot = create_snapshot
-
-        Gera::CurrencyPair.all.each do |pair|
-          create_rate pair
-        end
+        snapshot = create_snapshot
+        CurrencyPair.all.each { |pair| create_rate(pair: pair, snapshot: snapshot) }
       end
-
       logger.info 'finish'
-
       DirectionsRatesWorker.perform_async
-
       true
     end
 
     private
 
-    attr_reader :snapshot
-
     def create_snapshot
-      CurrencyRateSnapshot.create! currency_rate_mode_snapshot: Universe.currency_rate_modes_repository.snapshot
+      CurrencyRateSnapshot.create!(currency_rate_mode_snapshot: currency_rates.snapshot)
     end
 
-    def create_rate(pair)
-      crm = Universe.currency_rate_modes_repository.find_currency_rate_mode_by_pair pair
+    def currency_rates
+      Universe.currency_rate_modes_repository
+    end
 
-      logger.debug "build_rate(#{pair}, #{crm || :default})"
+    def create_rate(pair:, snapshot:)
+      currency_rate_mode = find_currency_rate_mode_by_pair(pair)
+      logger.debug "build_rate(#{pair}, #{currency_rate_mode})"
+      currency_rate = currency_rate_mode.build_currency_rate
+      raise Error, "Unable to calculate rate for #{pair} and mode '#{currency_rate_mode.mode}'" unless currency_rate.present?
 
-      crm ||= CurrencyRateMode.new(currency_pair: pair, mode: :auto).freeze
-
-      cr = crm.build_currency_rate
-
-      raise Error, "Can not calculate rate of #{pair} for mode '#{crm.try :mode}'" unless cr.present?
-
-      cr.snapshot = snapshot
-      cr.save!
+      currency_rate.snapshot = snapshot
+      currency_rate.save!
     rescue StandardError => err
       raise err if !err.is_a?(Error) && Rails.env.test?
-
       logger.error err
-      Rails.logger.error err if Rails.env.development?
+
       if defined? Bugsnag
         Bugsnag.notify err do |b|
           b.meta_data = { pair: pair }
         end
       end
+    end
+
+    def find_currency_rate_mode_by_pair(pair)
+      currency_rates.find_currency_rate_mode_by_pair(pair) ||
+        CurrencyRateMode.default_for_pair(pair).freeze
     end
   end
 end
