@@ -6,6 +6,7 @@ require 'net/http'
 module Gera
   class ExmoFetcher
     URL = 'https://api.exmo.me/v1/ticker/' # https://api.exmo.com/v1/ticker/
+    Error = Class.new StandardError
 
     def perform
       raw_rates = load_rates.to_a
