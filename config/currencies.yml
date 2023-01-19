@@ -695,3 +695,31 @@ link:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 0.01
+
+ton:
+  priority: 27
+  iso_code: TON
+  name: Ton
+  symbol:
+  alternate_symbols: []
+  subunit: Nanoton
+  subunit_to_unit: 1000000000
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: ''
+  smallest_denomination: 1
+  authorized_round: 6
+  is_crypto: true
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 29
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 0.01
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 0.01
