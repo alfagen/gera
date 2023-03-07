@@ -723,3 +723,30 @@ ton:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 0.01
+
+uzs:
+  priority: 28
+  iso_code: UZS
+  name: Uzbekistan Som
+  symbol: "so'm"
+  alternate_symbols: []
+  subunit: Tiyin
+  subunit_to_unit: 100
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: ","
+  thousands_separator: "."
+  iso_numeric: '4217'
+  smallest_denomination: 1
+  is_crypto: false
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 30
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 50000
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 50000
