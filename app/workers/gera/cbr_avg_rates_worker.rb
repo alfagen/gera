@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
-  class CBRAvgRatesWorker
+  class CbrAvgRatesWorker
     include Sidekiq::Worker
     include AutoLogger
 
@@ -18,7 +18,7 @@ module Gera
     private
 
     def source
-      @source ||= RateSourceCBRAvg.get!
+      @source ||= RateSourceCbrAvg.get!
     end
 
     def snapshot

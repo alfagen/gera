@@ -19,7 +19,7 @@ module Gera
       create_snapshot
       rates.each { |currency_pair, data| save_rate(currency_pair, data) }
       snapshot.id
-      # EXMORatesWorker::Error: Error 40016: Maintenance work in progress
+      # ExmoRatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
       raise error if Rails.env.test?
 

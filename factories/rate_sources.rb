@@ -13,9 +13,9 @@ FactoryBot.define do
     title { generate :title }
   end
   factory :rate_source_manual, parent: :rate_source, class: Gera::RateSourceManual
-  factory :rate_source_cbr, parent: :rate_source, class: Gera::RateSourceCBR
-  factory :rate_source_cbr_avg, parent: :rate_source, class: Gera::RateSourceCBRAvg
-  factory :rate_source_exmo, parent: :rate_source, class: Gera::RateSourceEXMO
+  factory :rate_source_cbr, parent: :rate_source, class: Gera::RateSourceCbr
+  factory :rate_source_cbr_avg, parent: :rate_source, class: Gera::RateSourceCbrAvg
+  factory :rate_source_exmo, parent: :rate_source, class: Gera::RateSourceExmo
   factory :rate_source_bitfinex, parent: :rate_source, class: Gera::RateSourceBitfinex
   factory :rate_source_binance, parent: :rate_source, class: Gera::RateSourceBinance
 end
