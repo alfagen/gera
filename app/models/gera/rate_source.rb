@@ -16,7 +16,7 @@ module Gera
 
     scope :enabled_for_cross_rates, -> { enabled }
 
-    validates :key, presence: true, uniqueness: true
+    validates :key, presence: true, uniqueness: { case_sensitive: false }
 
     before_create do
       self.priority ||= RateSource.maximum(:priority).to_i + 1
