@@ -73,11 +73,11 @@ module Gera
     private
 
     def auto_rates_by_reserve_ready?
-      income_reserve_checkpoint.present? && outcome_reserve_checkpoint.present? && income_reserve_checkpoint.reserves_positive? && outcome_reserve_checkpoint.reserves_positive?
+      income_auto_rate_setting&.reserves_positive? && outcome_auto_rate_setting&.reserves_positive? && income_reserve_checkpoint.present? && outcome_reserve_checkpoint.present?
     end
 
     def auto_rates_by_base_rate_ready?
-      income_base_rate_checkpoint.present? && outcome_base_rate_checkpoint.present? && income_base_rate_checkpoint.base.positive? && outcome_base_rate_checkpoint.base.positive?
+      income_auto_rate_setting&.base&.positive? && outcome_auto_rate_setting&.base&.positive? && income_base_rate_checkpoint.present? && outcome_base_rate_checkpoint.present? && income_base_rate_checkpoint.base.positive? && outcome_base_rate_checkpoint.base.positive?
     end
 
     def income_auto_rate_setting
