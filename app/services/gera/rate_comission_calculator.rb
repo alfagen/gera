@@ -77,7 +77,7 @@ module Gera
     end
 
     def auto_rates_by_base_rate_ready?
-      income_auto_rate_setting&.base&.positive? && outcome_auto_rate_setting&.base&.positive? && income_base_rate_checkpoint.present? && outcome_base_rate_checkpoint.present?
+      income_base_rate_checkpoint.present? && outcome_base_rate_checkpoint.present?
     end
 
     def income_auto_rate_setting
