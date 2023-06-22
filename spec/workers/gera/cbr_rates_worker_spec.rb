@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module Gera
-  RSpec.describe CBRRatesWorker do
+  RSpec.describe CbrRatesWorker do
     before do
       create :rate_source_exmo
       create :rate_source_cbr_avg
@@ -17,7 +17,7 @@ module Gera
       allow(Date).to receive(:today).and_return today
       Timecop.freeze(today) do
         VCR.use_cassette :cbrf do
-          expect(CBRRatesWorker.new.perform).to be_truthy
+          expect(CbrRatesWorker.new.perform).to be_truthy
         end
       end
 

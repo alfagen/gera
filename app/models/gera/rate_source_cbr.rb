@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gera
-  class RateSourceCBR < RateSource
+  class RateSourceCbr < RateSource
     def self.supported_currencies
       %i[RUB KZT USD EUR UAH UZS].map { |m| Money::Currency.find! m }
     end

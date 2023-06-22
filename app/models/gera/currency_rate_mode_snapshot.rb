@@ -14,7 +14,7 @@ module Gera
       self.title = Time.zone.now.to_s if title.blank?
     end
 
-    validates :title, presence: true, uniqueness: true
+    validates :title, presence: true, uniqueness: { case_sensitive: false }
 
     def create_modes!
       CurrencyPair.all.each do |pair|

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 module Gera
-  class RateSourceCBRAvg < RateSourceCBR
+  class RateSourceCbrAvg < RateSourceCbr
   end
 end

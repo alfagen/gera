@@ -3,7 +3,7 @@
 module Gera
   # Import rates from EXMO
   #
-  class EXMORatesWorker
+  class ExmoRatesWorker
     include Sidekiq::Worker
     include AutoLogger
 
@@ -12,7 +12,7 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceEXMO.get!
+      @rate_source ||= RateSourceExmo.get!
     end
 
     # data contains

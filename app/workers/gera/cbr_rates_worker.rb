@@ -7,7 +7,7 @@ module Gera
   # Import rates from Russian Central Bank
   # http://www.cbr.ru/scripts/XML_daily.asp?date_req=08/04/2018
   #
-  class CBRRatesWorker
+  class CbrRatesWorker
     include Sidekiq::Worker
     include AutoLogger
 
@@ -29,18 +29,18 @@ module Gera
     URL = 'http://www.cbr.ru/scripts/XML_daily.asp'
 
     def perform
-      logger.debug 'CBRRatesWorker: before perform'
+      logger.debug 'CbrRatesWorker: before perform'
       ActiveRecord::Base.connection.clear_query_cache
       rates_by_date = load_rates
-      logger.debug 'CBRRatesWorker: before transaction'
+      logger.debug 'CbrRatesWorker: before transaction'
       ActiveRecord::Base.transaction do
         rates_by_date.each do |date, rates|
           save_rates(date, rates)
         end
       end
-      logger.debug 'CBRRatesWorker: after transaction'
+      logger.debug 'CbrRatesWorker: after transaction'
       make_snapshot
-      logger.debug 'CBRRatesWorker: after perform'
+      logger.debug 'CbrRatesWorker: after perform'
     end
 
     private
@@ -112,11 +112,11 @@ module Gera
     end
 
     def cbr_avg
-      @cbr_avg ||= RateSourceCBRAvg.get!
+      @cbr_avg ||= RateSourceCbrAvg.get!
     end
 
     def cbr
-      @cbr ||= RateSourceCBR.get!
+      @cbr ||= RateSourceCbr.get!
     end
 
     def days
