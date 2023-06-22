@@ -15,7 +15,7 @@ module Gera
     enum total_computation_method: %i[regular_fee reverse_fee]
     enum transfer_comission_payer: %i[user shop], _prefix: :transfer_comission_payer
 
-    validates :name, presence: true, uniqueness: { case_sensitive: false }
+    validates :name, presence: true, uniqueness: { case_sensitive: true }
     validates :currency, presence: true
 
     before_create do
