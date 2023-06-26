@@ -5,6 +5,8 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
+    sidekiq_options lock: :until_executed
+
     MAXIMAL_DATE = 30.minutes
     MINIMAL_DATE = Time.parse('13-07-2018 18:00')
 

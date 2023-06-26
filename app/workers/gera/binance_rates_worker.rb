@@ -9,6 +9,8 @@ module Gera
 
     prepend RatesWorker
 
+    sidekiq_options lock: :until_executed
+
     private
 
     def rate_source

@@ -11,6 +11,8 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
+    sidekiq_options lock: :until_executed
+
     CURRENCIES = %w[USD KZT EUR UAH UZS].freeze
 
     CBR_IDS = {
