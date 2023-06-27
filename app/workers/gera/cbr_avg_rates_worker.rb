@@ -5,6 +5,8 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
+    sidekiq_options lock: :until_executed
+
     def perform
       ActiveRecord::Base.connection.clear_query_cache
       ActiveRecord::Base.transaction do

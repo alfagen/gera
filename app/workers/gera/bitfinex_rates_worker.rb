@@ -6,8 +6,9 @@ module Gera
   class BitfinexRatesWorker
     include Sidekiq::Worker
     include AutoLogger
-
     prepend RatesWorker
+
+    sidekiq_options lock: :until_executed
 
     # Stolen from: https://api.bitfinex.com/v1/symbols
     AVAILABLE_TICKETS = %i[btcusd ltcusd ltcbtc ethusd ethbtc etcbtc etcusd rrtusd rrtbtc zecusd zecbtc xmrusd xmrbtc dshusd dshbtc btceur btcjpy xrpusd
