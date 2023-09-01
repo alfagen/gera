@@ -9,7 +9,7 @@ module Gera
 
     prepend RatesWorker
 
-    sidekiq_options lock: :until_executed
+    # sidekiq_options lock: :until_executed
 
     private
 
