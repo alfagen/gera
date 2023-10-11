@@ -61,15 +61,14 @@ module Gera
     end
 
     def make_snapshot
-      save_snapshot_rate USD, RUB
-      save_snapshot_rate KZT, RUB
-      save_snapshot_rate EUR, RUB
-      save_snapshot_rate UAH, RUB
-      save_snapshot_rate UZS, RUB
-      save_snapshot_rate AZN, RUB
+      save_snapshot_rates
 
       cbr.update_column :actual_snapshot_id, snapshot.id
       cbr_avg.update_column :actual_snapshot_id, avg_snapshot.id
+    end
+
+    def save_snapshot_rates
+      CURRENCIES.each do { |cur_from| save_snapshot_rate cur_from, RUB }
     end
 
     def save_snapshot_rate(cur_from, cur_to)
