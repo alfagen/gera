@@ -68,7 +68,7 @@ module Gera
     end
 
     def save_snapshot_rates
-      CURRENCIES.each do { |cur_from| save_snapshot_rate cur_from, RUB }
+      CURRENCIES.each { |cur_from| save_snapshot_rate(cur_from, RUB) }
     end
 
     def save_snapshot_rate(cur_from, cur_to)
