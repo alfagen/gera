@@ -7,7 +7,7 @@ module Gera
     end
 
     def self.available_pairs
-      ['KZT/RUB', 'USD/RUB', 'EUR/RUB', 'UAH/RUB', 'UZS/RUB'].map { |cp| Gera::CurrencyPair.new cp }.freeze
+      ['KZT/RUB', 'USD/RUB', 'EUR/RUB', 'UAH/RUB', 'UZS/RUB', 'AZN/RUB'].map { |cp| Gera::CurrencyPair.new cp }.freeze
     end
   end
 end
