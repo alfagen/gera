@@ -13,14 +13,15 @@ module Gera
 
     sidekiq_options lock: :until_executed
 
-    CURRENCIES = %w[USD KZT EUR UAH UZS].freeze
+    CURRENCIES = %w[USD KZT EUR UAH UZS AZN].freeze
 
     CBR_IDS = {
       'USD' => 'R01235',
       'KZT' => 'R01335',
       'EUR' => 'R01239',
       'UAH' => 'R01720',
-      'UZS' => 'R01717'
+      'UZS' => 'R01717',
+      'AZN' => 'R01020A'
     }.freeze
 
     ROUND = 15
@@ -60,14 +61,14 @@ module Gera
     end
 
     def make_snapshot
-      save_snapshot_rate USD, RUB
-      save_snapshot_rate KZT, RUB
-      save_snapshot_rate EUR, RUB
-      save_snapshot_rate UAH, RUB
-      save_snapshot_rate UZS, RUB
+      save_snapshot_rates
 
       cbr.update_column :actual_snapshot_id, snapshot.id
       cbr_avg.update_column :actual_snapshot_id, avg_snapshot.id
+    end
+
+    def save_snapshot_rates
+      CURRENCIES.each { |cur_from| save_snapshot_rate(cur_from.constantize, RUB) }
     end
 
     def save_snapshot_rate(cur_from, cur_to)
