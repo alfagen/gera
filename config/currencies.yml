@@ -773,7 +773,7 @@ azn:
   local_id: 31
 
   # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 10
+  minimal_input_value: 5
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 10
+  minimal_output_value: 5
