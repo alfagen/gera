@@ -154,5 +154,9 @@ module Gera
     def external_rates
       @external_rates ||= BestChange::Service.new(exchange_rate: self).rows
     end
+
+    def auto_payout_enabled?
+      AutoPayoutConfig.where(active: true).where("JSON_CONTAINS(exchange_rate_ids, :id)", id: id.to_json).present?
+    end
   end
 end
