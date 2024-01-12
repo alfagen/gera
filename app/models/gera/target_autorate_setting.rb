@@ -5,7 +5,7 @@ module Gera
     belongs_to :exchange_rate, class_name: 'ExchangeRate'
 
     validates :position_from, :position_to, :autorate_from, :autorate_to, presence: true
-    validates :position_from, numericality: { less_than: :position_to }
+    validates :position_from, numericality: { greater_than: 0 }
     validates :position_to, numericality: { greater_than: :position_from }
   end
 end
