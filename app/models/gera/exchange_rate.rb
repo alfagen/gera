@@ -147,7 +147,7 @@ module Gera
     end
 
     def external_rates
-      @external_rates ||= BestChange::Service.new(exchange_rate: self).rows
+      @external_rates ||= BestChange::Service.new(exchange_rate: self).rows.select { |row| !row.is_my? }
     end
   end
 end
