@@ -24,7 +24,7 @@ module Gera
 
     belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
-    has_one :target_autorate_setting, class_name: 'Gera::TargetAutorateSetting'
+    has_one :target_autorate_setting, class_name: 'TargetAutorateSetting'
 
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
