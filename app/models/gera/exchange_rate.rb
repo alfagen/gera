@@ -135,7 +135,7 @@ module Gera
     end
 
     def final_rate_percents
-      auto_rate? ? rate_comission_calculator.auto_comission : rate_comission_calculator.fixed_comission
+      @final_rate_percents ||= auto_rate? ? rate_comission_calculator.auto_comission : rate_comission_calculator.fixed_comission
     end
 
     def update_direction_rates
