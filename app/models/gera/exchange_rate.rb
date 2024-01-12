@@ -24,6 +24,7 @@ module Gera
 
     belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
+    has_one :target_autorate_setting, class_name: 'Gera::TargetAutorateSetting'
 
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
@@ -42,7 +43,6 @@ module Gera
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
     after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
-    before_save :turn_off_auto_comission_by_base, if: :auto_comission_by_base_rate_turned_on?
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -59,6 +59,9 @@ module Gera
               :auto_rate_by_base_to, :auto_rate_by_reserve_from, :auto_rate_by_reserve_to,
               :current_base_rate, :average_base_rate, :auto_comission_from,
               :auto_comission_to, :bestchange_delta, to: :rate_comission_calculator
+
+    delegate  :position_from, :position_to, 
+              :autorate_from, :autorate_to, to: :target_autorate_setting, allow_nil: true
 
     alias_attribute :ps_from_id, :income_payment_system_id
     alias_attribute :ps_to_id, :outcome_payment_system_id
@@ -137,14 +140,6 @@ module Gera
 
     def update_direction_rates
       DirectionsRatesWorker.perform_async(exchange_rate_id: id)
-    end
-
-    def turn_off_auto_comission_by_base
-      AutoComissionByBaseRateFlagWorker.perform_async(id)
-    end
-
-    def auto_comission_by_base_rate_turned_on?
-      auto_comission_by_base_rate_changed?(from: false, to: true)
     end
 
     def rate_comission_calculator

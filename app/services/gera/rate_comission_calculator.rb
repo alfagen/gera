@@ -4,17 +4,18 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
-    AUTO_COMISSION_GAP = 0.01
+    AUTO_COMISSION_GAP = 0.1
     NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
 
     attribute :exchange_rate
     attribute :external_rates
 
-    delegate  :auto_comission_by_base_rate?, :in_currency, :payment_system_from,
-              :payment_system_to, :out_currency, :fixed_comission, to: :exchange_rate
+    delegate  :in_currency, :payment_system_from, :payment_system_to, 
+              :out_currency, :fixed_comission, :position_from, 
+              :position_to, :autorate_from, :autorate_to, to: :exchange_rate
 
     def auto_comission
-      target_value = external_rates_ready? ? auto_comission_by_external_comissions : commission
+      target_value = commission
       calculate_allowed_comission(target_value)
     end
 
@@ -67,7 +68,7 @@ module Gera
     end
 
     def bestchange_delta
-      auto_comission_by_external_comissions - commission
+      auto_comission_by_external_comissions
     end
 
     private
@@ -142,15 +143,11 @@ module Gera
     end
 
     def commission
-      @commission ||= begin
-        comission_percents = auto_comission_by_reserve
-        comission_percents += comission_by_base_rate if auto_comission_by_base_rate?
-        comission_percents
-      end
+      @commission ||= auto_comission_by_external_comissions + auto_comission_by_reserve + comission_by_base_rate
     end
 
     def external_rates_ready?
-      external_rates.present?
+      external_rates.present? && exchange_rate.target_autorate_setting.present?
     end
 
     def auto_commision_range
@@ -159,25 +156,19 @@ module Gera
 
     def auto_comission_by_external_comissions
       @auto_comission_by_external_comissions ||= begin
-        external_rates_with_similar_comissions = external_rates.select { |rate| auto_commision_range.include?(rate.target_rate_percent) }
-        return commission if external_rates_with_similar_comissions.empty?
+        return 0 unless external_rates_ready?
 
-        external_rates_with_similar_comissions.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
-        external_rates_with_similar_comissions.last.target_rate_percent - AUTO_COMISSION_GAP
+        external_rates_in_target_position = external_rates[(position_from - 1)..(position_to - 1)]
+        external_rates_in_target_comission = external_rates_in_target_position.select { |rate| (autorate_from..autorate_to).include?(rate.target_rate_percent) }
+        return autorate_from if external_rates_in_target_comission.empty?
+
+        external_rates_in_target_comission.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
+        external_rates_in_target_comission.last.target_rate_percent - AUTO_COMISSION_GAP
       end
     end
 
     def calculate_allowed_comission(comission)
-      return comission unless NOT_ALLOWED_COMISSION_RANGE.include?(comission)
-
-      comission_outside_disallowed_range(comission)
-    end
-
-    def comission_outside_disallowed_range(comission)
-      max, min = NOT_ALLOWED_COMISSION_RANGE.max, NOT_ALLOWED_COMISSION_RANGE.min
-      distance_to_max = (max - comission).abs
-      distance_to_min = (min - comission).abs
-      distance_to_min < distance_to_max ? distance_to_min - AUTO_COMISSION_GAP : distance_to_max + AUTO_COMISSION_GAP
+      NOT_ALLOWED_COMISSION_RANGE.include?(comission) ? NOT_ALLOWED_COMISSION_RANGE.min : comission
     end
   end
 end
