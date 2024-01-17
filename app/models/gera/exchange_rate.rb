@@ -154,9 +154,5 @@ module Gera
     def external_rates
       @external_rates ||= BestChange::Service.new(exchange_rate: self).rows
     end
-
-    def auto_comission_by_base_rate?
-      false
-    end
   end
 end
