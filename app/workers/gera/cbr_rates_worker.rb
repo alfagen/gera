@@ -21,7 +21,8 @@ module Gera
       'EUR' => 'R01239',
       'UAH' => 'R01720',
       'UZS' => 'R01717',
-      'AZN' => 'R01020A'
+      'AZN' => 'R01020A',
+      'BYN' => 'R01090B'
     }.freeze
 
     ROUND = 15
