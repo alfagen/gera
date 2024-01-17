@@ -800,10 +800,10 @@ byn:
   local_id: 32
 
   # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 5
+  minimal_input_value: 4
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 5
+  minimal_output_value: 4
 
 sol:
   priority: 31
@@ -827,10 +827,10 @@ sol:
   local_id: 33
 
   # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 5
+  minimal_input_value: 0.01
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 5
+  minimal_output_value: 0.01
 
 usdc:
   priority: 32
@@ -854,7 +854,7 @@ usdc:
   local_id: 34
 
   # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 5
+  minimal_input_value: 1
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 5
+  minimal_output_value: 1
