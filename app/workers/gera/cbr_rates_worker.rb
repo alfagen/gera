@@ -13,7 +13,7 @@ module Gera
 
     sidekiq_options lock: :until_executed
 
-    CURRENCIES = %w[USD KZT EUR UAH UZS AZN].freeze
+    CURRENCIES = %w[USD KZT EUR UAH UZS AZN BYN].freeze
 
     CBR_IDS = {
       'USD' => 'R01235',
