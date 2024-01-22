@@ -158,8 +158,8 @@ module Gera
       @auto_comission_by_external_comissions ||= begin
         return 0 unless external_rates_ready?
 
-        external_rates_in_target_position = external_rates[(rate_comission_calculator.position_from - 1)..(rate_comission_calculator.position_to - 1)]
-        external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((rate_comission_calculator.autorate_from - AUTO_COMISSION_GAP)..(rate_comission_calculator.autorate_to - AUTO_COMISSION_GAP)).include?(rate.target_rate_percent) }
+        external_rates_in_target_position = external_rates[(position_from - 1)..(position_to - 1)]
+        external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((autorate_from - AUTO_COMISSION_GAP)..(autorate_to - AUTO_COMISSION_GAP)).include?(rate.target_rate_percent) }
         return autorate_from if external_rates_in_target_comission.empty?
 
         external_rates_in_target_comission.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
