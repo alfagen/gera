@@ -2,7 +2,7 @@
 
 module Gera
   class TargetAutorateSetting < ApplicationRecord
-    belongs_to :exchange_rate, class_name: 'ExchangeRate'
+    belongs_to :exchange_rate, class_name: 'Gera::ExchangeRate'
 
     validates :position_from, :position_to, :autorate_from, :autorate_to, presence: true
     validates :position_from, numericality: { greater_than: 0 }
