@@ -11,6 +11,8 @@ module Gera
       unless instant_start
         self.class.perform_in(UPTIME, exchange_rate_id, true)
       else
+        logger = Logger.new("#{Rails.root}/log/call_exchange_rate_updater_worker.log")
+        logger.info("Calls perform_async from Gera::AutoComissionByBaseRateFlagWorker")
         ExchangeRateUpdaterWorker.perform_async(exchange_rate_id, { auto_comission_by_base_rate: false })
       end
     end
