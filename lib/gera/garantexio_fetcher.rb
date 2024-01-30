@@ -13,7 +13,7 @@ module Gera
         next unless supported_currencies.include?(cur_from) && supported_currencies.include?(cur_to)
 
         pair = CurrencyPair.new(cur_from: cur_from, cur_to: cur_to)
-        memo[pair] = rate
+        memo[pair] = rate_info
       end
     end
 
