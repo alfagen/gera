@@ -12,7 +12,7 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceGerantexio.get!
+      @rate_source ||= Gera::RateSourceGerantexio.get!
     end
 
     def save_rate(pair, data)
@@ -20,7 +20,7 @@ module Gera
     end
 
     def load_rates
-      GarantexioFetcher.new.perform
+      Gera::GarantexioFetcher.new.perform
     end
   end
 end
