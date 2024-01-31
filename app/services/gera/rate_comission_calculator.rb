@@ -15,8 +15,7 @@ module Gera
               :position_to, :autorate_from, :autorate_to, to: :exchange_rate
 
     def auto_comission
-      target_value = commission
-      calculate_allowed_comission(target_value)
+      calculate_allowed_comission(commission)
     end
 
     def auto_comission_by_reserve
@@ -146,7 +145,7 @@ module Gera
       @commission ||= auto_comission_by_external_comissions + auto_comission_by_reserve + comission_by_base_rate
     end
 
-    def data_for_calculation_ready?
+    def could_be_calculated?
       external_rates.present? && exchange_rate.target_autorate_setting.present?
     end
 
@@ -156,7 +155,7 @@ module Gera
 
     def auto_comission_by_external_comissions
       @auto_comission_by_external_comissions ||= begin
-        return 0 unless data_for_calculation_ready?
+        return 0 unless could_be_calculated?
 
         external_rates_in_target_position = external_rates[(position_from - 1)..(position_to - 1)]
         external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((autorate_from + AUTO_COMISSION_GAP)..(autorate_to)).include?(rate.target_rate_percent) }
