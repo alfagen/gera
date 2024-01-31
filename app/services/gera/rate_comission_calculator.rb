@@ -146,7 +146,7 @@ module Gera
     end
 
     def could_be_calculated?
-      external_rates.present? && exchange_rate.target_autorate_setting.present?
+      external_rates.present? && exchange_rate.target_autorate_setting&.could_be_calculated?
     end
 
     def auto_commision_range
@@ -161,8 +161,10 @@ module Gera
         external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((autorate_from + AUTO_COMISSION_GAP)..(autorate_to)).include?(rate.target_rate_percent) }
         return autorate_from if external_rates_in_target_comission.empty?
 
-        external_rates_in_target_comission.sort! { |a, b| a.target_rate_percent <=> b.target_rate_percent }
-        external_rates_in_target_comission.first.target_rate_percent - AUTO_COMISSION_GAP
+        target_comission = external_rates_in_target_comission.first.target_rate_percent - AUTO_COMISSION_GAP
+        rates_before_target_position = external_rates.select { |rate| rate.target_rate_percent < target_comission }
+
+        (rates_before_target_position.count + 1) < position_from ? autorate_from : target_comission
       end
     end
 
