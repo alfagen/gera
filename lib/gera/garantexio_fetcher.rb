@@ -26,16 +26,6 @@ module Gera
       JSON.parse response.body
     end
 
-    def find_cur_from(symbol)
-      supported_currencies.find do |currency|
-        symbol.start_with?(currency_name(currency))
-      end
-    end
-
-    def find_cur_to(symbol, cur_from)
-      Money::Currency.find(symbol.split(currency_name(cur_from)).last)
-    end
-
     def supported_currencies
       @supported_currencies ||= RateSourceGarantexio.supported_currencies
     end
