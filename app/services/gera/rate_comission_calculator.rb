@@ -4,7 +4,7 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
-    AUTO_COMISSION_GAP = 0.05
+    AUTO_COMISSION_GAP = 0.01
     NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
 
     attribute :exchange_rate
