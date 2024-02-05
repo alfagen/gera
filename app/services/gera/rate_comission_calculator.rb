@@ -51,10 +51,14 @@ module Gera
     end
 
     def current_base_rate
+      return 1.0 if same_currencies?
+
       @current_base_rate ||= Gera::CurrencyRateHistoryInterval.where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).last.avg_rate
     end
 
     def average_base_rate
+      return 1.0 if same_currencies?
+
       @average_base_rate ||= Gera::CurrencyRateHistoryInterval.where('interval_from > ?', DateTime.now.utc - 24.hours).where(cur_from_id: in_currency.local_id, cur_to_id: out_currency.local_id).average(:avg_rate)
     end
 
@@ -170,6 +174,10 @@ module Gera
 
     def calculate_allowed_comission(comission)
       NOT_ALLOWED_COMISSION_RANGE.include?(comission) ? NOT_ALLOWED_COMISSION_RANGE.min : comission
+    end
+
+    def same_currencies?
+      in_currency == out_currency
     end
   end
 end
