@@ -162,6 +162,7 @@ module Gera
         return 0 unless could_be_calculated?
 
         external_rates_in_target_position = external_rates[(position_from - 1)..(position_to - 1)]
+        return autorate_from unless external_rates_in_target_position.present?
         external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((autorate_from + AUTO_COMISSION_GAP)..(autorate_to)).include?(rate.target_rate_percent) }
         return autorate_from if external_rates_in_target_comission.empty?
 
