@@ -3,7 +3,7 @@
 module Gera
   class RateSourceBitfinex < RateSource
     def self.supported_currencies
-      %i[NEO BTC ETH EUR USD].map { |m| Money::Currency.find! m }
+      %i[NEO BTC ETH EUR USD XMR].map { |m| Money::Currency.find! m }
     end
   end
 end
