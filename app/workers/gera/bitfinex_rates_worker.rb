@@ -8,7 +8,7 @@ module Gera
     include AutoLogger
     prepend RatesWorker
 
-    sidekiq_options lock: :until_executed
+    # sidekiq_options lock: :until_executed
 
     private
 
