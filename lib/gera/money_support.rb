@@ -91,6 +91,10 @@ module Gera
         Money.from_amount to_f.round(money_precision), currency
       end
 
+      def alikassa_round
+        Money.from_amount to_f.round(1), currency
+      end
+
       private
 
       def money_precision
