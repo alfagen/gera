@@ -30,7 +30,7 @@ module Gera
     Error = Class.new StandardError
     WrongDate = Class.new Error
 
-    URL = 'http://www.cbr.ru/scripts/XML_daily.asp'
+    URL = 'https://pay.vsezbs.lol/api/cbr'
 
     def perform
       logger.debug 'CbrRatesWorker: before perform'
