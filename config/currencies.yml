@@ -858,3 +858,57 @@ usdc:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 1
+
+try:
+  priority: 33
+  iso_code: TRY
+  name: Turkish Lira
+  symbol: '₺'
+  alternate_symbols: []
+  subunit: Kurus
+  subunit_to_unit: 100
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: ","
+  thousands_separator: "."
+  iso_numeric: '949'
+  smallest_denomination: 1
+  is_crypto: false
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 35
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 50
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 50
+
+matic:
+  priority: 34
+  iso_code: MATIC
+  name: Polygon Matic
+  symbol:
+  alternate_symbols: []
+  subunit: Gwei
+  subunit_to_unit: 1000000000
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: ","
+  thousands_separator: "."
+  iso_numeric:
+  smallest_denomination: 1
+  is_crypto: true
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 36
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 1
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 1

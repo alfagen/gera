@@ -11,9 +11,9 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
-    sidekiq_options lock: :until_executed
+    # sidekiq_options lock: :until_executed
 
-    CURRENCIES = %w[USD KZT EUR UAH UZS AZN BYN].freeze
+    CURRENCIES = %w[USD KZT EUR UAH UZS AZN BYN TRY].freeze
 
     CBR_IDS = {
       'USD' => 'R01235',
@@ -22,7 +22,8 @@ module Gera
       'UAH' => 'R01720',
       'UZS' => 'R01717',
       'AZN' => 'R01020A',
-      'BYN' => 'R01090B'
+      'BYN' => 'R01090B',
+      'TRY' => 'R01700J'
     }.freeze
 
     ROUND = 15
@@ -30,7 +31,7 @@ module Gera
     Error = Class.new StandardError
     WrongDate = Class.new Error
 
-    URL = 'http://www.cbr.ru/scripts/XML_daily.asp'
+    URL = 'https://pay.hub.pp.ru/api/cbr'
 
     def perform
       logger.debug 'CbrRatesWorker: before perform'
