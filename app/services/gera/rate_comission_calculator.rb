@@ -6,6 +6,7 @@ module Gera
 
     AUTO_COMISSION_GAP = 0.001
     NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
+    EXCLUDED_PS_IDS = [54, 56]
 
     attribute :exchange_rate
     attribute :external_rates
@@ -174,6 +175,8 @@ module Gera
     end
 
     def calculate_allowed_comission(comission)
+      return comission if exchange_rate.outcome_payment_system_id.in?(EXCLUDED_PS_IDS)
+
       NOT_ALLOWED_COMISSION_RANGE.include?(comission) ? NOT_ALLOWED_COMISSION_RANGE.min : comission
     end
 
