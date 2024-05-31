@@ -8,8 +8,6 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
-    sidekiq_options lock: :until_executed
-
     Error = Class.new StandardError
 
     def perform
