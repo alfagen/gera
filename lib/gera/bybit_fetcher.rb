@@ -4,7 +4,7 @@ require 'rest-client'
 
 module Gera
   class BybitFetcher < PaymentServices::Base::Client
-    API_URL = 'https://api2.bybit.com/fiat/otc/item/online'
+    API_URL = 'https://api2.bytick.com/fiat/otc/item/online'
     Error = Class.new StandardError
 
     def perform
@@ -26,7 +26,7 @@ module Gera
         body: params.to_json,
         headers: build_headers
       )).dig('result', 'items')
-      items = JSON.parse(response.body).dig('result', 'items')
+
       rate = items[2] || items[1] || raise(Error, 'No rates')
 
       [item]
@@ -53,7 +53,9 @@ module Gera
 
     def build_headers
       {
-        'Content-Type' => 'application/json'
+        'Content-Type'   => 'application/json',
+        'Host'           => 'api2.bytick.com',
+        'Content-Length' => '182'
       }
     end
   end
