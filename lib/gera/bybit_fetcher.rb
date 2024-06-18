@@ -29,7 +29,7 @@ module Gera
 
       rate = items[2] || items[1] || raise(Error, 'No rates')
 
-      [item]
+      [rate]
     end
 
     def params
