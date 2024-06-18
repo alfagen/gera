@@ -16,7 +16,7 @@ module Gera
     end
 
     def save_rate(pair, data)
-      create_external_rates pair, data, sell_price: data['price'], buy_price: data['price']
+      create_external_rates pair, data, sell_price: data['price'].to_f, buy_price: data['price'].to_f
     end
 
     def load_rates
