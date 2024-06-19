@@ -38,7 +38,7 @@ module Gera
         tokenId: 'USDT',
         currencyId: 'RUB',
         payment: ['75', '377', '582', '581'],
-        side: '1',
+        side: '0',
         size: '3',
         page: '1',
         amount: '',
