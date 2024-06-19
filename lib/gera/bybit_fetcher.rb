@@ -57,7 +57,7 @@ module Gera
     end
 
     def supported_currencies
-      @supported_currencies ||= RateSourceGarantexio.supported_currencies
+      @supported_currencies ||= RateSourceBybit.supported_currencies
     end
 
     def build_headers
