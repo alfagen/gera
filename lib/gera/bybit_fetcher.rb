@@ -41,8 +41,6 @@ module Gera
       final_rate
     end
 
-    def 
-
     def params(type:)
       { 
         userId: '',
