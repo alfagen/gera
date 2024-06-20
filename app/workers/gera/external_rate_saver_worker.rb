@@ -16,7 +16,7 @@ module Gera
         currency_pair: CurrencyPair.new(currency_pair),
         rate_value: rate['value']
       )
-      update_actual_snapshot_and_currency_rates(
+      update_actual_snapshot(
         rate_source: rate_source,
         snapshot: snapshot,
       ) if snapshot_filled_up?(snapshot: snapshot, source_rates_count: source_rates_count)
@@ -39,9 +39,8 @@ module Gera
       )
     end
 
-    def update_actual_snapshot_and_currency_rates(rate_source:, snapshot:)
+    def update_actual_snapshot(rate_source:, snapshot:)
       update_actual_snapshot(snapshot: snapshot, rate_source: rate_source)
-      update_currency_rates
     end
 
     def snapshot_filled_up?(snapshot:, source_rates_count:)
@@ -50,10 +49,6 @@ module Gera
 
     def update_actual_snapshot(snapshot:, rate_source:)
       rate_source.update!(actual_snapshot_id: snapshot.id)
-    end
-
-    def update_currency_rates
-      CurrencyRatesWorker.perform_async
     end
   end
 end
