@@ -20,34 +20,25 @@ module Gera
     private
 
     def rates
-      buy_rate, sell_rate = rate(type: '1'), rate(type: '0')
-
-      buy_rate['buy'] = buy_rate['price'].to_f
-      buy_rate['sell'] = sell_rate['price'].to_f
-
-      [buy_rate]
-    end
-
-    def rate(type:)
       items = safely_parse(http_request(
         url: API_URL,
         method: :POST,
-        body: params(type: type).to_json,
+        body: params.to_json,
         headers: build_headers
       )).dig('result', 'items')
 
-      final_rate = items[2] || items[1] || raise(Error, 'No rates')
+      rate = items[2] || items[1] || raise(Error, 'No rates')
 
-      final_rate
+      [rate]
     end
 
-    def params(type:)
+    def params
       { 
         userId: '',
         tokenId: 'USDT',
         currencyId: 'RUB',
         payment: ['75', '377', '582', '581'],
-        side: type,
+        side: '1',
         size: '3',
         page: '1',
         amount: '',
