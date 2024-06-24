@@ -450,59 +450,59 @@ ada:
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 10
 
-xem:
-  priority: 19
-  iso_code: XEM
-  name: XEM
-  symbol:
-  alternate_symbols: []
-  subunit: microXEM
-  subunit_to_unit: 1000000
-  symbol_first: true
-  html_entity: ''
-  decimal_mark: "."
-  thousands_separator: ","
-  iso_numeric: ''
-  smallest_denomination: 1
-  is_crypto: true
+# xem:
+#   priority: 19
+#   iso_code: XEM
+#   name: XEM
+#   symbol:
+#   alternate_symbols: []
+#   subunit: microXEM
+#   subunit_to_unit: 1000000
+#   symbol_first: true
+#   html_entity: ''
+#   decimal_mark: "."
+#   thousands_separator: ","
+#   iso_numeric: ''
+#   smallest_denomination: 1
+#   is_crypto: true
 
-  # Местные настройки
-  #
-  # Идентфикатор в type_cy
-  local_id: 20
+#   # Местные настройки
+#   #
+#   # Идентфикатор в type_cy
+#   local_id: 20
 
-  # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 10
+#   # минимальная сумма валюты на прием (из minGetSum)
+#   minimal_input_value: 10
 
-  # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 15
+#   # минимальная сумма валюты на выдачу (из minGetSumOut)
+#   minimal_output_value: 15
 
-waves:
-  priority: 20
-  iso_code: WAVES
-  name: Waves
-  symbol:
-  alternate_symbols: []
-  subunit: Wavelet
-  subunit_to_unit: 100000000
-  symbol_first: true
-  html_entity: ''
-  decimal_mark: "."
-  thousands_separator: ","
-  iso_numeric: ''
-  smallest_denomination: 1
-  is_crypto: true
+# waves:
+#   priority: 20
+#   iso_code: WAVES
+#   name: Waves
+#   symbol:
+#   alternate_symbols: []
+#   subunit: Wavelet
+#   subunit_to_unit: 100000000
+#   symbol_first: true
+#   html_entity: ''
+#   decimal_mark: "."
+#   thousands_separator: ","
+#   iso_numeric: ''
+#   smallest_denomination: 1
+#   is_crypto: true
 
-  # Местные настройки
-  #
-  # Идентфикатор в type_cy
-  local_id: 21
+#   # Местные настройки
+#   #
+#   # Идентфикатор в type_cy
+#   local_id: 21
 
-  # минимальная сумма валюты на прием (из minGetSum)
-  minimal_input_value: 0.01
+#   # минимальная сумма валюты на прием (из minGetSum)
+#   minimal_input_value: 0.01
 
-  # минимальная сумма валюты на выдачу (из minGetSumOut)
-  minimal_output_value: 0.01
+#   # минимальная сумма валюты на выдачу (из minGetSumOut)
+#   minimal_output_value: 0.01
 
 trx:
   priority: 21
