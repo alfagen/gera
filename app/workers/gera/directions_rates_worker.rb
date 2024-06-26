@@ -43,8 +43,9 @@ module Gera
         exchange_rate: exchange_rate,
         currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
       )
-    rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid, CurrencyRatesRepository::UnknownPair => err
+    rescue CurrencyRatesRepository::UnknownPair => err
       logger.error err
+    rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
       Bugsnag.notify err do |b|
         b.meta_data = { exchange_rate_id: exchange_rate.id }
       end

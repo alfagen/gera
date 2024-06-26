@@ -39,6 +39,8 @@ module Gera
 
       currency_rate.snapshot = snapshot
       currency_rate.save!
+    rescue RateSource::RateNotFound => err
+      logger.error err
     rescue StandardError => err
       raise err if !err.is_a?(Error) && Rails.env.test?
       logger.error err
