@@ -12,7 +12,7 @@ module Gera
 
     def build_matrix
       hash = {}
-      Gera::ExchangeRate.all.each do |er|
+      ExchangeRate.all.each do |er|
         hash[er.ps_from_id] ||= {}
         hash[er.ps_from_id][er.ps_to_id] = er
       end
