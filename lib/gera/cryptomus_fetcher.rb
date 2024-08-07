@@ -22,6 +22,8 @@ module Gera
     end
 
     def rate(currency:)
+      currency = 'DASH' if currency == 'DSH'
+
       safely_parse(http_request(
         url: "#{API_URL}/#{currency}/list",
         method: :GET,
