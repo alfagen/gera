@@ -173,9 +173,7 @@ module Gera
     end
 
     def calculate_allowed_comission(comission)
-      return comission if exchange_rate.outcome_payment_system_id.in?(EXCLUDED_PS_IDS)
-
-      NOT_ALLOWED_COMISSION_RANGE.include?(comission) ? NOT_ALLOWED_COMISSION_RANGE.min : comission
+      comission
     end
 
     def same_currencies?
