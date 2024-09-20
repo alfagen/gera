@@ -152,5 +152,13 @@ module Gera
     def external_rates
       @external_rates ||= BestChange::Service.new(exchange_rate: self).rows_without_kassa
     end
+
+    def flexible_rate
+      FlexibleRateConfig.active.where("JSON_CONTAINS(exchange_rate_ids, :id)", id: id.to_json).present?
+    end
+
+    def flexible_rate?
+      flexible_rate
+    end
   end
 end
