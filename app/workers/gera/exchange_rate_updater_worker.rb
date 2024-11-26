@@ -7,7 +7,7 @@ module Gera
 
     sidekiq_options queue: :exchange_rates
 
-    LOGGER = Logger.new("~/admin.kassa.cc/current/log/operator_exchange_rates_api.log")
+    LOGGER = Logger.new(File.expand_path("~/admin.kassa.cc/current/log/operator_exchange_rates_api.log"))
 
     def perform(exchange_rate_id, attributes, timestamp = nil)
       ExchangeRate.find(exchange_rate_id).update(attributes)
