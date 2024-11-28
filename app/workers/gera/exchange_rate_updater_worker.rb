@@ -8,6 +8,7 @@ module Gera
     sidekiq_options queue: :exchange_rates
 
     def perform(exchange_rate_id, attributes, log_id = nil)
+      sleep 70
       ExchangeRate.find(exchange_rate_id).update(attributes)
       ExchangeRateLog.find(log_id).touch unless log_id.nil?
     end
