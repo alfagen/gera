@@ -111,18 +111,28 @@ module Gera
     end
 
     def exchange_notification
+      by_income = ExchangeNotification.find_by(
+        income_payment_system_id: income_payment_system_id,
+        outcome_payment_system_id: nil
+      )
+
+      by_outcome = ExchangeNotification.find_by(
+        income_payment_system_id: nil,
+        outcome_payment_system_id: outcome_payment_system_id
+      )
+
+      return ExchangeNotification.new(
+        income_payment_system_id: income_payment_system_id,
+        outcome_payment_system_id: outcome_payment_system_id,
+        body_ru: [by_income.body_ru, by_outcome.body_ru].join(' <br /><br /> '),
+        body_en: [by_income.body_en, by_outcome.body_en].join(' <br /><br /> '),
+        body_cs: [by_income.body_cs, by_outcome.body_cs].join(' <br /><br /> ')
+      ) if by_income && by_outcome
+
       ExchangeNotification.find_by(
         income_payment_system_id: income_payment_system_id,
         outcome_payment_system_id: outcome_payment_system_id
-      ) ||
-        ExchangeNotification.find_by(
-          income_payment_system_id: income_payment_system_id,
-          outcome_payment_system_id: nil
-        ) ||
-        ExchangeNotification.find_by(
-          income_payment_system_id: nil,
-          outcome_payment_system_id: outcome_payment_system_id
-        )
+      ) || by_income || by_outcome
     end
 
     def calculate_rate
