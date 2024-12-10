@@ -6,11 +6,9 @@ module Gera
     include Sidekiq::Worker
     include AutoLogger
 
-    sidekiq_options lock: :until_executed
-
     Error = Class.new StandardError
 
-    sidekiq_options queue: :critical, lock: :while_executing
+    sidekiq_options queue: :critical
     define_callbacks :perform
 
     # exchange_rate_id - ID of changes exchange_rate
