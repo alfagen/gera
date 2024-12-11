@@ -18,7 +18,7 @@ module Gera
 
 
       run_callbacks :perform do
-        DirectionRate.transaction do
+        DirectionRateSnapshot.transaction do
           ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
             safe_create(exchange_rate)
           end
@@ -42,11 +42,8 @@ module Gera
         currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
       )
     rescue CurrencyRatesRepository::UnknownPair => err
-      logger.error err
     rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
-      Bugsnag.notify err do |b|
-        b.meta_data = { exchange_rate_id: exchange_rate.id }
-      end
+      logger.error err
     end
   end
 end
