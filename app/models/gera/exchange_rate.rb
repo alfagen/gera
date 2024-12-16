@@ -76,6 +76,8 @@ module Gera
     alias_attribute :income_payment_system, :payment_system_from
     alias_attribute :outcome_payment_system, :payment_system_to
 
+    monetize :maxamount_cents, as: :maxamount
+
     def self.list_rates
       order('id asc').each_with_object({}) do |er, h|
         h[er.income_payment_system_id] ||= {}
