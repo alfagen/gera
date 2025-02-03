@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
     s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
 
     s.add_dependency 'simple_form'
-    s.add_dependency "rails", "~> 6.0.6"
+    s.add_dependency "rails",'~> 6.1.7.9'
     s.add_dependency 'best_in_place'
     s.add_dependency 'virtus'
     s.add_dependency 'kaminari'
