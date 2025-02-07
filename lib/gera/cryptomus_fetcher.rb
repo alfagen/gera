@@ -23,7 +23,7 @@ module Gera
       data = supported_currencies.map(&:iso_code).map { |code| rate(currency: code) }.flatten.filter { |rate| rate['from'] != rate['to'] }
       unique_pairs = Set.new
       filtered_data = data.select do |hash|
-        pair = [hash['from'], hash['to']]
+        pair = [hash['to'], hash['from']].sort
         unique_pairs.add?(pair) ? true : false
       end
       filtered_data
