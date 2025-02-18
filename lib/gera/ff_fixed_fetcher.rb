@@ -8,6 +8,8 @@ module Gera
     def perform
       rates.each_with_object({}) do |rate, memo|
         cur_from, cur_to = rate[:from], rate[:to]
+        cur_from = 'BNB' if cur_from == 'BSC'
+        cur_to = 'BNB' if cur_to == 'BSC'
         next unless supported_currencies.include?(cur_from)
         next unless supported_currencies.include?(cur_to)
 
