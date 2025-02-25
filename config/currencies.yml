@@ -912,3 +912,30 @@ matic:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 1
+
+thb:
+  priority: 35
+  iso_code: THB
+  name: Thai baht
+  symbol: '฿'
+  alternate_symbols: []
+  subunit: Satang
+  subunit_to_unit: 100
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: ","
+  thousands_separator: "."
+  iso_numeric: '764'
+  smallest_denomination: 1
+  is_crypto: false
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 37
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 10
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 10
