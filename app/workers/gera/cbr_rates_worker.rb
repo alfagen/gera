@@ -13,7 +13,7 @@ module Gera
 
     # sidekiq_options lock: :until_executed
 
-    CURRENCIES = %w[USD KZT EUR UAH UZS AZN BYN TRY THB].freeze
+    CURRENCIES = %w[USD KZT EUR UAH UZS AZN BYN TRY THB IDR].freeze
 
     CBR_IDS = {
       'USD' => 'R01235',
@@ -24,7 +24,8 @@ module Gera
       'AZN' => 'R01020A',
       'BYN' => 'R01090B',
       'TRY' => 'R01700J',
-      'THB' => 'R01675'
+      'THB' => 'R01675',
+      'IDR' => 'R01280'
     }.freeze
 
     ROUND = 15
