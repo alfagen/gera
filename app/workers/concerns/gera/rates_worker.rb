@@ -16,9 +16,9 @@ module Gera
 
       @rates = load_rates # Load before a transaction
       logger.debug 'RatesWorker: before transaction'
-      create_snapshot
+      create_rate_source_snapshot
       rates.each { |currency_pair, data| save_rate(currency_pair, data) }
-      snapshot.id
+      rate_source_snapshot.id
       # ExmoRatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
       raise error if Rails.env.test?
@@ -32,18 +32,18 @@ module Gera
 
     private
 
-    attr_reader :snapshot, :rates
-    delegate :actual_for, to: :snapshot
+    attr_reader :rate_source_snapshot, :rates
+    delegate :actual_for, to: :rate_source_snapshot
 
-    def create_snapshot
-      @snapshot ||= rate_source.snapshots.create! actual_for: Time.zone.now
+    def create_rate_source_snapshot
+      @rate_source_snapshot ||= rate_source.snapshots.create!(actual_for: Time.zone.now)
     end
 
     def create_external_rates(currency_pair, data, sell_price:, buy_price:)
       rate = { source_class_name: rate_source.class.name, source_id: rate_source.id, value: buy_price.to_f }
-      ExternalRateSaverWorker.perform_async(currency_pair, snapshot.id, rate, rates.count)
+      ExternalRateSaverWorker.perform_async(currency_pair, rate_source_snapshot.id, rate, rates.count)
       rate[:value] = 1.0 / sell_price.to_f
-      ExternalRateSaverWorker.perform_async(currency_pair.inverse, snapshot.id, rate, rates.count)
+      ExternalRateSaverWorker.perform_async(currency_pair.inverse, rate_source_snapshot.id, rate, rates.count)
     end
   end
 end
