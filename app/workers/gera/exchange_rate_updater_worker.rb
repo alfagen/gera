@@ -8,8 +8,8 @@ module Gera
     sidekiq_options queue: :exchange_rates
 
     def perform(exchange_rate_id, attributes)
-      increment_exchange_rate_touch_metric
-      ExchangeRate.where(id: exchange_rate_id).update_all(attributes)
+      # increment_exchange_rate_touch_metric
+      # ExchangeRate.where(id: exchange_rate_id).update_all(attributes)
     end
 
     private
