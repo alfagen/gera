@@ -25,6 +25,7 @@ module Gera
     belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
     has_one :target_autorate_setting, class_name: 'TargetAutorateSetting'
+    has_one :exchange_rate_limit, class_name: 'Gera::ExchangeRateLimit'
 
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
@@ -69,6 +70,8 @@ module Gera
 
     delegate  :position_from, :position_to, 
               :autorate_from, :autorate_to, to: :target_autorate_setting, allow_nil: true
+
+    delegate :min_amount, :max_amount, to: :exchange_rate_limit, allow_nil: true
 
     alias_attribute :ps_from_id, :income_payment_system_id
     alias_attribute :ps_to_id, :outcome_payment_system_id
