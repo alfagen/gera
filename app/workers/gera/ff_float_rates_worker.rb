@@ -17,7 +17,7 @@ module Gera
     end
 
     def rate_keys
-      { buy: :out, sell: :out }
+      { buy: 'out', sell: 'out' }
     end
   end
 end
