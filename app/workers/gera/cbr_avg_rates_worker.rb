@@ -18,7 +18,7 @@ module Gera
     end
 
     private
-
+  
     def source
       @source ||= RateSourceCbrAvg.get!
     end

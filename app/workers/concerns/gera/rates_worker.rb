@@ -4,27 +4,22 @@ require 'open-uri'
 require 'rest-client'
 
 module Gera
-  # Import rates from all sources
-  #
   module RatesWorker
-    Error = Class.new StandardError
+    Error = Class.new(StandardError)
 
     def perform
-      logger.debug 'RatesWorker: before perform'
-      # Alternative approach is `Model.uncached do`
+      logger.debug "RatesWorker: before perform for #{rate_source.class.name}"
       ActiveRecord::Base.connection.clear_query_cache
 
-      @rates = load_rates # Load before a transaction
-      logger.debug 'RatesWorker: before transaction'
+      @rates = load_rates
       create_rate_source_snapshot
-      rates.each { |currency_pair, data| save_rate(currency_pair, data) }
+      save_all_rates
       rate_source_snapshot.id
-      # ExmoRatesWorker::Error: Error 40016: Maintenance work in progress
     rescue ActiveRecord::RecordNotUnique, RestClient::TooManyRequests => error
       raise error if Rails.env.test?
 
       logger.error error
-      Bugsnag.notify error do |b|
+      Bugsnag.notify(error) do |b|
         b.severity = :warning
         b.meta_data = { error: error }
       end
@@ -39,11 +34,27 @@ module Gera
       @rate_source_snapshot ||= rate_source.snapshots.create!(actual_for: Time.zone.now)
     end
 
-    def create_external_rates(currency_pair, data, sell_price:, buy_price:)
-      rate = { source_class_name: rate_source.class.name, source_id: rate_source.id, value: buy_price.to_f }
-      ExternalRateSaverWorker.perform_async(currency_pair, rate_source_snapshot.id, rate, rates.count)
-      rate[:value] = 1.0 / sell_price.to_f
-      ExternalRateSaverWorker.perform_async(currency_pair.inverse, rate_source_snapshot.id, rate, rates.count)
+    def save_all_rates
+      batched_rates = rates.each_with_object({}) do |(pair, data), hash|
+        buy_key, sell_key = rate_keys.values_at(:buy, :sell)
+    
+        buy_price  = data.is_a?(Array) ? data[buy_key]  : data[buy_key.to_s]
+        sell_price = data.is_a?(Array) ? data[sell_key] : data[sell_key.to_s]
+    
+        next unless buy_price && sell_price
+    
+        hash[pair] = { buy: buy_price.to_f, sell: sell_price.to_f }
+      end
+    
+      ExternalRatesBatchWorker.perform_async(
+        rate_source_snapshot.id,
+        rate_source.id,
+        batched_rates
+      )
+    end
+
+    def rate_keys
+      raise NotImplementedError, 'You must define #rate_keys in your worker'
     end
   end
 end
