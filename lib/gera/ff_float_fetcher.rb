@@ -51,7 +51,7 @@ module Gera
     end
 
     def supported_currencies
-      @supported_currencies ||= RateSourceFfFixed.supported_currencies
+      @supported_currencies ||= RateSourceFfFloat.supported_currencies
     end
   end
 end
