@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 module Gera
-  # Import rates from Garantexio
-  #
   class GarantexioRatesWorker
     include Sidekiq::Worker
     include AutoLogger
-
-    prepend RatesWorker
+    include RatesWorker
 
     private
 
@@ -15,12 +12,12 @@ module Gera
       @rate_source ||= RateSourceGarantexio.get!
     end
 
-    def save_rate(pair, data)
-      create_external_rates pair, data, sell_price: data['last_price'], buy_price: data['last_price']
-    end
-
     def load_rates
       GarantexioFetcher.new.perform
+    end
+
+    def rate_keys
+      { buy: 'last_price', sell: 'last_price' }
     end
   end
 end
