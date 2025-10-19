@@ -42,6 +42,7 @@ VCR.configure do |c|
   c.ignore_localhost = true
   c.hook_into :webmock
   c.configure_rspec_metadata!
+  c.allow_http_connections_when_no_cassette = true
 end
 
 RSpec.configure do |config|
@@ -84,6 +85,8 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.before(:suite) do
+    FactoryBot.definition_file_paths = [File.expand_path('../factories', __dir__)]
+    FactoryBot.find_definitions
     DatabaseRewinder.init
     require 'database_rewinder/active_record_monkey'
     # Почему-то падает с ошибкой  undefined method `empty?' for nil:NilClass

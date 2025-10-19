@@ -53,6 +53,7 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
+    FactoryBot.definition_file_paths = [File.expand_path('../../factories', __dir__)]
     FactoryBot.find_definitions
     DatabaseRewinder.init
     DatabaseRewinder.clean_all

@@ -5,6 +5,18 @@ require 'spec_helper'
 describe Gera::DirectionRate do
   before do
     allow(Gera::DirectionsRatesWorker).to receive :perform_async
+
+    # Mock BestChange::Service to avoid dependency issues
+    best_change_service_class = Class.new do
+      def initialize(exchange_rate:)
+        # Mock implementation
+      end
+
+      def rows_without_kassa
+        []
+      end
+    end
+    stub_const('BestChange::Service', best_change_service_class)
   end
 
   subject { create :gera_direction_rate }

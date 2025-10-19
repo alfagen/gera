@@ -13,7 +13,7 @@ module Gera
       rate_source.update_column(:actual_snapshot_id, actual_snapshot.id)
 
       expect(rate_source.actual_snapshot_id).to eq(actual_snapshot.id)
-      VCR.use_cassette :binance_with_two_external_rates do
+      VCR.use_cassette :binance_with_two_external_rates, allow_playback_repeats: true do
         expect(BinanceRatesWorker.new.perform).to be_truthy
       end
       expect(rate_source.reload.actual_snapshot_id).not_to eq(actual_snapshot.id)
@@ -25,7 +25,7 @@ module Gera
       rate_source.update_column(:actual_snapshot_id, actual_snapshot.id)
 
       expect(rate_source.actual_snapshot_id).to eq(actual_snapshot.id)
-      VCR.use_cassette :binance_with_two_external_rates do
+      VCR.use_cassette :binance_with_two_external_rates, allow_playback_repeats: true do
         expect(BinanceRatesWorker.new.perform).to be_truthy
       end
       expect(rate_source.reload.actual_snapshot_id).to eq(actual_snapshot.id)
