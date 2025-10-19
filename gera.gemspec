@@ -37,6 +37,7 @@ Gem::Specification.new do |s|
     s.add_dependency 'active_link_to'
     s.add_dependency 'breadcrumbs_on_rails'
     s.add_dependency 'noty_flash'
+    s.add_dependency 'alias_association'
 
     # s.add_development_dependency 'rails-erd'
     # s.add_development_dependency 'railroady'
@@ -56,6 +57,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'database_rewinder'
     s.add_development_dependency 'mysql2'
     s.add_development_dependency 'pg'
+    s.add_development_dependency 'sqlite3'
     s.add_development_dependency 'vcr'
     s.add_development_dependency 'webmock'
     s.add_development_dependency 'timecop'

@@ -15,6 +15,7 @@
 module Gera
   class ExchangeRate < ApplicationRecord
     include Authority::Abilities
+    include AliasAssociation
 
     DEFAULT_COMISSION = 50
     MIN_COMISSION = -9.9
@@ -83,8 +84,8 @@ module Gera
     alias_attribute :comission_percents, :value
     alias_attribute :fixed_comission, :value
 
-    alias_method :income_payment_system, :payment_system_from
-    alias_method :outcome_payment_system, :payment_system_to
+    alias_association :income_payment_system, :payment_system_from
+    alias_association :outcome_payment_system, :payment_system_to
 
     monetize :minamount_cents, as: :minamount
     monetize :maxamount_cents, as: :maxamount

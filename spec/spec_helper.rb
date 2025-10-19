@@ -23,6 +23,19 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 Rails.backtrace_cleaner.remove_silencers!
 
+# Monkey patch to prevent fixture_path error in Rails 8
+if defined?(RSpec::Core::ExampleGroup) && !RSpec::Core::ExampleGroup.respond_to?(:fixture_path=)
+  RSpec::Core::ExampleGroup.define_singleton_method(:fixture_path=) do |path|
+    # Do nothing - fixture_path is deprecated in Rails 8
+  end
+end
+
+if defined?(ActiveSupport::TestCase) && !ActiveSupport::TestCase.respond_to?(:fixture_path=)
+  ActiveSupport::TestCase.define_singleton_method(:fixture_path=) do |path|
+    # Do nothing - fixture_path is deprecated in Rails 8
+  end
+end
+
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/vcr_cassettes'
   # c.allow_http_connections_when_no_cassette = true

@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'rails', '~> 6.0.6'
+gem 'rails', '~> 8.0'
 gem 'dapi-archivable', '~> 0.1.2', require: 'archivable'
 gem 'active_link_to', github: 'BrandyMint/active_link_to'
 gem 'noty_flash', github: 'BrandyMint/noty_flash'

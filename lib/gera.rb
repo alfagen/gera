@@ -1,4 +1,5 @@
 require 'money'
+require 'money-rails'
 require 'require_all'
 require 'percentable'
 
@@ -14,8 +15,8 @@ require 'gera/bitfinex_fetcher'
 require 'gera/binance_fetcher'
 require 'gera/exmo_fetcher'
 require 'gera/garantexio_fetcher'
-require 'gera/bybit_fetcher'
-require 'gera/cryptomus_fetcher'
+# require 'gera/bybit_fetcher'  # Temporarily commented due to missing PaymentServices dependency
+# require 'gera/cryptomus_fetcher'  # Temporarily commented due to missing PaymentServices dependency
 require 'gera/ff_fixed_fetcher'
 require 'gera/ff_float_fetcher'
 require 'gera/currency_pair'
