@@ -28,10 +28,10 @@ module Gera
     validates :rate_percent, presence: true
     validates :finite_rate, presence: true
 
-    alias_attribute :payment_system_from, :ps_from
-    alias_attribute :payment_system_to, :ps_to
-    alias_attribute :income_payment_system, :ps_from
-    alias_attribute :outcome_payment_system, :ps_to
+    alias_method :payment_system_from, :ps_from
+    alias_method :payment_system_to, :ps_to
+    alias_method :income_payment_system, :ps_from
+    alias_method :outcome_payment_system, :ps_to
     alias_attribute :income_payment_system_id, :ps_from_id
     alias_attribute :outcome_payment_system_id, :ps_to_id
 

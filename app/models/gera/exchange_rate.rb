@@ -68,7 +68,7 @@ module Gera
               :current_base_rate, :average_base_rate, :auto_comission_from,
               :auto_comission_to, :bestchange_delta, to: :rate_comission_calculator
 
-    delegate  :position_from, :position_to, 
+    delegate  :position_from, :position_to,
               :autorate_from, :autorate_to, to: :target_autorate_setting, allow_nil: true
 
     delegate :min_amount, :max_amount, to: :exchange_rate_limit, allow_nil: true
@@ -83,8 +83,8 @@ module Gera
     alias_attribute :comission_percents, :value
     alias_attribute :fixed_comission, :value
 
-    alias_attribute :income_payment_system, :payment_system_from
-    alias_attribute :outcome_payment_system, :payment_system_to
+    alias_method :income_payment_system, :payment_system_from
+    alias_method :outcome_payment_system, :payment_system_to
 
     monetize :minamount_cents, as: :minamount
     monetize :maxamount_cents, as: :maxamount
