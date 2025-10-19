@@ -15,7 +15,8 @@
       "Bash(RAILS_ENV=test bundle exec rails runner:*)",
       "Bash(git checkout:*)",
       "Bash(git restore:*)",
-      "Bash(RAILS_ENV=test ruby:*)"
+      "Bash(RAILS_ENV=test ruby:*)",
+      "Bash(sqlite3:*)"
     ],
     "deny": [],
     "ask": []

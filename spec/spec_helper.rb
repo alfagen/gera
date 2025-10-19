@@ -46,6 +46,8 @@ end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.use_transactional_fixtures = true
+  config.fixture_paths = [Rails.root.join('spec/fixtures')]
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -64,10 +66,7 @@ RSpec.configure do |config|
     Gera::Universe.clear!
   end
 
-  config.before(:suite) do
-    FactoryBot.find_definitions
-  end
-
+  
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|

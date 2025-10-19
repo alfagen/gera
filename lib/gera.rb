@@ -2,6 +2,7 @@ require 'money'
 require 'money-rails'
 require 'require_all'
 require 'percentable'
+require 'alias_association'
 
 require 'sidekiq'
 require 'auto_logger'
