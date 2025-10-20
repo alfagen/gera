@@ -16,12 +16,32 @@ module Gera
     def perform(*_args) # exchange_rate_id: nil)
       logger.info 'start'
 
-
       run_callbacks :perform do
         DirectionRateSnapshot.transaction do
-          ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
-            safe_create(exchange_rate)
-          end
+          rates = ExchangeRate.includes(:payment_system_from, :payment_system_to).map do |exchange_rate|
+            rate_value = Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
+
+            next unless rate_value
+
+            base_rate_value = rate_value.rate_value
+            rate_percent = exchange_rate.final_rate_percents
+            current_time = Time.current
+            {
+              ps_from_id: exchange_rate.payment_system_from_id,
+              ps_to_id: exchange_rate.payment_system_to_id,
+              snapshot_id: snapshot.id,
+              exchange_rate_id: exchange_rate.id,
+              currency_rate_id: rate_value.id,
+              created_at: current_time,
+              base_rate_value: base_rate_value,
+              rate_percent: rate_percent,
+              rate_value: calculate_finite_rate(base_rate_value, rate_percent)
+            }
+            rescue CurrencyRatesRepository::UnknownPair, DirectionRate::UnknownExchangeRate
+              nil
+          end.compact
+
+          DirectionRate.insert_all(rates)
         end
       end
       logger.info 'finish'
@@ -35,15 +55,12 @@ module Gera
       @snapshot ||= DirectionRateSnapshot.create!
     end
 
-    def safe_create(exchange_rate)
-      direction_rates.create!(
-        snapshot: snapshot,
-        exchange_rate: exchange_rate,
-        currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
-      )
-    rescue CurrencyRatesRepository::UnknownPair => err
-    rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
-      logger.error err
+    def calculate_finite_rate(base_rate, comission)
+      if base_rate <= 1
+        base_rate.to_f * (1.0 - comission.to_f/100)
+      else
+        base_rate - comission.to_percent
+      end
     end
   end
 end
