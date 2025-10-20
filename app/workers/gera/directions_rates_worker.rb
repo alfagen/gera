@@ -18,7 +18,7 @@ module Gera
 
       run_callbacks :perform do
         DirectionRateSnapshot.transaction do
-          rates = ExchangeRate.includes(:payment_system_from, :payment_system_to).map do |exchange_rate|
+          rates = ExchangeRate.includes(:target_autorate_setting, payment_system_from: { auto_rate_settings: :auto_rate_checkpoints }, payment_system_to: { auto_rate_settings: :auto_rate_checkpoints }).map do |exchange_rate|
             rate_value = Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
 
             next unless rate_value
