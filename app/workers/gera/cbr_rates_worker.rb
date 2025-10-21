@@ -25,7 +25,8 @@ module Gera
       'BYN' => 'R01090B',
       'TRY' => 'R01700J',
       'THB' => 'R01675',
-      'IDR' => 'R01280'
+      'IDR' => 'R01280',
+      'CNY' => 'R01375'
     }.freeze
 
     ROUND = 15

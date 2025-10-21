@@ -966,3 +966,30 @@ idr:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 1000
+
+cny:
+  priority: 37
+  iso_code: CNY
+  name: Chinese yuan
+  symbol: "¥"
+  alternate_symbols: []
+  subunit: fēn
+  subunit_to_unit: 100
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: ","
+  thousands_separator: "."
+  iso_numeric: '4217'
+  smallest_denomination: 1
+  is_crypto: false
+
+  # Местные настройки
+  #
+  # Идентфикатор в type_cy
+  local_id: 39
+
+  # минимальная сумма валюты на прием (из minGetSum)
+  minimal_input_value: 10
+
+  # минимальная сумма валюты на выдачу (из minGetSumOut)
+  minimal_output_value: 10
