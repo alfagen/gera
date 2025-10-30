@@ -23,16 +23,32 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 Rails.backtrace_cleaner.remove_silencers!
 
+# Monkey patch to prevent fixture_path error in Rails 8
+if defined?(RSpec::Core::ExampleGroup) && !RSpec::Core::ExampleGroup.respond_to?(:fixture_path=)
+  RSpec::Core::ExampleGroup.define_singleton_method(:fixture_path=) do |path|
+    # Do nothing - fixture_path is deprecated in Rails 8
+  end
+end
+
+if defined?(ActiveSupport::TestCase) && !ActiveSupport::TestCase.respond_to?(:fixture_path=)
+  ActiveSupport::TestCase.define_singleton_method(:fixture_path=) do |path|
+    # Do nothing - fixture_path is deprecated in Rails 8
+  end
+end
+
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/vcr_cassettes'
   # c.allow_http_connections_when_no_cassette = true
   c.ignore_localhost = true
   c.hook_into :webmock
   c.configure_rspec_metadata!
+  c.allow_http_connections_when_no_cassette = true
 end
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.use_transactional_fixtures = true
+  config.fixture_paths = [Rails.root.join('spec/fixtures')]
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
@@ -51,10 +67,7 @@ RSpec.configure do |config|
     Gera::Universe.clear!
   end
 
-  config.before(:suite) do
-    FactoryBot.find_definitions
-  end
-
+  
   # rspec-mocks config goes here. You can use an alternate test double
   # library (such as bogus or mocha) by changing the `mock_with` option here.
   config.mock_with :rspec do |mocks|
@@ -72,6 +85,8 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
   config.before(:suite) do
+    FactoryBot.definition_file_paths = [File.expand_path('../factories', __dir__)]
+    FactoryBot.find_definitions
     DatabaseRewinder.init
     require 'database_rewinder/active_record_monkey'
     # Почему-то падает с ошибкой  undefined method `empty?' for nil:NilClass

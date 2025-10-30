@@ -12,8 +12,8 @@ module Gera
     scope :available, -> { where is_available: true }
 
     # TODO: move to kassa-admin
-    enum total_computation_method: %i[regular_fee reverse_fee]
-    enum transfer_comission_payer: %i[user shop], _prefix: :transfer_comission_payer
+    enum :total_computation_method, %i[regular_fee reverse_fee]
+    enum :transfer_comission_payer, %i[user shop], prefix: :transfer_comission_payer
 
     validates :name, presence: true, uniqueness: { case_sensitive: true }
     validates :currency, presence: true

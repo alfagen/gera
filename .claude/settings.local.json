@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle install:*)",
+      "Bash(ruby:*)",
+      "Bash(bundle exec rspec:*)",
+      "Bash(gem update:*)",
+      "Bash(bundle:*)",
+      "Bash(gem install:*)",
+      "Bash(rbenv rehash:*)",
+      "WebSearch",
+      "Bash(find:*)",
+      "Bash(RAILS_ENV=test bundle exec rspec:*)",
+      "Bash(RAILS_ENV=test bundle exec rake:*)",
+      "Bash(RAILS_ENV=test bundle exec rails runner:*)",
+      "Bash(git checkout:*)",
+      "Bash(git restore:*)",
+      "Bash(RAILS_ENV=test ruby:*)",
+      "Bash(sqlite3:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

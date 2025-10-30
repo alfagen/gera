@@ -8,6 +8,7 @@ module Gera
     include AutoLogger
     include DirectionSupport
     include Authority::Abilities
+    include AliasAssociation
 
     UnknownExchangeRate = Class.new StandardError
 
@@ -28,10 +29,10 @@ module Gera
     validates :rate_percent, presence: true
     validates :finite_rate, presence: true
 
-    alias_attribute :payment_system_from, :ps_from
-    alias_attribute :payment_system_to, :ps_to
-    alias_attribute :income_payment_system, :ps_from
-    alias_attribute :outcome_payment_system, :ps_to
+    alias_association :payment_system_from, :ps_from
+    alias_association :payment_system_to, :ps_to
+    alias_association :income_payment_system, :ps_from
+    alias_association :outcome_payment_system, :ps_to
     alias_attribute :income_payment_system_id, :ps_from_id
     alias_attribute :outcome_payment_system_id, :ps_to_id
 
