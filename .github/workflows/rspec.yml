@@ -59,7 +59,7 @@ jobs:
         MYSQL_PASSWORD: root
         MYSQL_DATABASE: gera_test
       run: |
-        bundle exec rake spec
+        bundle exec rspec
 
     - name: Upload coverage reports
       uses: codecov/codecov-action@v3
