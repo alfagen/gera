@@ -15,7 +15,7 @@ GIT
 PATH
   remote: .
   specs:
-    gera (0.3.5)
+    gera (0.3.6)
       active_link_to
       alias_association
       authority
