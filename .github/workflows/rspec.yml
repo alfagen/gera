@@ -27,11 +27,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Ruby 3.2
+    - name: Set up Ruby 3.4
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.2
+        ruby-version: 3.4.7
         bundler-cache: true
+        cache-version: 2
 
     - name: Install dependencies
       run: |
