@@ -25,7 +25,12 @@ module Gera
 
     belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
-    has_one :target_autorate_setting, class_name: 'TargetAutorateSetting'
+
+    has_many :direction_rates, class_name: 'Gera::DirectionRate', dependent: :delete_all
+
+    # NOTE: These tables are optional and may be defined in host application
+    # dependent: :delete not used because tables may not exist
+    has_one :target_autorate_setting, class_name: 'Gera::TargetAutorateSetting'
     has_one :exchange_rate_limit, class_name: 'Gera::ExchangeRateLimit'
 
     scope :ordered, -> { order :id }

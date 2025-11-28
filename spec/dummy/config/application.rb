@@ -22,6 +22,9 @@ module Dummy
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
 
+    # Fix Rails 8.1 deprecation warning for to_time
+    config.active_support.to_time_preserves_timezone = :zone
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

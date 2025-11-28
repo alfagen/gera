@@ -18,6 +18,9 @@ require 'sidekiq/testing'
 Sidekiq::Testing.fake!
 Sidekiq.strict_args!(false)
 
+# Suppress Money gem deprecation warnings
+Money.locale_backend = :i18n
+
 require_relative '../lib/gera'
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
