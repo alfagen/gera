@@ -12,23 +12,23 @@ module Gera
 
     def perform
       logger.info 'start'
-      CurrencyRate.transaction do
+      Gera::CurrencyRate.transaction do
         snapshot = create_snapshot
-        CurrencyPair.all.each { |pair| create_rate(pair: pair, snapshot: snapshot) }
+        Gera::CurrencyPair.all.each { |pair| create_rate(pair: pair, snapshot: snapshot) }
       end
       logger.info 'finish'
-      DirectionsRatesWorker.perform_async
+      Gera::DirectionsRatesWorker.perform_async
       true
     end
 
     private
 
     def create_snapshot
-      CurrencyRateSnapshot.create!(currency_rate_mode_snapshot: currency_rates.snapshot)
+      Gera::CurrencyRateSnapshot.create!(currency_rate_mode_snapshot: currency_rates.snapshot)
     end
 
     def currency_rates
-      Universe.currency_rate_modes_repository
+      Gera::Universe.currency_rate_modes_repository
     end
 
     def create_rate(pair:, snapshot:)
@@ -39,7 +39,7 @@ module Gera
 
       currency_rate.snapshot = snapshot
       currency_rate.save!
-    rescue RateSource::RateNotFound => err
+    rescue Gera::RateSource::RateNotFound => err
       logger.error err
     rescue StandardError => err
       raise err if !err.is_a?(Error) && Rails.env.test?
@@ -54,7 +54,7 @@ module Gera
 
     def find_currency_rate_mode_by_pair(pair)
       currency_rates.find_currency_rate_mode_by_pair(pair) ||
-        CurrencyRateMode.default_for_pair(pair).freeze
+        Gera::CurrencyRateMode.default_for_pair(pair).freeze
     end
   end
 end

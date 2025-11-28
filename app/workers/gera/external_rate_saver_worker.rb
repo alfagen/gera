@@ -9,11 +9,11 @@ module Gera
 
     def perform(currency_pair, snapshot_id, rate, source_rates_count)
       rate_source = find_rate_source(rate)
-      snapshot = ExternalRateSnapshot.find(snapshot_id)
+      snapshot = Gera::ExternalRateSnapshot.find(snapshot_id)
       create_external_rate(
         rate_source: rate_source,
         snapshot: snapshot,
-        currency_pair: CurrencyPair.new(currency_pair),
+        currency_pair: Gera::CurrencyPair.new(currency_pair),
         rate_value: rate['value']
       )
       update_actual_snapshot(
@@ -31,7 +31,7 @@ module Gera
     end
 
     def create_external_rate(rate_source:, snapshot:, currency_pair:, rate_value:)
-      ExternalRate.create!(
+      Gera::ExternalRate.create!(
         currency_pair: currency_pair,
         snapshot: snapshot,
         source: rate_source,

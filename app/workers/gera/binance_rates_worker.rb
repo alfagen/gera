@@ -21,11 +21,11 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceBinance.get!
+      @rate_source ||= Gera::RateSourceBinance.get!
     end
 
     def load_rates
-      BinanceFetcher.new.perform
+      Gera::BinanceFetcher.new.perform
     end
 
     def rate_keys
