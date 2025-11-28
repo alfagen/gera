@@ -14,8 +14,9 @@ require 'authority'
 
 require 'timecop'
 
-require 'sidekiq/testing/inline'
-Sidekiq::Testing.inline!
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
+Sidekiq.strict_args!(false)
 
 require_relative '../lib/gera'
 

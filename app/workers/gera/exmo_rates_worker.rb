@@ -9,11 +9,11 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceExmo.get!
+      @rate_source ||= Gera::RateSourceExmo.get!
     end
 
     def load_rates
-      ExmoFetcher.new.perform
+      Gera::ExmoFetcher.new.perform
     end
 
     def rate_keys

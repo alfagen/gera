@@ -9,7 +9,7 @@ module Gera
 
     def perform(exchange_rate_id, attributes)
       increment_exchange_rate_touch_metric
-      ExchangeRate.where(id: exchange_rate_id).update_all(attributes)
+      Gera::ExchangeRate.where(id: exchange_rate_id).update_all(attributes)
     end
 
     private

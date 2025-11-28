@@ -18,8 +18,8 @@ module Gera
 
 
       run_callbacks :perform do
-        DirectionRateSnapshot.transaction do
-          ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
+        Gera::DirectionRateSnapshot.transaction do
+          Gera::ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
             safe_create(exchange_rate)
           end
         end
@@ -32,17 +32,17 @@ module Gera
     delegate :direction_rates, to: :snapshot
 
     def snapshot
-      @snapshot ||= DirectionRateSnapshot.create!
+      @snapshot ||= Gera::DirectionRateSnapshot.create!
     end
 
     def safe_create(exchange_rate)
       direction_rates.create!(
         snapshot: snapshot,
         exchange_rate: exchange_rate,
-        currency_rate: Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
+        currency_rate: Gera::Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
       )
-    rescue CurrencyRatesRepository::UnknownPair => err
-    rescue DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
+    rescue Gera::CurrencyRatesRepository::UnknownPair => err
+    rescue Gera::DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
       logger.error err
     end
   end

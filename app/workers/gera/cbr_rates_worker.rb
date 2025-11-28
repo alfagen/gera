@@ -76,9 +76,9 @@ module Gera
     end
 
     def save_snapshot_rate(cur_from, cur_to)
-      pair = CurrencyPair.new cur_from, cur_to
+      pair = Gera::CurrencyPair.new cur_from, cur_to
 
-      min_rate, max_rate = CbrExternalRate
+      min_rate, max_rate = Gera::CbrExternalRate
                            .where(cur_from: cur_from.iso_code, cur_to: cur_to.iso_code)
                            .order('date asc')
                            .last(2)
@@ -87,14 +87,14 @@ module Gera
       raise "No minimal rate #{cur_from}, #{cur_to}" unless min_rate
       raise "No maximal rate #{cur_from}, #{cur_to}" unless max_rate
 
-      ExternalRate.create!(
+      Gera::ExternalRate.create!(
         source: cbr,
         snapshot: snapshot,
         currency_pair: pair,
         rate_value: min_rate.rate
       )
 
-      ExternalRate.create!(
+      Gera::ExternalRate.create!(
         source: cbr,
         snapshot: snapshot,
         currency_pair: pair.inverse,
@@ -103,14 +103,14 @@ module Gera
 
       avg_rate = (max_rate.rate + min_rate.rate) / 2.0
 
-      ExternalRate.create!(
+      Gera::ExternalRate.create!(
         source: cbr_avg,
         snapshot: avg_snapshot,
         currency_pair: pair,
         rate_value: avg_rate
       )
 
-      ExternalRate.create!(
+      Gera::ExternalRate.create!(
         source: cbr_avg,
         snapshot: avg_snapshot,
         currency_pair: pair.inverse,
@@ -119,11 +119,11 @@ module Gera
     end
 
     def cbr_avg
-      @cbr_avg ||= RateSourceCbrAvg.get!
+      @cbr_avg ||= Gera::RateSourceCbrAvg.get!
     end
 
     def cbr
-      @cbr ||= RateSourceCbr.get!
+      @cbr ||= Gera::RateSourceCbr.get!
     end
 
     def days
@@ -174,10 +174,10 @@ module Gera
     end
 
     def save_rates(date, rates)
-      return if CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
+      return if Gera::CbrExternalRate.where(date: date, cur_from: currencies.map(&:iso_code)).count == currencies.count
 
       currencies.each do |cur|
-        save_rate get_rate(rates, CBR_IDS[cur.iso_code]), cur, date unless CbrExternalRate.where(date: date, cur_from: cur.iso_code).exists?
+        save_rate get_rate(rates, CBR_IDS[cur.iso_code]), cur, date unless Gera::CbrExternalRate.where(date: date, cur_from: cur.iso_code).exists?
       end
     end
 
@@ -194,7 +194,7 @@ module Gera
 
       rate = (original_rate / nominal).round(ROUND)
 
-      CbrExternalRate.create!(
+      Gera::CbrExternalRate.create!(
         cur_from: cur.iso_code,
         cur_to: RUB.iso_code,
         rate: rate,

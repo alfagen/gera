@@ -9,11 +9,11 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceFfFloat.get!
+      @rate_source ||= Gera::RateSourceFfFloat.get!
     end
 
     def load_rates
-      FfFloatFetcher.new.perform
+      Gera::FfFloatFetcher.new.perform
     end
 
     def rate_keys
