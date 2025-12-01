@@ -5,7 +5,7 @@ module Gera
     include AutoLogger
     include RatesJob
 
-    limits_concurrency to: 1, key: -> { 'gera_binance_rates' }, duration: 1.minute
+    limits_concurrency to: 1, key: ->(_job) { 'gera_binance_rates' }, duration: 1.minute
 
     def perform
       # Check if we should approve new rates based on count

@@ -4,7 +4,7 @@ module Gera
   class CbrAvgRatesJob < ApplicationJob
     include AutoLogger
 
-    limits_concurrency to: 1, key: -> { 'gera_cbr_avg_rates' }, duration: 1.minute
+    limits_concurrency to: 1, key: ->(_job) { 'gera_cbr_avg_rates' }, duration: 1.minute
 
     def perform
       ActiveRecord::Base.connection.clear_query_cache
