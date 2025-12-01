@@ -5,7 +5,7 @@ require 'spec_helper'
 module Gera
   RSpec.describe ExchangeRate do
     before do
-      allow(DirectionsRatesWorker).to receive(:perform_async)
+      allow(DirectionsRatesJob).to receive(:perform_later)
     end
     subject { create :gera_exchange_rate }
     it { expect(subject).to be_persisted }

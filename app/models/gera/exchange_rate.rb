@@ -110,7 +110,7 @@ module Gera
       logger = Logger.new("#{Rails.root}/log/call_exchange_rate_updater_worker.log")
       logger.info("Calls perform_async from update_finite_rate Gera::ExchangeRate")
 
-      ExchangeRateUpdaterWorker.perform_async(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
+      ExchangeRateUpdaterJob.perform_later(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
     end
 
     def custom_inspect
@@ -161,7 +161,7 @@ module Gera
     end
 
     def update_direction_rates
-      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+      DirectionsRatesJob.perform_later(exchange_rate_id: id)
     end
 
     def rate_comission_calculator
