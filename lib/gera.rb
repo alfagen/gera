@@ -4,7 +4,7 @@ require 'require_all'
 require 'percentable'
 require 'alias_association'
 
-require 'sidekiq'
+require 'solid_queue'
 require 'auto_logger'
 
 require "gera/version"

@@ -35,8 +35,8 @@ PATH
       request_store
       require_all
       rest-client (~> 2.0)
-      sidekiq
       simple_form
+      solid_queue
       virtus
 
 GEM
@@ -179,12 +179,17 @@ GEM
       ruby2_keywords
     drb (2.2.3)
     erubi (1.13.1)
+    et-orbi (1.4.0)
+      tzinfo
     factory_bot (6.5.6)
       activesupport (>= 6.1.0)
     ffi (1.17.2)
     ffi (1.17.2-x86_64-linux-gnu)
     formatador (1.2.3)
       reline
+    fugit (1.12.1)
+      et-orbi (~> 1.4)
+      raabro (~> 1.4)
     globalid (1.3.0)
       activesupport (>= 6.1)
     guard (2.19.1)
@@ -261,7 +266,6 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.9)
     minitest (5.26.2)
     monetize (1.13.0)
       money (~> 6.12)
@@ -286,9 +290,6 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokogiri (1.18.10)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
     nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     notiffany (0.1.3)
@@ -319,6 +320,7 @@ GEM
       pry (>= 0.13.0)
     psych (3.1.0)
     public_suffix (7.0.0)
+    raabro (1.4.0)
     racc (1.8.1)
     rack (3.2.4)
     rack-session (2.1.1)
@@ -364,8 +366,6 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     rdoc (6.3.4.1)
-    redis-client (0.26.1)
-      connection_pool
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -420,17 +420,16 @@ GEM
     ruby2_keywords (0.0.5)
     securerandom (0.4.1)
     shellany (0.0.1)
-    sidekiq (8.0.9)
-      connection_pool (>= 2.5.0)
-      json (>= 2.9.0)
-      logger (>= 1.6.2)
-      rack (>= 3.1.0)
-      redis-client (>= 0.23.2)
     simple_form (5.4.0)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
-    sqlite3 (2.8.0)
-      mini_portile2 (~> 2.8.0)
+    solid_queue (1.2.4)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      concurrent-ruby (>= 1.3.1)
+      fugit (~> 1.11)
+      railties (>= 7.1)
+      thor (>= 1.3.1)
     sqlite3 (2.8.0-x86_64-linux-gnu)
     thor (1.4.0)
     thread_safe (0.3.6)
@@ -464,7 +463,6 @@ GEM
     zeitwerk (2.7.3)
 
 PLATFORMS
-  ruby
   x86_64-linux
 
 DEPENDENCIES
