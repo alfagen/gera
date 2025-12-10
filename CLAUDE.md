@@ -96,7 +96,6 @@ RUB, USD, BTC, LTC, ETH, DSH, KZT, XRP, ETC, XMR, BCH, EUR, NEO, ZEC
 - Factory Bot for test data in `factories/`
 - VCR for HTTP request mocking
 - Database Rewinder for fast test cleanup
-- Sidekiq testing inline enabled
 
 ## File Organization
 

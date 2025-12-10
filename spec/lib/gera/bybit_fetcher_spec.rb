@@ -1,24 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
-# Stub PaymentServices::Base::Client before BybitFetcher is loaded
-# This is necessary because BybitFetcher extends this class from host app
-module PaymentServices
-  module Base
-    class Client
-      def http_request(url:, method:, body: nil, headers: {})
-        ''
-      end
-
-      def safely_parse(response)
-        JSON.parse(response) rescue {}
-      end
-    end
-  end
-end unless defined?(PaymentServices::Base::Client)
-
-# Now require the fetcher
 require 'gera/bybit_fetcher'
 
 module Gera
@@ -36,9 +18,12 @@ module Gera
         }
       end
 
+      let(:http_response) do
+        instance_double(RestClient::Response, code: 200, body: api_response.to_json)
+      end
+
       before do
-        allow(subject).to receive(:http_request).and_return(api_response.to_json)
-        allow(subject).to receive(:safely_parse).and_return(api_response)
+        allow(RestClient::Request).to receive(:execute).and_return(http_response)
       end
 
       it 'returns hash of currency pairs to rates' do
@@ -110,18 +95,6 @@ module Gera
     describe '#supported_currencies' do
       it 'returns currencies from RateSourceBybit' do
         expect(subject.send(:supported_currencies)).to eq(RateSourceBybit.supported_currencies)
-      end
-    end
-
-    describe '#build_headers' do
-      it 'returns headers with Content-Type' do
-        headers = subject.send(:build_headers)
-        expect(headers['Content-Type']).to eq('application/json')
-      end
-
-      it 'returns headers with Host' do
-        headers = subject.send(:build_headers)
-        expect(headers['Host']).to eq('api2.bytick.com')
       end
     end
 

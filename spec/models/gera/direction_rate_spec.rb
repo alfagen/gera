@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Gera::DirectionRate do
   before do
-    allow(Gera::DirectionsRatesWorker).to receive :perform_async
+    allow(Gera::DirectionsRatesJob).to receive :perform_later
 
     # Mock BestChange::Service to avoid dependency issues
     best_change_service_class = Class.new do
