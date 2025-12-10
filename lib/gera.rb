@@ -3,6 +3,8 @@ require 'money-rails'
 require 'require_all'
 require 'percentable'
 require 'alias_association'
+require 'open-uri'
+require 'net/http'
 
 require 'solid_queue'
 require 'auto_logger'

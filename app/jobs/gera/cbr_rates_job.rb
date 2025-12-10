@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'open-uri'
 require 'business_time'
 
 module Gera
@@ -161,7 +160,7 @@ module Gera
 
       logger.info "fetch rates for #{date} from #{uri}"
 
-      doc = Nokogiri::XML open uri
+      doc = Nokogiri::XML URI.open(uri)
       root = doc.xpath('/ValCurs')
 
       root_date = root.attr('Date').text
