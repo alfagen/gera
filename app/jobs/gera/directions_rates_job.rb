@@ -8,7 +8,7 @@ module Gera
     Error = Class.new StandardError
 
     queue_as :critical
-    limits_concurrency to: 1, key: ->(_job) { 'gera_directions_rates' }, duration: 5.minutes
+    limits_concurrency to: 1, key: ->(*) { 'gera_directions_rates' }, duration: 5.minutes
 
     define_callbacks :perform
 
