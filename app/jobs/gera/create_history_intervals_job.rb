@@ -4,7 +4,7 @@ module Gera
   class CreateHistoryIntervalsJob < ApplicationJob
     include AutoLogger
 
-    limits_concurrency to: 1, key: ->(_job) { 'gera_create_history_intervals' }, duration: 1.hour
+    limits_concurrency to: 1, key: ->(*) { 'gera_create_history_intervals' }, duration: 1.hour
 
     MAXIMAL_DATE = 30.minutes
     MINIMAL_DATE = Time.parse('13-07-2018 18:00')
