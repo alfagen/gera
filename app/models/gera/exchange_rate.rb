@@ -108,7 +108,7 @@ module Gera
 
     def update_finite_rate!(finite_rate)
       logger = Logger.new("#{Rails.root}/log/call_exchange_rate_updater_worker.log")
-      logger.info("Calls perform_async from update_finite_rate Gera::ExchangeRate")
+      logger.info("Calls perform_later from update_finite_rate Gera::ExchangeRate")
 
       ExchangeRateUpdaterJob.perform_later(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
     end
