@@ -179,10 +179,12 @@ module Gera
 
     def autorate_calculator_class
       case calculator_type
+      when 'legacy'
+        AutorateCalculators::Legacy
       when 'position_aware'
         AutorateCalculators::PositionAware
       else
-        AutorateCalculators::Legacy
+        raise ArgumentError, "Unknown calculator_type: #{calculator_type}"
       end
     end
   end
