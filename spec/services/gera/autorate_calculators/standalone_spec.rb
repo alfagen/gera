@@ -156,5 +156,113 @@ RSpec.describe 'AutorateCalculators' do
         expect(calculator.call).to eq(2.4999)
       end
     end
+
+    # UC-5: Диапазон позиций не совпадает с диапазоном курсов
+    # Реализован вариант A: возвращаем autorate_from (минимально допустимую комиссию)
+    # и занимаем позицию ниже целевого диапазона
+    describe 'UC-5: диапазон позиций не совпадает с диапазоном курсов (Вариант A)' do
+      context 'курсы конкурентов выше допустимого диапазона' do
+        # autorate_from..autorate_to = 1.0..3.0
+        # Курсы на позициях 2-4: 4.0, 4.5, 5.0 (все выше 3.0)
+        # Ожидаемый результат: autorate_from = 1.0
+
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 3.5), # pos 1
+            double('ExternalRate', target_rate_percent: 4.0), # pos 2
+            double('ExternalRate', target_rate_percent: 4.5), # pos 3
+            double('ExternalRate', target_rate_percent: 5.0), # pos 4
+            double('ExternalRate', target_rate_percent: 5.5)  # pos 5
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(2)
+          allow(exchange_rate).to receive(:position_to).and_return(4)
+        end
+
+        it 'возвращает autorate_from (вариант A)' do
+          expect(calculator.call).to eq(1.0)
+        end
+      end
+
+      context 'курсы конкурентов ниже допустимого диапазона' do
+        # autorate_from..autorate_to = 1.0..3.0
+        # Курсы на позициях 2-4: -0.5, -0.3, -0.1 (все ниже 1.0)
+        # Мы не можем им соответствовать, возвращаем autorate_from
+
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: -0.8), # pos 1
+            double('ExternalRate', target_rate_percent: -0.5), # pos 2
+            double('ExternalRate', target_rate_percent: -0.3), # pos 3
+            double('ExternalRate', target_rate_percent: -0.1), # pos 4
+            double('ExternalRate', target_rate_percent: 0.2)   # pos 5
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(2)
+          allow(exchange_rate).to receive(:position_to).and_return(4)
+        end
+
+        it 'возвращает autorate_from (вариант A)' do
+          expect(calculator.call).to eq(1.0)
+        end
+      end
+
+      context 'нет курсов на целевых позициях (список короче)' do
+        # position_from..position_to = 5..10
+        # Но в списке только 3 позиции
+
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.0), # pos 1
+            double('ExternalRate', target_rate_percent: 2.5), # pos 2
+            double('ExternalRate', target_rate_percent: 3.0)  # pos 3
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(5)
+          allow(exchange_rate).to receive(:position_to).and_return(10)
+        end
+
+        it 'возвращает autorate_from (вариант A)' do
+          expect(calculator.call).to eq(1.0)
+        end
+      end
+
+      context 'частичное совпадение: только некоторые позиции вне диапазона' do
+        # autorate_from..autorate_to = 1.0..3.0
+        # Позиция 1: 0.5 (лучший курс, вне диапазона - ниже 1.0)
+        # Позиция 2: 4.0 (вне диапазона - выше 3.0)
+        # Позиция 3: 2.5 (в диапазоне)
+        # Позиция 4: 2.8 (в диапазоне)
+        # Должен использовать курс с позиции 3
+
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 0.5), # pos 1 - лучший, но вне диапазона
+            double('ExternalRate', target_rate_percent: 4.0), # pos 2 - вне диапазона
+            double('ExternalRate', target_rate_percent: 2.5), # pos 3 - в диапазоне
+            double('ExternalRate', target_rate_percent: 2.8), # pos 4 - в диапазоне
+            double('ExternalRate', target_rate_percent: 5.0)  # pos 5
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(2)
+          allow(exchange_rate).to receive(:position_to).and_return(4)
+        end
+
+        it 'использует первый подходящий курс в диапазоне' do
+          # valid_rates = [2.5, 2.8]
+          # target = 2.5 - GAP = 2.499
+          # rate_above (pos 1) = 0.5, 2.499 > 0.5 - не перепрыгиваем
+          expect(calculator.call).to eq(2.5 - 0.001)
+        end
+      end
+    end
   end
 end
