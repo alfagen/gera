@@ -397,6 +397,39 @@ module Gera
             end
           end
         end
+
+        context 'округление комиссии до 4 знаков' do
+          # Проверяем, что результат округляется до COMMISSION_PRECISION (4) знаков
+          # Это исправляет проблему с float точностью: -2.8346999999999998 → -2.8347
+
+          let(:external_rates) do
+            [
+              double('ExternalRate', target_rate_percent: 1.0),       # pos 1
+              double('ExternalRate', target_rate_percent: 1.5),       # pos 2
+              double('ExternalRate', target_rate_percent: 2.83469999) # pos 3 - число с избыточной точностью
+            ]
+          end
+
+          before do
+            allow(exchange_rate).to receive(:position_from).and_return(3)
+            allow(exchange_rate).to receive(:position_to).and_return(3)
+            allow(exchange_rate).to receive(:autorate_from).and_return(0.0)
+            allow(exchange_rate).to receive(:autorate_to).and_return(5.0)
+          end
+
+          it 'округляет результат до 4 знаков после запятой' do
+            result = calculator.call
+            # Проверяем что результат имеет максимум 4 знака после запятой
+            decimal_places = result.to_s.split('.').last&.length || 0
+            expect(decimal_places).to be <= 4
+          end
+
+          it 'корректно округляет вычисления с GAP' do
+            result = calculator.call
+            # 2.83469999 - 0.001 = 2.83369999 → округляется до 2.8337
+            expect(result).to eq(2.8337)
+          end
+        end
       end
     end
   end

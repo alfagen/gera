@@ -33,12 +33,12 @@ module Gera
 
         # UC-6: Адаптивный GAP
         gap = calculate_adaptive_gap(filtered, target_rate)
-        target_comission = target_rate.target_rate_percent - gap
+        target_comission = round_commission(target_rate.target_rate_percent - gap)
 
         # Проверяем, не перепрыгнем ли мы позицию выше position_from
         adjusted_comission = adjust_for_position_above(target_comission, target_rate, filtered)
 
-        adjusted_comission
+        round_commission(adjusted_comission)
       end
 
       private

@@ -8,7 +8,9 @@ module Gera
     class Base
       include Virtus.model strict: true
 
-      AUTO_COMISSION_GAP = 0.001
+      AUTO_COMISSION_GAP = 0.0001
+      # Количество знаков после запятой для комиссии
+      COMMISSION_PRECISION = 4
 
       attribute :exchange_rate
       attribute :external_rates
@@ -21,6 +23,11 @@ module Gera
       end
 
       protected
+
+      # Округление комиссии до заданной точности
+      def round_commission(value)
+        value.round(COMMISSION_PRECISION)
+      end
 
       def could_be_calculated?
         !external_rates.nil? && exchange_rate.target_autorate_setting&.could_be_calculated?
