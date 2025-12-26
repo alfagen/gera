@@ -29,9 +29,11 @@ module Gera
     end
 
     # @param [Hash] Набор кросс-валют для расчета
-    mattr_accessor :cross_pairs
+    # @param [Object] HTTP клиент для работы с Manul API (BestChange rates fetcher)
+    mattr_accessor :cross_pairs, :manul_client
     # В данном примере курс к KZT считать через RUB
     @@cross_pairs = { kzt: :rub }
+    @@manul_client = nil
 
     def cross_pairs
       h = {}
@@ -41,9 +43,9 @@ module Gera
       h
     end
 
-    # @param [Object] HTTP клиент для работы с Manul API (BestChange rates fetcher)
-    mattr_accessor :manul_client
-    @@manul_client = nil
+    def manul_client
+      nil
+    end
 	end
 end
 
