@@ -10,6 +10,7 @@ module Gera
     # - UC-6: Адаптивный GAP для плотных рейтингов
     # - UC-8: Исключение своего обменника из расчёта
     # - UC-9: Защита от манипуляторов с аномальными курсами
+    # - UC-12: Не вычитать GAP при position_from=1 и одинаковых курсах
     class PositionAware < Base
       # Минимальный GAP (используется когда разница между позициями меньше стандартного)
       MIN_GAP = 0.0001
@@ -31,6 +32,11 @@ module Gera
 
         target_rate = valid_rates.first
 
+        # UC-12: При position_from=1 и одинаковых курсах не вычитаем GAP
+        if position_from == 1 && should_skip_gap?(filtered, target_rate)
+          return round_commission(target_rate.target_rate_percent)
+        end
+
         # UC-6: Адаптивный GAP
         gap = calculate_adaptive_gap(filtered, target_rate)
         target_comission = round_commission(target_rate.target_rate_percent - gap)
@@ -42,6 +48,15 @@ module Gera
       end
 
       private
+
+      # UC-12: Проверяем, нужно ли пропустить вычитание GAP
+      # Если position_from=1 и следующая позиция имеет такой же курс - не вычитаем GAP
+      def should_skip_gap?(rates, target_rate)
+        return false if rates.size < 2
+
+        next_rate = rates[1]
+        next_rate && next_rate.target_rate_percent == target_rate.target_rate_percent
+      end
 
       # UC-8: Фильтрация своего обменника
       def filtered_external_rates

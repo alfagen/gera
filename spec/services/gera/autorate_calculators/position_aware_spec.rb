@@ -398,6 +398,82 @@ module Gera
           end
         end
 
+        context 'UC-12: position_from=1 и одинаковые курсы' do
+          # При position_from=1 и одинаковых курсах не вычитаем GAP,
+          # позволяем BestChange определить позицию по резервам
+
+          context 'все позиции имеют одинаковый курс' do
+            let(:external_rates) do
+              [
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 1
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 2
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 3
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 4
+                double('ExternalRate', target_rate_percent: 78.7852)  # pos 5
+              ]
+            end
+
+            before do
+              allow(exchange_rate).to receive(:position_from).and_return(1)
+              allow(exchange_rate).to receive(:position_to).and_return(20)
+              allow(exchange_rate).to receive(:autorate_from).and_return(70.0)
+              allow(exchange_rate).to receive(:autorate_to).and_return(80.0)
+            end
+
+            it 'не вычитает GAP и оставляет курс как есть' do
+              # Без UC-12: 78.7752 - 0.0001 = 78.7751 (перепрыгнули бы всех)
+              # С UC-12: 78.7752 (остаёмся на одном уровне)
+              expect(calculator.call).to eq(78.7752)
+            end
+          end
+
+          context 'первая позиция имеет уникальный курс' do
+            let(:external_rates) do
+              [
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 1
+                double('ExternalRate', target_rate_percent: 78.7852), # pos 2 - другой курс
+                double('ExternalRate', target_rate_percent: 78.7952)  # pos 3
+              ]
+            end
+
+            before do
+              allow(exchange_rate).to receive(:position_from).and_return(1)
+              allow(exchange_rate).to receive(:position_to).and_return(3)
+              allow(exchange_rate).to receive(:autorate_from).and_return(70.0)
+              allow(exchange_rate).to receive(:autorate_to).and_return(80.0)
+            end
+
+            it 'вычитает GAP как обычно' do
+              # Курс позиции 1 отличается от позиции 2 - вычитаем GAP
+              expect(calculator.call).to eq(78.7752 - 0.0001)
+            end
+          end
+
+          context 'position_from > 1 с одинаковыми курсами' do
+            # UC-11: Для position_from > 1 логика adjust_for_position_above уже работает
+            let(:external_rates) do
+              [
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 1
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 2
+                double('ExternalRate', target_rate_percent: 78.7752), # pos 3
+                double('ExternalRate', target_rate_percent: 78.7752)  # pos 4
+              ]
+            end
+
+            before do
+              allow(exchange_rate).to receive(:position_from).and_return(2)
+              allow(exchange_rate).to receive(:position_to).and_return(4)
+              allow(exchange_rate).to receive(:autorate_from).and_return(70.0)
+              allow(exchange_rate).to receive(:autorate_to).and_return(80.0)
+            end
+
+            it 'корректируется через adjust_for_position_above' do
+              # UC-11: adjust_for_position_above возвращает safe_comission = 78.7752
+              expect(calculator.call).to eq(78.7752)
+            end
+          end
+        end
+
         context 'округление комиссии до 4 знаков' do
           # Проверяем, что результат округляется до COMMISSION_PRECISION (4) знаков
           # Это исправляет проблему с float точностью: -2.8346999999999998 → -2.8347
