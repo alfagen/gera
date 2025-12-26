@@ -43,6 +43,7 @@ module Gera
 
     # @param [Object] HTTP клиент для работы с Manul API (BestChange rates fetcher)
     mattr_accessor :manul_client
+    @@manul_client = nil
 	end
 end
 
