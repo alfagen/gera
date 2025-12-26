@@ -42,10 +42,6 @@ module Gera
       end
       h
     end
-
-    def manul_client
-      nil
-    end
 	end
 end
 
