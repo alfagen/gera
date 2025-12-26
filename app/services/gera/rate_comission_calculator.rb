@@ -167,7 +167,7 @@ module Gera
         external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((autorate_from)..(autorate_to)).include?(calculate_rate_commission(rate['rate'], exchange_rate.currency_rate.rate_value)) }
         return autorate_from if external_rates_in_target_comission.empty?
 
-        target_comission = external_rates_in_target_comission.first.target_rate_percent - AUTO_COMISSION_GAP
+        target_comission = calculate_rate_commission(external_rates_in_target_comission.first['rate'], exchange_rate.currency_rate.rate_value) - AUTO_COMISSION_GAP
         target_comission
       end
     end
