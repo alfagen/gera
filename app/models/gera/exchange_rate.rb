@@ -161,7 +161,7 @@ module Gera
     end
 
     def update_direction_rates
-      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+      DirectionsRatesWorker.perform_async
     end
 
     def rate_comission_calculator
