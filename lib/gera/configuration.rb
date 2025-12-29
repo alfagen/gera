@@ -49,6 +49,10 @@ module Gera
     # Если комиссия отличается от медианы более чем на этот процент - считается аномальной
     mattr_accessor :anomaly_threshold_percent
     @@anomaly_threshold_percent = 50.0
+
+    # @param [Boolean] Включить debug-логирование для автокурса
+    mattr_accessor :autorate_debug_enabled
+    @@autorate_debug_enabled = true
 	end
 end
 
