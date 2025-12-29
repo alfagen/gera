@@ -98,6 +98,30 @@ RUB, USD, BTC, LTC, ETH, DSH, KZT, XRP, ETC, XMR, BCH, EUR, NEO, ZEC
 - Database Rewinder for fast test cleanup
 - Sidekiq testing inline enabled
 
+### Запуск изолированных тестов автокурсов
+
+Для тестов автокурсов (PositionAware, Legacy калькуляторы) используются изолированные тесты,
+которые не загружают Rails и spec_helper. Это позволяет быстро тестировать логику без полной
+загрузки приложения.
+
+```bash
+# Переименовать .rspec чтобы не загружался spec_helper
+mv .rspec .rspec.bak
+
+# Запустить изолированные тесты
+mise exec -- bundle exec rspec spec/services/gera/autorate_calculators/isolated_spec.rb --no-color
+
+# Вернуть .rspec обратно
+mv .rspec.bak .rspec
+```
+
+Или используйте Makefile (требует БД):
+```bash
+make test  # запускает isolated_spec.rb и exchange_rate_spec.rb
+```
+
+**Важно:** Файл `isolated_spec.rb` самодостаточен и содержит все необходимые стабы для Gera модуля.
+
 ## File Organization
 
 - `app/models/gera/` - Core domain models
@@ -105,3 +129,12 @@ RUB, USD, BTC, LTC, ETH, DSH, KZT, XRP, ETC, XMR, BCH, EUR, NEO, ZEC
 - `lib/gera/` - Core engine logic and utilities
 - `lib/builders/` - Rate calculation builders
 - `spec/` - Test suite with dummy app
+
+
+## stage сервер
+
+На stage сервере логи находятся тут:
+
+```
+scp kassa@89.248.193.193:/home/kassa/admin.kassa.cc/current/log/* .
+```

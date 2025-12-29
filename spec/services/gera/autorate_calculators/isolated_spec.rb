@@ -16,7 +16,7 @@ require 'gera/autorate_calculators/position_aware'
 # Stub для Gera модуля - настройки конфигурации
 module Gera
   class << self
-    attr_accessor :our_exchanger_id, :anomaly_threshold_percent
+    attr_accessor :our_exchanger_id, :anomaly_threshold_percent, :autorate_debug_enabled
   end
 end
 
@@ -57,7 +57,7 @@ RSpec.describe 'AutorateCalculators (isolated)' do
       end
 
       it 'вычитает GAP из первого matching rate' do
-        expect(calculator.call).to eq(2.5 - 0.001)
+        expect(calculator.call).to eq(2.5 - 0.0001)
       end
     end
 
@@ -162,7 +162,7 @@ RSpec.describe 'AutorateCalculators (isolated)' do
       end
 
       it 'безопасно вычитает GAP когда есть разрыв' do
-        expect(calculator.call).to eq(2.5 - 0.001)
+        expect(calculator.call).to eq(2.5 - 0.0001)
       end
     end
 
@@ -181,7 +181,7 @@ RSpec.describe 'AutorateCalculators (isolated)' do
       end
 
       it 'вычитает GAP когда нет позиции выше' do
-        expect(calculator.call).to eq(2.5 - 0.001)
+        expect(calculator.call).to eq(2.5 - 0.0001)
       end
     end
 
@@ -310,7 +310,113 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           # valid_rates = [2.5, 2.8]
           # target = 2.5 - GAP = 2.499
           # rate_above (pos 1) = 0.5, 2.499 > 0.5 - не перепрыгиваем
-          expect(calculator.call).to eq(2.5 - 0.001)
+          expect(calculator.call).to eq(2.5 - 0.0001)
+        end
+      end
+    end
+
+    # UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
+    describe 'UC-12: пропуск GAP при одинаковых курсах' do
+      context 'position_from=1, одинаковые курсы на позициях 1 и 2' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 1),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 2),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 3)
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(1)
+          allow(exchange_rate).to receive(:position_to).and_return(3)
+        end
+
+        it 'возвращает курс без GAP' do
+          expect(calculator.call).to eq(2.5)
+        end
+      end
+
+      context 'position_from=2, одинаковые курсы на позициях 1 и 2' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 1),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 2),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 3)
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(2)
+          allow(exchange_rate).to receive(:position_to).and_return(3)
+        end
+
+        it 'возвращает курс без GAP' do
+          expect(calculator.call).to eq(2.5)
+        end
+      end
+
+      context 'position_from=3, одинаковые курсы на позициях 2 и 3' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.0, exchanger_id: 1),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 2),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 3),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 4)
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(3)
+          allow(exchange_rate).to receive(:position_to).and_return(4)
+        end
+
+        it 'возвращает курс без GAP' do
+          expect(calculator.call).to eq(2.5)
+        end
+      end
+
+      context 'position_from=5, одинаковые курсы на позициях 4 и 5' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.0, exchanger_id: 1),
+            double('ExternalRate', target_rate_percent: 1.5, exchanger_id: 2),
+            double('ExternalRate', target_rate_percent: 2.0, exchanger_id: 3),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 4),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 5),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 6)
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(5)
+          allow(exchange_rate).to receive(:position_to).and_return(6)
+        end
+
+        it 'возвращает курс без GAP' do
+          expect(calculator.call).to eq(2.5)
+        end
+      end
+
+      context 'position_from=2, РАЗНЫЕ курсы на позициях 1 и 2' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.0, exchanger_id: 1),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 2),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 3)
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(2)
+          allow(exchange_rate).to receive(:position_to).and_return(3)
+        end
+
+        it 'вычитает GAP так как курсы разные' do
+          # target_rate = 2.5, rate_above = 2.0
+          # diff = 0.5 > AUTO_COMISSION_GAP, используем стандартный GAP
+          # target_comission = 2.5 - 0.0001 = 2.4999
+          # 2.4999 > 2.0, не перепрыгиваем
+          expect(calculator.call).to eq(2.5 - 0.0001)
         end
       end
     end

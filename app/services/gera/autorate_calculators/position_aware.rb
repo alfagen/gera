@@ -10,7 +10,7 @@ module Gera
     # - UC-6: Адаптивный GAP для плотных рейтингов
     # - UC-8: Исключение своего обменника из расчёта
     # - UC-9: Защита от манипуляторов с аномальными курсами
-    # - UC-12: Не вычитать GAP при position_from=1 и одинаковых курсах
+    # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
     class PositionAware < Base
       # Минимальный GAP (используется когда разница между позициями меньше стандартного)
       MIN_GAP = 0.0001
@@ -50,8 +50,8 @@ module Gera
         target_rate = valid_rates.first
         debug_log("Target rate: #{target_rate.target_rate_percent}")
 
-        # UC-12: При position_from=1 и одинаковых курсах не вычитаем GAP
-        if position_from == 1 && should_skip_gap?(filtered, target_rate)
+        # UC-12: При одинаковых курсах не вычитаем GAP (для любого position_from)
+        if should_skip_gap?(filtered, target_rate)
           debug_log("UC-12: Skipping GAP, RETURN #{target_rate.target_rate_percent}")
           return round_commission(target_rate.target_rate_percent)
         end
@@ -81,12 +81,21 @@ module Gera
       end
 
       # UC-12: Проверяем, нужно ли пропустить вычитание GAP
-      # Если position_from=1 и следующая позиция имеет такой же курс - не вычитаем GAP
+      # Если курс на целевой позиции равен курсу на соседней позиции - не вычитаем GAP
       def should_skip_gap?(rates, target_rate)
-        return false if rates.size < 2
+        if position_from == 1
+          # Для position_from=1: сравниваем с позицией НИЖЕ (следующей)
+          return false if rates.size < 2
 
-        next_rate = rates[1]
-        next_rate && next_rate.target_rate_percent == target_rate.target_rate_percent
+          next_rate = rates[1]
+          next_rate && next_rate.target_rate_percent == target_rate.target_rate_percent
+        else
+          # Для position_from>1: сравниваем с позицией ВЫШЕ (предыдущей)
+          return false if rates.size < position_from
+
+          rate_above = rates[position_from - 2]
+          rate_above && rate_above.target_rate_percent == target_rate.target_rate_percent
+        end
       end
 
       # UC-8: Фильтрация своего обменника
