@@ -44,7 +44,7 @@ RSpec.describe 'AutorateCalculators' do
       end
 
       it 'вычитает GAP из первого matching rate' do
-        expect(calculator.call).to eq(2.5 - 0.001)
+        expect(calculator.call).to eq(2.5 - 0.0001)
       end
     end
 
@@ -109,8 +109,8 @@ RSpec.describe 'AutorateCalculators' do
       end
 
       it 'безопасно вычитает GAP когда есть разрыв' do
-        # 2.5 - 0.001 = 2.499 > 1.6 - не перепрыгиваем
-        expect(calculator.call).to eq(2.5 - 0.001)
+        # 2.5 - 0.0001 = 2.4999 > 1.6 - не перепрыгиваем
+        expect(calculator.call).to eq(2.5 - 0.0001)
       end
     end
 
@@ -129,7 +129,7 @@ RSpec.describe 'AutorateCalculators' do
       end
 
       it 'вычитает GAP когда нет позиции выше' do
-        expect(calculator.call).to eq(2.5 - 0.001)
+        expect(calculator.call).to eq(2.5 - 0.0001)
       end
     end
 
@@ -151,8 +151,8 @@ RSpec.describe 'AutorateCalculators' do
       end
 
       it 'не перепрыгивает позицию 4' do
-        # 2.5 - 0.001 = 2.499 < 2.4999, значит перепрыгнем
-        # Должны вернуть min(2.4999, 2.5) = 2.4999
+        # 2.5 - 0.0001 = 2.4999 = 2.4999, курсы равны
+        # Возвращаем 2.4999 (равный позиции выше)
         expect(calculator.call).to eq(2.4999)
       end
     end
@@ -258,9 +258,9 @@ RSpec.describe 'AutorateCalculators' do
 
         it 'использует первый подходящий курс в диапазоне' do
           # valid_rates = [2.5, 2.8]
-          # target = 2.5 - GAP = 2.499
-          # rate_above (pos 1) = 0.5, 2.499 > 0.5 - не перепрыгиваем
-          expect(calculator.call).to eq(2.5 - 0.001)
+          # target = 2.5 - GAP = 2.4999
+          # rate_above (pos 1) = 0.5, 2.4999 > 0.5 - не перепрыгиваем
+          expect(calculator.call).to eq(2.5 - 0.0001)
         end
       end
     end

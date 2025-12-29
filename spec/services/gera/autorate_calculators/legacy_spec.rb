@@ -82,8 +82,8 @@ module Gera
           end
 
           it 'returns first matching rate minus GAP' do
-            # first matching rate is 2.5, GAP is 0.001
-            expect(calculator.call).to eq(2.5 - 0.001)
+            # first matching rate is 2.5, GAP is 0.0001
+            expect(calculator.call).to eq(2.5 - 0.0001)
           end
         end
 
@@ -149,8 +149,8 @@ module Gera
 
             it 'использует первый подходящий курс в диапазоне' do
               # valid_rates = [2.5, 2.8]
-              # target = 2.5 - GAP = 2.499
-              expect(calculator.call).to eq(2.5 - 0.001)
+              # target = 2.5 - GAP = 2.4999
+              expect(calculator.call).to eq(2.5 - 0.0001)
             end
           end
         end
