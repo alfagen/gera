@@ -1,24 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
-# Stub PaymentServices::Base::Client before BybitFetcher is loaded
-# This is necessary because BybitFetcher extends this class from host app
-module PaymentServices
-  module Base
-    class Client
-      def http_request(url:, method:, body: nil, headers: {})
-        ''
-      end
-
-      def safely_parse(response)
-        JSON.parse(response) rescue {}
-      end
-    end
-  end
-end unless defined?(PaymentServices::Base::Client)
-
-# Now require the fetcher
 require 'gera/bybit_fetcher'
 
 module Gera

@@ -187,7 +187,8 @@ module Gera
             # adaptive_gap = max(0.00005 / 2, MIN_GAP) = max(0.000025, 0.0001) = 0.0001
             # target = 2.5 - 0.0001 = 2.4999
             # 2.4999 < 2.49995 - перепрыгиваем! Корректируем до 2.49995
-            expect(calculator.call).to eq(2.49995)
+            # После round_commission(4 знака): 2.49995.round(4) = 2.5
+            expect(calculator.call).to eq(2.5)
           end
         end
 

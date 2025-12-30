@@ -5,6 +5,15 @@
 module PaymentServices
   module Base
     class Client
+      def http_request(url:, method:, body: nil, headers: {})
+        ''
+      end
+
+      def safely_parse(response)
+        JSON.parse(response)
+      rescue JSON::ParserError
+        {}
+      end
     end
   end
 end
