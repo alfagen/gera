@@ -474,6 +474,37 @@ module Gera
           end
         end
 
+        context 'медиана равна нулю (защита от деления на ноль)' do
+          # Если все курсы равны 0, медиана будет 0
+          # Алгоритм должен обработать это без ошибки деления на ноль
+
+          let(:external_rates) do
+            [
+              double('ExternalRate', target_rate_percent: 0.0), # pos 1
+              double('ExternalRate', target_rate_percent: 0.0), # pos 2
+              double('ExternalRate', target_rate_percent: 0.0), # pos 3
+              double('ExternalRate', target_rate_percent: 0.0), # pos 4
+              double('ExternalRate', target_rate_percent: 0.0)  # pos 5
+            ]
+          end
+
+          before do
+            Gera.anomaly_threshold_percent = 50.0
+            allow(exchange_rate).to receive(:position_from).and_return(3)
+            allow(exchange_rate).to receive(:position_to).and_return(5)
+            allow(exchange_rate).to receive(:autorate_from).and_return(-1.0)
+            allow(exchange_rate).to receive(:autorate_to).and_return(1.0)
+          end
+
+          it 'не вызывает деление на ноль и возвращает корректный результат' do
+            # При median=0 возвращаем ближайшую позицию выше
+            # Это позиция 2 (index 1) с курсом 0.0
+            # adjust_for_position_above скорректирует до 0.0
+            expect { calculator.call }.not_to raise_error
+            expect(calculator.call).to eq(0.0)
+          end
+        end
+
         context 'округление комиссии до 4 знаков' do
           # Проверяем, что результат округляется до COMMISSION_PRECISION (4) знаков
           # Это исправляет проблему с float точностью: -2.8346999999999998 → -2.8347

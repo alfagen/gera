@@ -199,6 +199,12 @@ module Gera
         median = all_comissions[all_comissions.size / 2]
         debug_log("find_non_anomalous_rate_above: median = #{median}")
 
+        # Защита от деления на ноль: если медиана = 0, возвращаем ближайшую позицию выше
+        if median.zero?
+          debug_log("find_non_anomalous_rate_above: median is zero, returning rates_above.last")
+          return rates_above.last
+        end
+
         # Ищем ближайшую нормальную позицию сверху вниз
         result = rates_above.reverse.find do |rate|
           deviation = ((rate.target_rate_percent - median) / median * 100).abs

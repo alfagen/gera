@@ -179,7 +179,7 @@ module Gera
 
     def autorate_calculator_class
       case calculator_type
-      when 'legacy'
+      when 'legacy', nil
         AutorateCalculators::Legacy
       when 'position_aware'
         AutorateCalculators::PositionAware
