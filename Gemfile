@@ -7,6 +7,9 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 gemspec
 
 gem 'rails', '~> 8.0'
+gem 'observer', require: false  # Removed from stdlib in Ruby 3.4
+gem 'mutex_m'  # Removed from stdlib in Ruby 3.4
+gem 'ostruct'  # Will be removed from stdlib in Ruby 3.5
 gem 'dapi-archivable', '~> 0.1.2', require: 'archivable'
 gem 'active_link_to', github: 'BrandyMint/active_link_to'
 gem 'noty_flash', github: 'BrandyMint/noty_flash'
