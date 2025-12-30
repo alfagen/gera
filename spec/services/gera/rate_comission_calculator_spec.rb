@@ -160,5 +160,53 @@ module Gera
         expect(described_class::EXCLUDED_PS_IDS).to eq([54, 56])
       end
     end
+
+    describe '#auto_comission_by_external_comissions (integration)' do
+      let(:external_rates) do
+        [
+          double('ExternalRate', target_rate_percent: 2.5),
+          double('ExternalRate', target_rate_percent: 2.8)
+        ]
+      end
+
+      let(:target_autorate_setting) do
+        double('TargetAutorateSetting',
+               could_be_calculated?: true,
+               position_from: 1,
+               position_to: 2,
+               autorate_from: 1.0,
+               autorate_to: 3.0)
+      end
+
+      before do
+        allow(exchange_rate).to receive(:target_autorate_setting).and_return(target_autorate_setting)
+        allow(exchange_rate).to receive(:position_from).and_return(1)
+        allow(exchange_rate).to receive(:position_to).and_return(2)
+        allow(exchange_rate).to receive(:autorate_from).and_return(1.0)
+        allow(exchange_rate).to receive(:autorate_to).and_return(3.0)
+      end
+
+      context 'when calculator_type is legacy' do
+        before { exchange_rate.calculator_type = 'legacy' }
+
+        it 'delegates to Legacy calculator and returns numeric result' do
+          result = calculator.send(:auto_comission_by_external_comissions)
+          expect(result).to be_a(Numeric)
+          # Legacy: first rate (2.5) - GAP (0.0001) = 2.4999
+          expect(result).to eq(2.4999)
+        end
+      end
+
+      context 'when calculator_type is position_aware' do
+        before { exchange_rate.calculator_type = 'position_aware' }
+
+        it 'delegates to PositionAware calculator and returns numeric result' do
+          result = calculator.send(:auto_comission_by_external_comissions)
+          expect(result).to be_a(Numeric)
+          # PositionAware also returns 2.4999 for position_from=1
+          expect(result).to eq(2.4999)
+        end
+      end
+    end
   end
 end

@@ -51,8 +51,9 @@ module Gera
     @@anomaly_threshold_percent = 50.0
 
     # @param [Boolean] Включить debug-логирование для автокурса
+    # По умолчанию отключено для production (избыточные логи, снижение производительности)
     mattr_accessor :autorate_debug_enabled
-    @@autorate_debug_enabled = true
+    @@autorate_debug_enabled = false
 	end
 end
 

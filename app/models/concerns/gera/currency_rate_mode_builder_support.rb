@@ -4,7 +4,8 @@ module Gera
   module CurrencyRateModeBuilderSupport
     def build_currency_rate
       @currency_rate ||= build_currency_rate!
-    rescue CurrencyRateBuilder::Error
+    rescue CurrencyRateBuilder::Error => e
+      Rails.logger.warn "[CurrencyRateModeBuilderSupport] Failed to build currency rate: #{e.message}"
       nil
     end
 

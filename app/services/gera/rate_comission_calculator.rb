@@ -4,7 +4,8 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
-    AUTO_COMISSION_GAP = 0.0001
+    # Centralized constant from AutorateCalculators::Base
+    AUTO_COMISSION_GAP = AutorateCalculators::Base::AUTO_COMISSION_GAP
     NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
     EXCLUDED_PS_IDS = [54, 56]
 

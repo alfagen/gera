@@ -42,6 +42,7 @@ module Gera
         currency_rate: Gera::Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
       )
     rescue Gera::CurrencyRatesRepository::UnknownPair => err
+      logger.warn "[DirectionsRatesWorker] Unknown currency pair for exchange_rate ##{exchange_rate.id}: #{err.message}"
     rescue Gera::DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
       logger.error err
     end
