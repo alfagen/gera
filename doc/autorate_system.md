@@ -488,7 +488,7 @@ Gera::CurrencyRateHistoryInterval
 
 | Константа | Значение | Файл | Описание |
 |-----------|----------|------|----------|
-| `AUTO_COMISSION_GAP` | 0.01 | rate_comission_calculator.rb | Отступ от комиссии конкурента |
+| `AUTO_COMISSION_GAP` | 0.0001 | rate_comission_calculator.rb | Отступ от комиссии конкурента |
 | `NOT_ALLOWED_COMISSION_RANGE` | 0.7..1.4 | rate_comission_calculator.rb | Запрещенный диапазон (реферальная BC) |
 | `EXCLUDED_PS_IDS` | [54, 56] | rate_comission_calculator.rb | Исключенные ПС |
 | `STEP` | 0.005 | position_service.rb | Шаг изменения комиссии |

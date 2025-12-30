@@ -30,8 +30,15 @@ module Gera
       context 'when calculator_type is nil' do
         before { subject.calculator_type = nil }
 
-        it 'defaults to AutorateCalculators::Legacy' do
-          expect(subject.autorate_calculator_class).to eq(AutorateCalculators::Legacy)
+        it 'is invalid' do
+          expect(subject).not_to be_valid
+          expect(subject.errors[:calculator_type]).to be_present
+        end
+      end
+
+      context 'default value' do
+        it 'defaults to legacy' do
+          expect(subject.calculator_type).to eq('legacy')
         end
       end
 
