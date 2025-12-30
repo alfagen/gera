@@ -37,7 +37,7 @@ module Gera
       end
 
       it 'logs start and finish' do
-        expect(subject).to receive(:logger).at_least(:twice).and_return(double(info: nil))
+        expect(subject).to receive(:logger).at_least(:twice).and_return(double(info: nil, warn: nil, error: nil))
         subject.perform
       end
     end

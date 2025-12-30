@@ -15,7 +15,7 @@ GIT
 PATH
   remote: .
   specs:
-    gera (0.4.0)
+    gera (0.5.0)
       active_link_to
       alias_association
       authority
@@ -261,7 +261,6 @@ GEM
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.9)
     minitest (5.26.2)
     monetize (1.13.0)
       money (~> 6.12)
@@ -272,6 +271,7 @@ GEM
       monetize (~> 1.9)
       money (~> 6.13)
       railties (>= 3.0)
+    mutex_m (0.3.0)
     mysql2 (0.5.7)
       bigdecimal
     nenv (0.3.0)
@@ -286,14 +286,12 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokogiri (1.18.10)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
     nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
+    observer (0.1.2)
     ostruct (0.6.3)
     parallel (1.27.0)
     parser (3.3.10.0)
@@ -429,8 +427,6 @@ GEM
     simple_form (5.4.0)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
-    sqlite3 (2.8.0)
-      mini_portile2 (~> 2.8.0)
     sqlite3 (2.8.0-x86_64-linux-gnu)
     thor (1.4.0)
     thread_safe (0.3.6)
@@ -464,7 +460,6 @@ GEM
     zeitwerk (2.7.3)
 
 PLATFORMS
-  ruby
   x86_64-linux
 
 DEPENDENCIES
@@ -478,8 +473,11 @@ DEPENDENCIES
   guard-ctags-bundler
   guard-rspec
   guard-rubocop
+  mutex_m
   mysql2
   noty_flash!
+  observer
+  ostruct
   pg
   pry
   pry-byebug

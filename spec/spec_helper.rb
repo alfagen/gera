@@ -2,6 +2,9 @@
 
 ENV['RAILS_ENV'] ||= 'test'
 
+# Stub for missing PaymentServices::Base::Client (issue #78)
+require_relative 'support/payment_services_stub'
+
 require File.expand_path('dummy/config/environment.rb', __dir__)
 require 'rspec/rails'
 require 'factory_bot'
