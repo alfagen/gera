@@ -1,0 +1,3 @@
+[tools]
+node = "latest"
+ruby = "2.7.8"

@@ -19,6 +19,8 @@ module Gera
     DEFAULT_COMISSION = 50
     MIN_COMISSION = -9.9
 
+    CALCULATOR_TYPES = %w[legacy position_aware].freeze
+
     include Mathematic
     include DirectionSupport
 
@@ -59,7 +61,8 @@ module Gera
     end
 
     validates :commission, presence: true
-    # validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
+    validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
+    validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }, allow_nil: true
 
     delegate :rate, :currency_rate, to: :direction_rate
 
@@ -172,6 +175,17 @@ module Gera
 
     def flexible_rate?
       flexible_rate
+    end
+
+    def autorate_calculator_class
+      case calculator_type
+      when 'legacy', nil
+        AutorateCalculators::Legacy
+      when 'position_aware'
+        AutorateCalculators::PositionAware
+      else
+        raise ArgumentError, "Unknown calculator_type: #{calculator_type}"
+      end
     end
   end
 end

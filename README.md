@@ -34,11 +34,34 @@ $ gem install gera
 
 Add `./config/initializers/gera.rb` with this content:
 
-```
+```ruby
 Gera.configure do |config|
   config.cross_pairs = { kzt: :rub, eur: :rub }
+
+  # Автокурс: ID нашего обменника в BestChange (для исключения из расчёта позиции)
+  config.our_exchanger_id = 999
+
+  # Автокурс: Порог аномальной комиссии для защиты от манипуляторов (по умолчанию 50%)
+  config.anomaly_threshold_percent = 50.0
 end
 ```
+
+### Autorate Calculator Types
+
+Для каждого направления обмена (`ExchangeRate`) можно выбрать тип калькулятора автокурса:
+
+```ruby
+# Legacy (по умолчанию) - старый алгоритм
+exchange_rate.update!(calculator_type: 'legacy')
+
+# PositionAware - новый алгоритм с защитой от перепрыгивания позиций
+exchange_rate.update!(calculator_type: 'position_aware')
+```
+
+**PositionAware** гарантирует, что обменник займёт позицию внутри целевого диапазона (`position_from..position_to`), а не перепрыгнет выше. Поддерживает:
+- Адаптивный GAP для плотных рейтингов
+- Исключение своего обменника из расчёта
+- Защиту от манипуляторов с аномальными курсами
 
 ## Supported external sources of basic rates
 
