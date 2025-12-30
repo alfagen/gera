@@ -9,11 +9,11 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceCryptomus.get!
+      @rate_source ||= Gera::RateSourceCryptomus.get!
     end
 
     def load_rates
-      CryptomusFetcher.new.perform
+      Gera::CryptomusFetcher.new.perform
     end
 
     def rate_keys

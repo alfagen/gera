@@ -15,6 +15,7 @@
 module Gera
   class ExchangeRate < ApplicationRecord
     include Authority::Abilities
+    include AliasAssociation
 
     DEFAULT_COMISSION = 50
     MIN_COMISSION = -9.9
@@ -26,7 +27,12 @@ module Gera
 
     belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
-    has_one :target_autorate_setting, class_name: 'TargetAutorateSetting'
+
+    has_many :direction_rates, class_name: 'Gera::DirectionRate', dependent: :delete_all
+
+    # NOTE: These tables are optional and may be defined in host application
+    # dependent: :delete not used because tables may not exist
+    has_one :target_autorate_setting, class_name: 'Gera::TargetAutorateSetting'
     has_one :exchange_rate_limit, class_name: 'Gera::ExchangeRateLimit'
 
     scope :ordered, -> { order :id }
@@ -71,7 +77,7 @@ module Gera
               :current_base_rate, :average_base_rate, :auto_comission_from,
               :auto_comission_to, :bestchange_delta, to: :rate_comission_calculator
 
-    delegate  :position_from, :position_to, 
+    delegate  :position_from, :position_to,
               :autorate_from, :autorate_to, to: :target_autorate_setting, allow_nil: true
 
     delegate :min_amount, :max_amount, to: :exchange_rate_limit, allow_nil: true
@@ -86,8 +92,8 @@ module Gera
     alias_attribute :comission_percents, :value
     alias_attribute :fixed_comission, :value
 
-    alias_attribute :income_payment_system, :payment_system_from
-    alias_attribute :outcome_payment_system, :payment_system_to
+    alias_association :income_payment_system, :payment_system_from
+    alias_association :outcome_payment_system, :payment_system_to
 
     monetize :minamount_cents, as: :minamount
     monetize :maxamount_cents, as: :maxamount

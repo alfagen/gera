@@ -1,0 +1,21 @@
+# frozen_string_literal: true
+
+one:
+  name: "Test Source 1"
+  type: "Gera::RateSourceManual"
+  is_enabled: true
+
+cbr:
+  name: "Central Bank of Russia"
+  type: "Gera::RateSourceCbr"
+  is_enabled: true
+
+exmo:
+  name: "EXMO"
+  type: "Gera::RateSourceExmo"
+  is_enabled: true
+
+binance:
+  name: "Binance"
+  type: "Gera::RateSourceBinance"
+  is_enabled: true

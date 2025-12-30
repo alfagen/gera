@@ -20,7 +20,7 @@ module Gera
     private
   
     def source
-      @source ||= RateSourceCbrAvg.get!
+      @source ||= Gera::RateSourceCbrAvg.get!
     end
 
     def snapshot
@@ -28,11 +28,11 @@ module Gera
     end
 
     def create_rate(pair)
-      er = RateSource.cbr.find_rate_by_currency_pair pair
+      er = Gera::RateSource.cbr.find_rate_by_currency_pair pair
 
       price = (er.sell_price + er.buy_price) / 2.0
 
-      ExternalRate.create!(
+      Gera::ExternalRate.create!(
         source: source,
         snapshot: snapshot,
         currency_pair: pair,

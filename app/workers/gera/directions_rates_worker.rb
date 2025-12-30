@@ -52,7 +52,7 @@ module Gera
     delegate :direction_rates, to: :snapshot
 
     def snapshot
-      @snapshot ||= DirectionRateSnapshot.create!
+      @snapshot ||= Gera::DirectionRateSnapshot.create!
     end
 
     def calculate_finite_rate(base_rate, comission)

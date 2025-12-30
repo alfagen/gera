@@ -37,15 +37,17 @@ module Gera
     def save_all_rates
       batched_rates = rates.each_with_object({}) do |(pair, data), hash|
         buy_key, sell_key = rate_keys.values_at(:buy, :sell)
-    
+
         buy_price  = data.is_a?(Array) ? data[buy_key]  : data[buy_key.to_s]
         sell_price = data.is_a?(Array) ? data[sell_key] : data[sell_key.to_s]
-    
+
         next unless buy_price && sell_price
-    
-        hash[pair] = { buy: buy_price.to_f, sell: sell_price.to_f }
+
+        # Convert CurrencyPair to string for JSON serialization
+        pair_str = pair.respond_to?(:to_str) ? pair.to_str : pair.to_s
+        hash[pair_str] = { 'buy' => buy_price.to_f, 'sell' => sell_price.to_f }
       end
-    
+
       ExternalRatesBatchWorker.perform_async(
         rate_source_snapshot.id,
         rate_source.id,

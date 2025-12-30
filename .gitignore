@@ -10,3 +10,4 @@ spec/dummy/tmp/
 *.log
 .yardoc/
 .byebug_history
+.claude/settings.local.json

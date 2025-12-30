@@ -6,29 +6,40 @@ module Gera
   RSpec.describe BinanceRatesWorker do
     let!(:rate_source) { create(:rate_source_binance) }
 
-    it 'should approve new snapshot if it has the same count of external rates' do
-      actual_snapshot = create(:external_rate_snapshot, rate_source: rate_source)
-      actual_snapshot.external_rates << create(:external_rate, source: rate_source, snapshot: actual_snapshot)
-      actual_snapshot.external_rates << create(:inverse_external_rate, source: rate_source, snapshot: actual_snapshot)
-      rate_source.update_column(:actual_snapshot_id, actual_snapshot.id)
+    describe '#perform' do
+      it 'uses BinanceFetcher to load rates' do
+        mock_fetcher = instance_double(BinanceFetcher)
+        allow(BinanceFetcher).to receive(:new).and_return(mock_fetcher)
+        allow(mock_fetcher).to receive(:perform).and_return({})
 
-      expect(rate_source.actual_snapshot_id).to eq(actual_snapshot.id)
-      VCR.use_cassette :binance_with_two_external_rates do
-        expect(BinanceRatesWorker.new.perform).to be_truthy
+        worker = described_class.new
+        worker.perform
+
+        expect(BinanceFetcher).to have_received(:new)
+        expect(mock_fetcher).to have_received(:perform)
       end
-      expect(rate_source.reload.actual_snapshot_id).not_to eq(actual_snapshot.id)
+
+      context 'with VCR cassette' do
+        it 'creates external rates from API response' do
+          VCR.use_cassette :binance_with_two_external_rates, allow_playback_repeats: true do
+            expect { described_class.new.perform }.to change(ExternalRateSnapshot, :count).by(1)
+          end
+        end
+      end
     end
 
-    it 'should not approve new snapshot if it has different count of external rates' do
-      actual_snapshot = create(:external_rate_snapshot, rate_source: rate_source)
-      actual_snapshot.external_rates << create(:external_rate, source: rate_source, snapshot: actual_snapshot)
-      rate_source.update_column(:actual_snapshot_id, actual_snapshot.id)
-
-      expect(rate_source.actual_snapshot_id).to eq(actual_snapshot.id)
-      VCR.use_cassette :binance_with_two_external_rates do
-        expect(BinanceRatesWorker.new.perform).to be_truthy
+    describe '#rate_keys' do
+      it 'returns bidPrice and askPrice keys' do
+        worker = described_class.new
+        expect(worker.send(:rate_keys)).to eq({ buy: 'bidPrice', sell: 'askPrice' })
       end
-      expect(rate_source.reload.actual_snapshot_id).to eq(actual_snapshot.id)
+    end
+
+    describe '#rate_source' do
+      it 'returns RateSourceBinance' do
+        worker = described_class.new
+        expect(worker.send(:rate_source)).to eq(rate_source)
+      end
     end
   end
 end

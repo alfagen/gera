@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+usd_rub:
+  currency_from: "USD"
+  currency_to: "RUB"
+  rate: 60.5
+  rate_source: cbr
+  external_rate_snapshot: cbr_snapshot
+  mode: "direct"
+
+btc_usd:
+  currency_from: "BTC"
+  currency_to: "USD"
+  rate: 45000.0
+  rate_source: exmo
+  external_rate_snapshot: exmo_snapshot
+  mode: "direct"
+
+rub_usd:
+  currency_from: "RUB"
+  currency_to: "USD"
+  rate: 0.0165
+  rate_source: cbr
+  external_rate_snapshot: cbr_snapshot
+  mode: "inverse"

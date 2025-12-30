@@ -1,0 +1,22 @@
+# frozen_string_literal: true
+
+one:
+  income_payment_system: one
+  outcome_payment_system: two
+  value: 1.5
+  is_enabled: true
+  auto_rate: false
+
+btc_to_usd:
+  income_payment_system: btc
+  outcome_payment_system: usd
+  value: 2.0
+  is_enabled: true
+  auto_rate: false
+
+usd_to_btc:
+  income_payment_system: usd
+  outcome_payment_system: btc
+  value: 1.8
+  is_enabled: true
+  auto_rate: false

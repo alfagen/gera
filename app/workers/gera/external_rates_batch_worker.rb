@@ -5,8 +5,8 @@ module Gera
     include Sidekiq::Worker
 
     def perform(snapshot_id, rate_source_id, rates)
-      snapshot = ExternalRateSnapshot.find(snapshot_id)
-      rate_source = RateSource.find(rate_source_id)
+      snapshot = Gera::ExternalRateSnapshot.find(snapshot_id)
+      rate_source = Gera::RateSource.find(rate_source_id)
 
       values = rates.flat_map do |pair, prices|
         cur_from, cur_to = pair.split('/')
@@ -38,7 +38,7 @@ module Gera
         ]
       end.compact
 
-      ExternalRate.insert_all(values) if values.any?
+      Gera::ExternalRate.insert_all(values) if values.any?
       rate_source.update!(actual_snapshot_id: snapshot.id)
     end
   end

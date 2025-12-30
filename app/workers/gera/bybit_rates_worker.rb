@@ -11,11 +11,11 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceBybit.get!
+      @rate_source ||= Gera::RateSourceBybit.get!
     end
 
     def load_rates
-      BybitFetcher.new.perform
+      Gera::BybitFetcher.new.perform
     end
 
     def rate_keys

@@ -18,4 +18,9 @@ FactoryBot.define do
   factory :rate_source_exmo, parent: :rate_source, class: Gera::RateSourceExmo
   factory :rate_source_bitfinex, parent: :rate_source, class: Gera::RateSourceBitfinex
   factory :rate_source_binance, parent: :rate_source, class: Gera::RateSourceBinance
+  factory :rate_source_bybit, parent: :rate_source, class: Gera::RateSourceBybit
+  factory :rate_source_garantexio, parent: :rate_source, class: Gera::RateSourceGarantexio
+  factory :rate_source_cryptomus, parent: :rate_source, class: Gera::RateSourceCryptomus
+  factory :rate_source_ff_fixed, parent: :rate_source, class: Gera::RateSourceFfFixed
+  factory :rate_source_ff_float, parent: :rate_source, class: Gera::RateSourceFfFloat
 end

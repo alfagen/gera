@@ -9,11 +9,11 @@ module Gera
     private
 
     def rate_source
-      @rate_source ||= RateSourceGarantexio.get!
+      @rate_source ||= Gera::RateSourceGarantexio.get!
     end
 
     def load_rates
-      GarantexioFetcher.new.perform
+      Gera::GarantexioFetcher.new.perform
     end
 
     def rate_keys

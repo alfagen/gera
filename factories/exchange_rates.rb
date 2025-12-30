@@ -9,7 +9,7 @@ FactoryBot.define do
     association :payment_system_from, factory: :gera_payment_system, currency: Money::Currency.find('USD')
     association :payment_system_to, factory: :gera_payment_system, currency: Money::Currency.find('RUB')
     value { 10 }
-
     is_enabled { true }
+
   end
 end

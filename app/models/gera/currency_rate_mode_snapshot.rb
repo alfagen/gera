@@ -6,7 +6,7 @@ module Gera
 
     scope :ordered, -> { order('status desc').order('created_at desc') }
 
-    enum status: %i[draft active deactive], _prefix: true
+    enum :status, %i[draft active deactive], prefix: true
 
     accepts_nested_attributes_for :currency_rate_modes
 
