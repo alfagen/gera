@@ -86,11 +86,11 @@ module Gera
     end
 
     def income_auto_rate_setting
-      @income_auto_rate_setting ||= payment_system_from.auto_rate_settings.detect { |s| s.direction == 'income' }
+      @income_auto_rate_setting ||= payment_system_from.auto_rate_settings.find_by(direction: 'income')
     end
 
     def outcome_auto_rate_setting
-      @outcome_auto_rate_setting ||= payment_system_to.auto_rate_settings.detect { |s| s.direction == 'outcome' }
+      @outcome_auto_rate_setting ||= payment_system_to.auto_rate_settings.find_by(direction: 'outcome')
     end
 
     def income_reserve_checkpoint

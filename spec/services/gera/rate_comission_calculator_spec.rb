@@ -149,7 +149,7 @@ module Gera
 
     describe 'constants' do
       it 'defines AUTO_COMISSION_GAP' do
-        expect(described_class::AUTO_COMISSION_GAP).to eq(0.01)
+        expect(described_class::AUTO_COMISSION_GAP).to eq(0.0001)
       end
 
       it 'defines NOT_ALLOWED_COMISSION_RANGE' do
