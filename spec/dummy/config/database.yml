@@ -1,8 +1,11 @@
 test:
-  adapter: mysql2
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
   timeout: 5000
-  host: localhost
-  username: root
-  password: 1111
-  database: kassa_admin_test
+
+development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000

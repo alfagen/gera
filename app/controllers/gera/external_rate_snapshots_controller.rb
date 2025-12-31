@@ -5,7 +5,7 @@ module Gera
   class ExternalRateSnapshotsController < ApplicationController
     authorize_actions_for ExchangeRate
 
-    PER_PAGE = 200
+    PER_PAGE = 25
     helper_method :rate_source
 
     def index

@@ -1,6 +1,6 @@
 # Gera
 
-[![Build Status](https://travis-ci.org/finfex/gera.svg?branch=master)](https://travis-ci.org/finfex/gera)
+[![RSpec Tests](https://github.com/alfagen/gera/actions/workflows/rspec.yml/badge.svg)](https://github.com/alfagen/gera/actions/workflows/rspec.yml)
 
 Multiple rates generator for crypto changers and markets.
 

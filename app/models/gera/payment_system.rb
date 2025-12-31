@@ -6,14 +6,38 @@ module Gera
     include Gera::Mathematic
     include Authority::Abilities
 
+    has_many :exchange_rates_as_income,
+             class_name: 'Gera::ExchangeRate',
+             foreign_key: :income_payment_system_id,
+             dependent: :delete_all,
+             inverse_of: :payment_system_from
+
+    has_many :exchange_rates_as_outcome,
+             class_name: 'Gera::ExchangeRate',
+             foreign_key: :outcome_payment_system_id,
+             dependent: :delete_all,
+             inverse_of: :payment_system_to
+
+    has_many :direction_rates_as_from,
+             class_name: 'Gera::DirectionRate',
+             foreign_key: :ps_from_id,
+             dependent: :delete_all,
+             inverse_of: :ps_from
+
+    has_many :direction_rates_as_to,
+             class_name: 'Gera::DirectionRate',
+             foreign_key: :ps_to_id,
+             dependent: :delete_all,
+             inverse_of: :ps_to
+
     scope :ordered, -> { order :priority }
     scope :enabled, -> { where 'income_enabled>0 or outcome_enabled>0' }
     scope :disabled, -> { where income_enabled: false, outcome_enabled: false }
     scope :available, -> { where is_available: true }
 
     # TODO: move to kassa-admin
-    enum total_computation_method: %i[regular_fee reverse_fee]
-    enum transfer_comission_payer: %i[user shop], _prefix: :transfer_comission_payer
+    enum :total_computation_method, %i[regular_fee reverse_fee]
+    enum :transfer_comission_payer, %i[user shop], prefix: :transfer_comission_payer
 
     validates :name, presence: true, uniqueness: { case_sensitive: true }
     validates :currency, presence: true

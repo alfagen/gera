@@ -19,7 +19,7 @@ module Gera
 
     scope :by_exchange_rate, ->(er) { by_currency_pair er.currency_pair }
 
-    enum mode: %i[direct inverse same cross], _prefix: true
+    enum :mode, %i[direct inverse same cross], prefix: true
 
     before_save do
       raise("У кросс-курса (#{currency_pair}) должен быть минимум 1 external_rates (#{external_rates.count})") if mode_cross? && external_rates.blank?

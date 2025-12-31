@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'uri'
-require 'net/http'
-
 module Gera
   class ExmoFetcher
     URL = 'https://api.exmo.me/v1/ticker/' # https://api.exmo.com/v1/ticker/
@@ -38,8 +35,9 @@ module Gera
     end
 
     def load_rates
-      url = URI.parse(URL)
-      result = JSON.parse(open(url).read)
+      uri = URI.parse(URL)
+      response = Net::HTTP.get(uri)
+      result = JSON.parse(response)
       raise Error, 'Result is not a hash' unless result.is_a?(Hash)
       raise Error, result['error'] if result['error'].present?
 
