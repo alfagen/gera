@@ -14,7 +14,7 @@ module Gera
       end
 
       before do
-        allow(subject).to receive(:open).and_return(double('io', read: api_response))
+        allow(Net::HTTP).to receive(:get).and_return(api_response)
       end
 
       it 'returns hash of currency pairs to rates' do

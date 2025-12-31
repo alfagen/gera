@@ -29,9 +29,23 @@ module Gera
 
     private
 
+    # Строит матрицу direction_rates для быстрого доступа по [ps_from_id][ps_to_id].
+    #
+    # Использует includes(:exchange_rate) для eager loading связанных ExchangeRate.
+    # Это позволяет избежать N+1 запросов при доступе к dr.exchange_rate в views.
+    #
+    # Оптимизация (issue #1691):
+    # - DirectionRate содержит предвычисленный rate_percent (комиссия)
+    # - ExchangeRate содержит is_enabled?, auto_rate? (настройки направления)
+    # - Вместо вызова er.final_rate_percents (4 DB запроса каждый раз)
+    #   используется dr.rate_percent (уже сохранено, 0 запросов)
+    # - includes загружает все exchange_rates за 1 дополнительный запрос
+    #
+    # Было: N×M × 4 запроса при отображении матрицы курсов
+    # Стало: 2 запроса (direction_rates + exchange_rates)
     def build_matrix
       hash = {}
-      snapshot.direction_rates.each do |dr|
+      snapshot.direction_rates.includes(:exchange_rate).each do |dr|
         hash[dr.ps_from_id] ||= {}
         hash[dr.ps_from_id][dr.ps_to_id] = dr
       end
