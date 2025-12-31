@@ -161,7 +161,7 @@ module Gera
     end
 
     def update_direction_rates
-      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+      DirectionsRatesWorker.perform_async
     end
 
     def rate_comission_calculator
@@ -169,7 +169,7 @@ module Gera
     end
 
     def external_rates
-      @external_rates ||= BestChange::Service.new(exchange_rate: self).rows_without_kassa
+      @external_rates ||= Gera.manul_client.top_exchangers(bestchange_key)
     end
 
     def flexible_rate
