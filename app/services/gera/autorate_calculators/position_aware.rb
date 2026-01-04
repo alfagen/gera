@@ -77,7 +77,7 @@ module Gera
       def debug_log(message)
         return unless Gera.autorate_debug_enabled
 
-        Rails.logger.debug { "[PositionAware] #{message}" }
+        Rails.logger.info { "[PositionAware] #{message}" }
       end
 
       # UC-12: Проверяем, нужно ли пропустить вычитание GAP
