@@ -35,7 +35,7 @@ module Gera
         end
 
         rates_in_target_position = filtered[(position_from - 1)..(position_to - 1)]
-        debug_log("Target position rates [#{position_from - 1}..#{position_to - 1}]: #{rates_in_target_position&.map(&:target_rate_percent)&.first(5)}")
+        debug_log("Target position rates [#{position_from - 1}..#{position_to - 1}]: #{rates_in_target_position&.compact&.map(&:target_rate_percent)&.first(5)}")
 
         unless rates_in_target_position.present?
           debug_log("RETURN autorate_from (no rates in target position)")
@@ -106,7 +106,7 @@ module Gera
       def filtered_external_rates
         return external_rates unless Gera.our_exchanger_id.present?
 
-        external_rates.reject { |rate| rate.exchanger_id == Gera.our_exchanger_id }
+        external_rates.reject { |rate| rate&.exchanger_id == Gera.our_exchanger_id }
       end
 
       # UC-6: Адаптивный GAP
@@ -175,8 +175,9 @@ module Gera
         target_comission
       end
 
-      # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
-      # Гарантирует что обменник не выйдет за пределы position_from
+      # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше.
+      # Корректирует target_comission если он "выгоднее" первой целевой позиции,
+      # чтобы не перепрыгнуть её. Если корректировка невозможна — возвращает исходное значение.
       def fallback_to_first_target_position(target_comission, rates)
         first_target_rate = rates[position_from - 1]
 

@@ -165,6 +165,12 @@ module Gera
           external_rates: external_rates
         )
         calculator.call
+      rescue StandardError => e
+        Rails.logger.error do
+          "[RateComissionCalculator] Calculator failed for exchange_rate_id=#{exchange_rate.id}, " \
+          "calculator=#{exchange_rate.autorate_calculator_class}, error=#{e.class}: #{e.message}"
+        end
+        exchange_rate.autorate_from || 0
       end
     end
 

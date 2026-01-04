@@ -496,6 +496,33 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           expect(calculator.call).to eq(1.0)
         end
       end
+
+      context 'когда rate_above = nil И first_target_rate = nil' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.0),   # pos 1
+            double('ExternalRate', target_rate_percent: 1.5),   # pos 2
+            double('ExternalRate', target_rate_percent: 2.0),   # pos 3
+            nil,                                                 # pos 4 - отсутствует (rate_above)
+            nil,                                                 # pos 5 - целевая, но nil
+            double('ExternalRate', target_rate_percent: 2.6)    # pos 6
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(5)
+          allow(exchange_rate).to receive(:position_to).and_return(6)
+        end
+
+        it 'возвращает target_comission без корректировки (first_target_rate = nil)' do
+          # rates_in_target_position = [nil, 2.6]
+          # valid_rates = [2.6] (после compact)
+          # target_rate = 2.6, rate_above = rates[3] = nil
+          # UC-14: first_target_rate = rates[4] = nil → возвращает target_comission
+          # target_comission = 2.6 - GAP = 2.5999
+          expect(calculator.call).to eq(2.5999)
+        end
+      end
     end
   end
 end
