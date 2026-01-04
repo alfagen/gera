@@ -11,3 +11,4 @@ spec/dummy/tmp/
 .yardoc/
 .byebug_history
 .claude/settings.local.json
+.worktrees
