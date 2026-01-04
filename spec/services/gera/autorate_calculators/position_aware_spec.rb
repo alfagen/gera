@@ -19,10 +19,10 @@ module Gera
         allow(exchange_rate).to receive(:target_autorate_setting).and_return(target_autorate_setting)
         allow(exchange_rate).to receive(:autorate_from).and_return(1.0)
         allow(exchange_rate).to receive(:autorate_to).and_return(3.0)
+        allow(exchange_rate).to receive(:id).and_return(1)
         allow(target_autorate_setting).to receive(:could_be_calculated?).and_return(true)
         # Сбрасываем конфигурацию перед каждым тестом
         Gera.our_exchanger_id = nil
-        Gera.anomaly_threshold_percent = 50.0
       end
 
       describe '#call' do
@@ -222,41 +222,8 @@ module Gera
           end
         end
 
-        context 'UC-9: манипуляторы с аномальными курсами' do
-          # Позиции 1-3 имеют нереально низкие комиссии (манипуляторы)
-          # Они должны игнорироваться при проверке перепрыгивания
-
-          let(:external_rates) do
-            [
-              double('ExternalRate', target_rate_percent: 0.1),  # pos 1 - манипулятор
-              double('ExternalRate', target_rate_percent: 0.2),  # pos 2 - манипулятор
-              double('ExternalRate', target_rate_percent: 0.3),  # pos 3 - манипулятор
-              double('ExternalRate', target_rate_percent: 2.0),  # pos 4 - нормальный
-              double('ExternalRate', target_rate_percent: 2.5),  # pos 5
-              double('ExternalRate', target_rate_percent: 2.6),  # pos 6
-              double('ExternalRate', target_rate_percent: 2.7),  # pos 7
-              double('ExternalRate', target_rate_percent: 2.8),  # pos 8
-              double('ExternalRate', target_rate_percent: 2.9),  # pos 9
-              double('ExternalRate', target_rate_percent: 3.0)   # pos 10
-            ]
-          end
-
-          before do
-            Gera.anomaly_threshold_percent = 50.0
-            allow(exchange_rate).to receive(:position_from).and_return(5)
-            allow(exchange_rate).to receive(:position_to).and_return(10)
-          end
-
-          it 'игнорирует манипуляторов при проверке перепрыгивания' do
-            # Медиана комиссий ≈ 2.5
-            # Комиссии 0.1, 0.2, 0.3 отклоняются от медианы > 50%
-            # После фильтрации аномалий: 2.0, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0
-            # position_from=5 -> индекс 4 после фильтрации
-            # rate_above в clean_rates = 2.8 (индекс 3)
-            # target = 2.5 - 0.0001 = 2.4999 < 2.8 - не перепрыгиваем реальных конкурентов
-            expect(calculator.call).to eq(2.5 - 0.0001)
-          end
-        end
+        # UC-9 ОТМЕНЁН: Защита от аномалий по медиане не работает с отрицательными курсами
+        # Тест удалён, так как функциональность не реализована
 
         context 'when external_rates is empty' do
           let(:external_rates) { [] }
@@ -489,7 +456,6 @@ module Gera
           end
 
           before do
-            Gera.anomaly_threshold_percent = 50.0
             allow(exchange_rate).to receive(:position_from).and_return(3)
             allow(exchange_rate).to receive(:position_to).and_return(5)
             allow(exchange_rate).to receive(:autorate_from).and_return(-1.0)

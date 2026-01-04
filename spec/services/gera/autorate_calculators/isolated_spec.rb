@@ -16,7 +16,7 @@ require 'gera/autorate_calculators/position_aware'
 # Stub для Gera модуля - настройки конфигурации
 module Gera
   class << self
-    attr_accessor :our_exchanger_id, :anomaly_threshold_percent, :autorate_debug_enabled
+    attr_accessor :our_exchanger_id, :autorate_debug_enabled
   end
 end
 
@@ -32,7 +32,6 @@ RSpec.describe 'AutorateCalculators (isolated)' do
     allow(target_autorate_setting).to receive(:could_be_calculated?).and_return(true)
     # Сбрасываем конфигурацию Gera
     Gera.our_exchanger_id = nil
-    Gera.anomaly_threshold_percent = 50.0
   end
 
   describe Gera::AutorateCalculators::Legacy do
