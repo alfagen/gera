@@ -524,5 +524,191 @@ RSpec.describe 'AutorateCalculators (isolated)' do
         end
       end
     end
+
+    # UC-6: Адаптивный GAP для плотных рейтингов
+    describe 'UC-6: адаптивный GAP для плотных рейтингов' do
+      before do
+        allow(exchange_rate).to receive(:position_from).and_return(3)
+        allow(exchange_rate).to receive(:position_to).and_return(5)
+        allow(exchange_rate).to receive(:autorate_from).and_return(1.0)
+        allow(exchange_rate).to receive(:autorate_to).and_return(3.0)
+      end
+
+      context 'когда разница между позициями меньше стандартного GAP' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.0, exchanger_id: 100),
+            double('ExternalRate', target_rate_percent: 2.00003, exchanger_id: 101), # rate_above
+            double('ExternalRate', target_rate_percent: 2.00005, exchanger_id: 102), # target_rate (позиция 3)
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 103),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 104)
+          ]
+        end
+
+        it 'использует MIN_GAP когда diff/2 < MIN_GAP' do
+          # diff = 2.00005 - 2.00003 = 0.00002
+          # adaptive_gap = max(0.00002 / 2, MIN_GAP) = max(0.00001, 0.0001) = 0.0001 (MIN_GAP)
+          # target_comission = 2.00005 - 0.0001 = 1.99995, округляется до 2.0
+          # adjust_for_position_above: 2.0 < 2.00003? Да, но round(2.00003) = 2.0
+          expect(calculator.call).to eq(2.0)
+        end
+      end
+
+      context 'когда разница достаточна для адаптивного GAP' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.0, exchanger_id: 100),
+            double('ExternalRate', target_rate_percent: 2.0005, exchanger_id: 101), # rate_above
+            double('ExternalRate', target_rate_percent: 2.001, exchanger_id: 102), # target_rate
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 103),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 104)
+          ]
+        end
+
+        it 'использует стандартный GAP когда diff >= AUTO_COMISSION_GAP' do
+          # diff = 2.001 - 2.0005 = 0.0005 >= AUTO_COMISSION_GAP (0.0001)
+          # Адаптивный режим НЕ используется, gap = AUTO_COMISSION_GAP = 0.0001
+          # Результат = 2.001 - 0.0001 = 2.0009
+          expect(calculator.call).to eq(2.0009)
+        end
+      end
+
+      context 'когда position_from = 1 (нет позиции выше)' do
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(1)
+          allow(exchange_rate).to receive(:position_to).and_return(3)
+        end
+
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 100),
+            double('ExternalRate', target_rate_percent: 2.6, exchanger_id: 101),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 102)
+          ]
+        end
+
+        it 'использует стандартный GAP' do
+          # position_from = 1, используем стандартный AUTO_COMISSION_GAP = 0.0001
+          expect(calculator.call).to eq(2.5 - 0.0001)
+        end
+      end
+    end
+
+    # UC-8: Исключение своего обменника из расчёта
+    describe 'UC-8: исключение своего обменника из расчёта' do
+      before do
+        allow(exchange_rate).to receive(:position_from).and_return(1)
+        allow(exchange_rate).to receive(:position_to).and_return(3)
+        allow(exchange_rate).to receive(:autorate_from).and_return(1.0)
+        allow(exchange_rate).to receive(:autorate_to).and_return(3.0)
+      end
+
+      let(:external_rates) do
+        [
+          double('ExternalRate', target_rate_percent: 2.0, exchanger_id: 999), # наш обменник
+          double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 100),
+          double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 101)
+        ]
+      end
+
+      context 'когда our_exchanger_id задан' do
+        before do
+          Gera.our_exchanger_id = 999
+        end
+
+        after do
+          Gera.our_exchanger_id = nil
+        end
+
+        it 'исключает свой обменник и берёт следующий' do
+          # Наш обменник (id=999) исключается
+          # Следующий - 2.5, минус GAP = 2.4999
+          expect(calculator.call).to eq(2.5 - 0.0001)
+        end
+      end
+
+      context 'когда our_exchanger_id не задан' do
+        before do
+          Gera.our_exchanger_id = nil
+        end
+
+        it 'не исключает обменники' do
+          # Берём первый - 2.0, минус GAP = 1.9999
+          expect(calculator.call).to eq(2.0 - 0.0001)
+        end
+      end
+
+      context 'когда rate содержит nil exchanger_id' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 2.0, exchanger_id: nil),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 100),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 101)
+          ]
+        end
+
+        before do
+          Gera.our_exchanger_id = 999
+        end
+
+        after do
+          Gera.our_exchanger_id = nil
+        end
+
+        it 'не падает на nil exchanger_id' do
+          # rate с nil exchanger_id не равен 999, поэтому не исключается
+          expect(calculator.call).to eq(2.0 - 0.0001)
+        end
+      end
+    end
+
+    # UC-13: Защита от перепрыгивания позиции position_from - 1
+    describe 'UC-13: защита от перепрыгивания позиции выше' do
+      before do
+        allow(exchange_rate).to receive(:position_from).and_return(3)
+        allow(exchange_rate).to receive(:position_to).and_return(5)
+        allow(exchange_rate).to receive(:autorate_from).and_return(1.0)
+        allow(exchange_rate).to receive(:autorate_to).and_return(3.0)
+      end
+
+      context 'когда после вычитания GAP курс станет лучше позиции выше' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.5, exchanger_id: 100),
+            double('ExternalRate', target_rate_percent: 2.0001, exchanger_id: 101), # rate_above
+            double('ExternalRate', target_rate_percent: 2.0002, exchanger_id: 102), # target_rate
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 103),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 104)
+          ]
+        end
+
+        it 'корректирует до курса позиции выше' do
+          # target_rate = 2.0002, rate_above = 2.0001
+          # target_comission = 2.0002 - GAP (адаптивный)
+          # diff = 2.0002 - 2.0001 = 0.0001
+          # adaptive_gap = max(0.0001/2, MIN_GAP) = max(0.00005, 0.0001) = 0.0001
+          # target_comission = 2.0002 - 0.0001 = 2.0001
+          # 2.0001 < 2.0001? Нет, равно → не корректируем
+          expect(calculator.call).to eq(2.0001)
+        end
+      end
+
+      context 'когда курс после GAP перепрыгнет позицию выше' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.5, exchanger_id: 100),
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 101), # rate_above
+            double('ExternalRate', target_rate_percent: 2.5, exchanger_id: 102), # target_rate (одинаковый)
+            double('ExternalRate', target_rate_percent: 2.6, exchanger_id: 103),
+            double('ExternalRate', target_rate_percent: 2.8, exchanger_id: 104)
+          ]
+        end
+
+        it 'не вычитает GAP при одинаковых курсах (UC-12)' do
+          # UC-12: курсы одинаковые, GAP не вычитаем
+          expect(calculator.call).to eq(2.5)
+        end
+      end
+    end
   end
 end
