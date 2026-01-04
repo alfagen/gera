@@ -22,7 +22,10 @@ module Gera
         debug_log("START position_from=#{position_from} position_to=#{position_to}")
         debug_log("autorate_from=#{autorate_from} autorate_to=#{autorate_to}")
 
-        return 0 unless could_be_calculated?
+        unless could_be_calculated?
+          log_fallback("could_be_calculated? = false", 0)
+          return 0
+        end
 
         # UC-8: Фильтрация своего обменника
         filtered = filtered_external_rates
@@ -79,8 +82,15 @@ module Gera
 
       def debug_log(message)
         return unless Gera.autorate_debug_enabled
+        return unless defined?(Rails) && Rails.logger
 
         Rails.logger.warn { "[PositionAware] #{message}" }
+      end
+
+      def log_fallback(reason, value)
+        return unless defined?(Rails) && Rails.logger
+
+        Rails.logger.info { "[PositionAware] exchange_rate_id=#{exchange_rate.id}: #{reason}, returning #{value}" }
       end
 
       # UC-12: Проверяем, нужно ли пропустить вычитание GAP

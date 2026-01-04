@@ -5,6 +5,7 @@ module Gera
     include ActiveSupport::Callbacks
     include Sidekiq::Worker
     include AutoLogger
+    include Mathematic
 
     Error = Class.new StandardError
 
@@ -21,7 +22,10 @@ module Gera
           rates = ExchangeRate.includes(:target_autorate_setting, payment_system_from: { auto_rate_settings: :auto_rate_checkpoints }, payment_system_to: { auto_rate_settings: :auto_rate_checkpoints }).map do |exchange_rate|
             rate_value = Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
 
-            next unless rate_value
+            unless rate_value
+              logger.warn { "No currency rate for pair #{exchange_rate.currency_pair}, skipping exchange_rate_id=#{exchange_rate.id}" }
+              next
+            end
 
             base_rate_value = rate_value.rate_value
             rate_percent = exchange_rate.final_rate_percents
@@ -37,7 +41,14 @@ module Gera
               rate_percent: rate_percent,
               rate_value: calculate_finite_rate(base_rate_value, rate_percent)
             }
-            rescue CurrencyRatesRepository::UnknownPair, DirectionRate::UnknownExchangeRate
+            rescue CurrencyRatesRepository::UnknownPair => e
+              logger.warn { "UnknownPair for exchange_rate_id=#{exchange_rate.id}, pair=#{exchange_rate.currency_pair}: #{e.message}" }
+              nil
+            rescue DirectionRate::UnknownExchangeRate => e
+              logger.error { "UnknownExchangeRate for exchange_rate_id=#{exchange_rate.id}: #{e.message}" }
+              nil
+            rescue ActiveRecord::RecordInvalid => e
+              logger.error { "RecordInvalid for exchange_rate_id=#{exchange_rate.id}: #{e.message}" }
               nil
           end.compact
 
@@ -55,12 +66,6 @@ module Gera
       @snapshot ||= DirectionRateSnapshot.create!
     end
 
-    def calculate_finite_rate(base_rate, comission)
-      if base_rate <= 1
-        base_rate.to_f * (1.0 - comission.to_f/100)
-      else
-        base_rate - comission.to_percent
-      end
-    end
+    # calculate_finite_rate теперь из Gera::Mathematic
   end
 end

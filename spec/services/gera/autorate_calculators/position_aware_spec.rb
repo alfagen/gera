@@ -537,6 +537,25 @@ module Gera
             expect(result).to eq(2.8346)
           end
         end
+
+        context 'когда target_autorate_setting равен nil' do
+          let(:external_rates) do
+            [
+              double('ExternalRate', target_rate_percent: 2.5),
+              double('ExternalRate', target_rate_percent: 2.6)
+            ]
+          end
+
+          before do
+            allow(exchange_rate).to receive(:target_autorate_setting).and_return(nil)
+            allow(exchange_rate).to receive(:position_from).and_return(1)
+            allow(exchange_rate).to receive(:position_to).and_return(3)
+          end
+
+          it 'возвращает 0 (could_be_calculated? = false)' do
+            expect(calculator.call).to eq(0)
+          end
+        end
       end
     end
   end
