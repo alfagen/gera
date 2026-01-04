@@ -62,7 +62,7 @@ module Gera
 
     validates :commission, presence: true
     validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
-    validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }
+    validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }, allow_nil: true
 
     delegate :rate, :currency_rate, to: :direction_rate
 

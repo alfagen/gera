@@ -15,7 +15,7 @@ GIT
 PATH
   remote: .
   specs:
-    gera (0.4.4)
+    gera (0.4.6)
       active_link_to
       authority
       auto_logger (~> 0.1.4)

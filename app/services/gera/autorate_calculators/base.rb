@@ -42,7 +42,7 @@ module Gera
       def external_rates_in_target_comission
         return [] unless external_rates_in_target_position.present?
 
-        external_rates_in_target_position.select do |rate|
+        external_rates_in_target_position.compact.select do |rate|
           (autorate_from..autorate_to).include?(rate.target_rate_percent)
         end
       end
