@@ -42,7 +42,7 @@ module Gera
           return autorate_from
         end
 
-        valid_rates = rates_in_target_position.select do |rate|
+        valid_rates = rates_in_target_position.compact.select do |rate|
           (autorate_from..autorate_to).include?(rate.target_rate_percent)
         end
 
@@ -142,8 +142,8 @@ module Gera
       # UC-13: Защита от перепрыгивания позиции position_from - 1
       # Если после вычитания GAP наш курс станет лучше чем у позиции выше — корректируем
       #
-      # UC-14: Если позиции выше нет (position_from=1 или нет данных) — занимаем первую
-      # целевую позицию если она в допустимом диапазоне autorate_from..autorate_to
+      # UC-14: Если position_from > 1, но позиции выше нет (rate_above = nil) — занимаем
+      # первую целевую позицию если она в допустимом диапазоне autorate_from..autorate_to
       def adjust_for_position_above(target_comission, target_rate, rates)
         if position_from <= 1
           debug_log("adjust_for_position_above: position_from <= 1, no adjustment")
@@ -157,7 +157,7 @@ module Gera
         # UC-14: Если позиции выше нет — занимаем первую целевую позицию
         unless rate_above
           debug_log("adjust_for_position_above: no rate_above, using UC-14 fallback")
-          return fallback_to_first_target_position(target_comission, target_rate, rates)
+          return fallback_to_first_target_position(target_comission, rates)
         end
 
         rate_above_comission = rate_above.target_rate_percent
@@ -177,7 +177,7 @@ module Gera
 
       # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
       # Гарантирует что обменник не выйдет за пределы position_from
-      def fallback_to_first_target_position(target_comission, target_rate, rates)
+      def fallback_to_first_target_position(target_comission, rates)
         first_target_rate = rates[position_from - 1]
 
         unless first_target_rate

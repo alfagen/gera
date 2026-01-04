@@ -467,7 +467,7 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           allow(exchange_rate).to receive(:position_to).and_return(6)
         end
 
-        it 'не корректирует так как мы уже хуже первой позиции' do
+        it 'корректирует до первой целевой позиции' do
           # target = 2.4, GAP = 0.0001
           # target_comission = 2.4 - 0.0001 = 2.3999
           # 2.3999 < 2.4 → корректируем до 2.4
