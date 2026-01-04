@@ -9,8 +9,11 @@ module Gera
     # Поддерживает:
     # - UC-6: Адаптивный GAP для плотных рейтингов
     # - UC-8: Исключение своего обменника из расчёта
-    # - UC-9: Защита от манипуляторов с аномальными курсами
     # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
+    # - UC-13: Защита от перепрыгивания позиции position_from - 1
+    #
+    # ОТМЕНЕНО:
+    # - UC-9: Защита от аномалий по медиане (не работает с отрицательными курсами)
     class PositionAware < Base
       # Минимальный GAP (используется когда разница между позициями меньше стандартного)
       MIN_GAP = 0.0001
@@ -135,18 +138,20 @@ module Gera
         end
       end
 
-      def adjust_for_position_above(target_comission, target_rate, rates)
+      # UC-13: Защита от перепрыгивания позиции position_from - 1
+      # Если после вычитания GAP наш курс станет лучше чем у позиции выше — корректируем
+      def adjust_for_position_above(target_comission, _target_rate, rates)
         if position_from <= 1
           debug_log("adjust_for_position_above: position_from <= 1, no adjustment")
           return target_comission
         end
 
-        # UC-9: Найти ближайшую нормальную позицию выше
-        rate_above = find_non_anomalous_rate_above(rates)
-        debug_log("adjust_for_position_above: rate_above = #{rate_above&.target_rate_percent}")
+        # Берём ближайшую позицию выше целевого диапазона
+        rate_above = rates[position_from - 2]
+        debug_log("adjust_for_position_above: rate_above[#{position_from - 2}] = #{rate_above&.target_rate_percent}")
 
         unless rate_above
-          debug_log("adjust_for_position_above: NO rate_above found! Returning target_comission unchanged")
+          debug_log("adjust_for_position_above: no rate_above, returning target_comission")
           return target_comission
         end
 
@@ -156,64 +161,13 @@ module Gera
         # Если после вычитания GAP комиссия станет меньше (выгоднее) чем у позиции выше -
         # мы перепрыгнём её. Нужно скорректировать.
         if target_comission < rate_above_comission
-          # Устанавливаем комиссию равную или чуть выше (хуже) чем у позиции выше,
-          # но не хуже чем у целевой позиции
-          safe_comission = [rate_above_comission, target_rate.target_rate_percent].min
-          debug_log("adjust_for_position_above: ADJUSTING to safe_comission = #{safe_comission}")
-
-          # Если одинаковые курсы - оставляем как есть, BestChange определит позицию по вторичным критериям
-          return safe_comission
+          # Устанавливаем комиссию равную позиции выше (не перепрыгиваем)
+          debug_log("adjust_for_position_above: ADJUSTING to rate_above_comission = #{rate_above_comission}")
+          return rate_above_comission
         end
 
         debug_log("adjust_for_position_above: no adjustment needed")
         target_comission
-      end
-
-      # UC-9: Найти ближайшую нормальную (не аномальную) позицию выше целевой
-      def find_non_anomalous_rate_above(rates)
-        if position_from <= 1
-          debug_log("find_non_anomalous_rate_above: position_from <= 1, returning nil")
-          return nil
-        end
-
-        # Берём все позиции выше целевой (от 0 до position_from - 2)
-        rates_above = rates[0..(position_from - 2)]
-        debug_log("find_non_anomalous_rate_above: rates_above[0..#{position_from - 2}] = #{rates_above&.map(&:target_rate_percent)}")
-
-        unless rates_above.present?
-          debug_log("find_non_anomalous_rate_above: no rates_above, returning nil")
-          return nil
-        end
-
-        # Если фильтрация аномалий отключена - просто берём ближайшую позицию выше
-        threshold = Gera.anomaly_threshold_percent
-        debug_log("find_non_anomalous_rate_above: anomaly_threshold = #{threshold}, rates.size = #{rates.size}")
-
-        unless threshold&.positive? && rates.size >= 3
-          debug_log("find_non_anomalous_rate_above: anomaly filter disabled, returning rates_above.last = #{rates_above.last&.target_rate_percent}")
-          return rates_above.last
-        end
-
-        # Вычисляем медиану для определения аномалий
-        all_comissions = rates.map(&:target_rate_percent).sort
-        median = all_comissions[all_comissions.size / 2]
-        debug_log("find_non_anomalous_rate_above: median = #{median}")
-
-        # Защита от деления на ноль: если медиана = 0, возвращаем ближайшую позицию выше
-        if median.zero?
-          debug_log("find_non_anomalous_rate_above: median is zero, returning rates_above.last")
-          return rates_above.last
-        end
-
-        # Ищем ближайшую нормальную позицию сверху вниз
-        result = rates_above.reverse.find do |rate|
-          deviation = ((rate.target_rate_percent - median) / median * 100).abs
-          debug_log("find_non_anomalous_rate_above: rate #{rate.target_rate_percent} deviation = #{deviation.round(4)}% (threshold: #{threshold})")
-          deviation <= threshold
-        end
-
-        debug_log("find_non_anomalous_rate_above: result = #{result&.target_rate_percent || 'nil'}")
-        result
       end
     end
   end
