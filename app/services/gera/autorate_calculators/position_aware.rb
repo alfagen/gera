@@ -125,7 +125,12 @@ module Gera
       end
 
       # UC-8: Фильтрация своего обменника
+      # @raise [ArgumentError] если external_rates nil (должен был быть отфильтрован в could_be_calculated?)
       def filtered_external_rates
+        if external_rates.nil?
+          raise ArgumentError, "external_rates is nil - should have been caught by could_be_calculated?"
+        end
+
         return external_rates unless Gera.our_exchanger_id.present?
 
         external_rates.reject { |rate| rate&.exchanger_id == Gera.our_exchanger_id }

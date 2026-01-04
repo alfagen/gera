@@ -150,10 +150,6 @@ module Gera
       @commission ||= auto_comission_by_external_comissions + auto_comission_by_reserve + comission_by_base_rate
     end
 
-    def could_be_calculated?
-      !external_rates.nil? && exchange_rate.target_autorate_setting&.could_be_calculated?
-    end
-
     def auto_commision_range
       @auto_commision_range ||= (auto_comission_from..auto_comission_to)
     end

@@ -25,7 +25,11 @@ module Gera
       protected
 
       # Округление комиссии до заданной точности
+      # @param value [Numeric] значение комиссии
+      # @raise [ArgumentError] если value nil
       def round_commission(value)
+        raise ArgumentError, "Cannot round nil commission value" if value.nil?
+
         value.round(COMMISSION_PRECISION)
       end
 

@@ -52,7 +52,7 @@ module Gera
 
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
-    # after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
+    after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -62,7 +62,7 @@ module Gera
 
     validates :commission, presence: true
     validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
-    validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }, allow_nil: true
+    validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }
 
     delegate :rate, :currency_rate, to: :direction_rate
 
