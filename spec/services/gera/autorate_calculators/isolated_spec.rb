@@ -28,6 +28,7 @@ RSpec.describe 'AutorateCalculators (isolated)' do
     allow(exchange_rate).to receive(:target_autorate_setting).and_return(target_autorate_setting)
     allow(exchange_rate).to receive(:autorate_from).and_return(1.0)
     allow(exchange_rate).to receive(:autorate_to).and_return(3.0)
+    allow(exchange_rate).to receive(:id).and_return(1)
     allow(target_autorate_setting).to receive(:could_be_calculated?).and_return(true)
     # Сбрасываем конфигурацию Gera
     Gera.our_exchanger_id = nil
@@ -421,7 +422,8 @@ RSpec.describe 'AutorateCalculators (isolated)' do
       end
     end
 
-    # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
+    # UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #86)
+    # При position_from > 1 и rate_above = nil — ВСЕГДА занимаем первую целевую позицию
     describe 'UC-14: fallback при отсутствии rate_above' do
       context 'когда rate_above = nil (разреженный список)' do
         let(:external_rates) do
@@ -441,16 +443,14 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           allow(exchange_rate).to receive(:position_to).and_return(7)
         end
 
-        it 'использует первую целевую позицию и не перепрыгивает её' do
+        it 'всегда использует курс первой целевой позиции' do
           # rate_above = rates[3] = nil
-          # UC-14: first_target_rate = rates[4] = 2.5
-          # target_comission = 2.5 - GAP = 2.4999
-          # 2.4999 < 2.5 → корректируем до 2.5
+          # UC-14: ВСЕГДА используем first_target_rate = rates[4] = 2.5
           expect(calculator.call).to eq(2.5)
         end
       end
 
-      context 'когда rate_above = nil и target_comission >= first_target' do
+      context 'когда rate_above = nil (другой пример)' do
         let(:external_rates) do
           [
             double('ExternalRate', target_rate_percent: 1.0),   # pos 1
@@ -467,10 +467,9 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           allow(exchange_rate).to receive(:position_to).and_return(6)
         end
 
-        it 'корректирует до первой целевой позиции' do
-          # target = 2.4, GAP = 0.0001
-          # target_comission = 2.4 - 0.0001 = 2.3999
-          # 2.3999 < 2.4 → корректируем до 2.4
+        it 'всегда использует курс первой целевой позиции' do
+          # rate_above = rates[3] = nil
+          # UC-14: ВСЕГДА используем first_target_rate = rates[4] = 2.4
           expect(calculator.call).to eq(2.4)
         end
       end
@@ -514,13 +513,12 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           allow(exchange_rate).to receive(:position_to).and_return(6)
         end
 
-        it 'возвращает target_comission без корректировки (first_target_rate = nil)' do
+        it 'возвращает autorate_from (first_target_rate = nil)' do
           # rates_in_target_position = [nil, 2.6]
           # valid_rates = [2.6] (после compact)
           # target_rate = 2.6, rate_above = rates[3] = nil
-          # UC-14: first_target_rate = rates[4] = nil → возвращает target_comission
-          # target_comission = 2.6 - GAP = 2.5999
-          expect(calculator.call).to eq(2.5999)
+          # UC-14: first_target_rate = rates[4] = nil → возвращаем autorate_from
+          expect(calculator.call).to eq(1.0)
         end
       end
     end
@@ -545,11 +543,12 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           ]
         end
 
-        it 'использует MIN_GAP когда diff/2 < MIN_GAP' do
+        it 'использует MIN_GAP когда diff/2 <= MIN_GAP' do
           # diff = 2.00005 - 2.00003 = 0.00002
-          # adaptive_gap = max(0.00002 / 2, MIN_GAP) = max(0.00001, 0.0001) = 0.0001 (MIN_GAP)
-          # target_comission = 2.00005 - 0.0001 = 1.99995, округляется до 2.0
-          # adjust_for_position_above: 2.0 < 2.00003? Да, но round(2.00003) = 2.0
+          # adaptive_gap = max(0.00002 / 2, MIN_GAP) = max(0.00001, 0.00001) = 0.00001 (MIN_GAP)
+          # target_comission = 2.00005 - 0.00001 = 1.99994, округляется до 1.9999
+          # adjust_for_position_above: 1.9999 < 2.00003? Да → корректируем до 2.00003
+          # round(2.00003, 4) = 2.0
           expect(calculator.call).to eq(2.0)
         end
       end
@@ -682,14 +681,14 @@ RSpec.describe 'AutorateCalculators (isolated)' do
           ]
         end
 
-        it 'корректирует до курса позиции выше' do
+        it 'использует адаптивный GAP и не перепрыгивает' do
           # target_rate = 2.0002, rate_above = 2.0001
           # target_comission = 2.0002 - GAP (адаптивный)
           # diff = 2.0002 - 2.0001 = 0.0001
-          # adaptive_gap = max(0.0001/2, MIN_GAP) = max(0.00005, 0.0001) = 0.0001
-          # target_comission = 2.0002 - 0.0001 = 2.0001
-          # 2.0001 < 2.0001? Нет, равно → не корректируем
-          expect(calculator.call).to eq(2.0001)
+          # adaptive_gap = max(0.0001/2, MIN_GAP) = max(0.00005, 0.00001) = 0.00005
+          # target_comission = 2.0002 - 0.00005 = 2.00015, round(4) = 2.0002
+          # 2.0002 > 2.0001 → не перепрыгиваем
+          expect(calculator.call).to eq(2.0002)
         end
       end
 

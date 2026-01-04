@@ -11,13 +11,14 @@ module Gera
     # - UC-8: Исключение своего обменника из расчёта
     # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
     # - UC-13: Защита от перепрыгивания позиции position_from - 1
-    # - UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
+    # - UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #86)
     #
     # ОТМЕНЕНО:
     # - UC-9: Защита от аномалий по медиане (не работает с отрицательными курсами)
     class PositionAware < Base
       # Минимальный GAP (используется когда разница между позициями меньше стандартного)
-      MIN_GAP = 0.0001
+      # Должен быть меньше AUTO_COMISSION_GAP чтобы адаптивная логика работала
+      MIN_GAP = 0.00001
 
       def call
         debug_log("START position_from=#{position_from} position_to=#{position_to}")
@@ -80,6 +81,13 @@ module Gera
 
       def debug_log(message)
         return unless Gera.autorate_debug_enabled
+
+        Rails.logger.warn { "[PositionAware] #{message}" }
+      end
+
+      # Постоянное логирование важных бизнес-событий (всегда включено)
+      def warn_log(message)
+        return unless defined?(Rails) && Rails.logger
 
         Rails.logger.warn { "[PositionAware] #{message}" }
       end
@@ -156,8 +164,10 @@ module Gera
 
         # UC-14: Если позиции выше нет — занимаем первую целевую позицию
         unless rate_above
-          debug_log("adjust_for_position_above: no rate_above, using UC-14 fallback")
-          return fallback_to_first_target_position(target_comission, rates)
+          debug_log("adjust_for_position_above: no rate_above, using fallback")
+          # Постоянное логирование для fallback (важное бизнес-событие)
+          warn_log("Fallback: no rate_above for position_from=#{position_from}, exchange_rate_id=#{exchange_rate.id}")
+          return fallback_to_first_target_position(rates)
         end
 
         rate_above_comission = rate_above.target_rate_percent
@@ -175,35 +185,29 @@ module Gera
         target_comission
       end
 
-      # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше.
-      # Корректирует target_comission если он "выгоднее" первой целевой позиции,
-      # чтобы не перепрыгнуть её. Если корректировка невозможна — возвращает исходное значение.
-      def fallback_to_first_target_position(target_comission, rates)
+      # Fallback на первую целевую позицию при отсутствии позиций выше.
+      # При position_from > 1 и rate_above = nil — ВСЕГДА занимаем первую целевую позицию,
+      # чтобы гарантировать что обменник не выйдет за пределы целевого диапазона.
+      def fallback_to_first_target_position(rates)
         first_target_rate = rates[position_from - 1]
 
         unless first_target_rate
-          debug_log("UC-14: no first_target_rate, returning target_comission")
-          return target_comission
+          debug_log("fallback: no first_target_rate, returning autorate_from")
+          return autorate_from
         end
 
         first_target_comission = first_target_rate.target_rate_percent
-        debug_log("UC-14: first_target_rate[#{position_from - 1}] = #{first_target_comission}")
+        debug_log("fallback: first_target_rate[#{position_from - 1}] = #{first_target_comission}")
 
         # Проверяем что первая целевая позиция в допустимом диапазоне
         unless (autorate_from..autorate_to).include?(first_target_comission)
-          debug_log("UC-14: first_target_comission #{first_target_comission} out of range [#{autorate_from}..#{autorate_to}], returning target_comission")
-          return target_comission
+          debug_log("fallback: first_target_comission #{first_target_comission} out of range [#{autorate_from}..#{autorate_to}], returning autorate_from")
+          return autorate_from
         end
 
-        # Если target_comission меньше (выгоднее) чем первая целевая позиция —
-        # мы перепрыгнём её. Нужно использовать курс первой целевой позиции.
-        if target_comission < first_target_comission
-          debug_log("UC-14: ADJUSTING to first_target_comission = #{first_target_comission}")
-          return first_target_comission
-        end
-
-        debug_log("UC-14: no adjustment needed, returning target_comission")
-        target_comission
+        # Всегда возвращаем курс первой целевой позиции
+        debug_log("fallback: using first_target_comission = #{first_target_comission}")
+        first_target_comission
       end
     end
   end
