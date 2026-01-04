@@ -422,7 +422,7 @@ RSpec.describe 'AutorateCalculators (isolated)' do
       end
     end
 
-    # UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #86)
+    # UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #83)
     # При position_from > 1 и rate_above = nil — ВСЕГДА занимаем первую целевую позицию
     describe 'UC-14: fallback при отсутствии rate_above' do
       context 'когда rate_above = nil (разреженный список)' do
@@ -492,6 +492,36 @@ RSpec.describe 'AutorateCalculators (isolated)' do
 
         it 'возвращает autorate_from' do
           # valid_rates пуст (5.0 и 5.5 > 3.0)
+          expect(calculator.call).to eq(1.0)
+        end
+      end
+
+      context 'когда rate_above = nil И first_target вне диапазона, но valid_rates не пуст' do
+        # Edge case: first_target_rate (для fallback) вне диапазона,
+        # но valid_rates содержит другие позиции в диапазоне
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.0),   # pos 1
+            double('ExternalRate', target_rate_percent: 1.5),   # pos 2
+            double('ExternalRate', target_rate_percent: 2.0),   # pos 3
+            nil,                                                 # pos 4 - отсутствует (rate_above)
+            double('ExternalRate', target_rate_percent: 5.0),   # pos 5 - first_target, но вне диапазона!
+            double('ExternalRate', target_rate_percent: 2.5),   # pos 6 - в диапазоне
+            double('ExternalRate', target_rate_percent: 2.8)    # pos 7 - в диапазоне
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(5)
+          allow(exchange_rate).to receive(:position_to).and_return(7)
+        end
+
+        it 'возвращает autorate_from так как first_target_rate вне диапазона' do
+          # valid_rates = [2.5, 2.8] (после фильтрации по диапазону)
+          # target_rate = 2.5
+          # rate_above = rates[3] = nil → fallback
+          # UC-14: first_target_rate = rates[4] = 5.0 (ВНЕ диапазона 1.0..3.0!)
+          # Должен вернуть autorate_from = 1.0
           expect(calculator.call).to eq(1.0)
         end
       end

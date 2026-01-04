@@ -11,7 +11,7 @@ module Gera
     # - UC-8: Исключение своего обменника из расчёта
     # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
     # - UC-13: Защита от перепрыгивания позиции position_from - 1
-    # - UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #86)
+    # - UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #83)
     #
     # ОТМЕНЕНО:
     # - UC-9: Защита от аномалий по медиане (не работает с отрицательными курсами)
@@ -185,7 +185,7 @@ module Gera
         target_comission
       end
 
-      # Fallback на первую целевую позицию при отсутствии позиций выше.
+      # UC-14 (issue #86): Fallback на первую целевую позицию при отсутствии позиций выше.
       # При position_from > 1 и rate_above = nil — ВСЕГДА занимаем первую целевую позицию,
       # чтобы гарантировать что обменник не выйдет за пределы целевого диапазона.
       def fallback_to_first_target_position(rates)
@@ -205,9 +205,9 @@ module Gera
           return autorate_from
         end
 
-        # Всегда возвращаем курс первой целевой позиции
+        # Всегда возвращаем курс первой целевой позиции (с округлением для консистентности)
         debug_log("fallback: using first_target_comission = #{first_target_comission}")
-        first_target_comission
+        round_commission(first_target_comission)
       end
     end
   end
