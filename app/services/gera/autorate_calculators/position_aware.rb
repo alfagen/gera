@@ -11,7 +11,7 @@ module Gera
     # - UC-8: Исключение своего обменника из расчёта
     # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
     # - UC-13: Защита от перепрыгивания позиции position_from - 1
-    # - UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #83)
+    # - UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #86)
     #
     # ОТМЕНЕНО:
     # - UC-9: Защита от аномалий по медиане (не работает с отрицательными курсами)
@@ -79,13 +79,15 @@ module Gera
 
       private
 
+      # Отладочное логирование (включается через Gera.autorate_debug_enabled)
       def debug_log(message)
         return unless Gera.autorate_debug_enabled
+        return unless defined?(Rails) && Rails.logger
 
         Rails.logger.warn { "[PositionAware] #{message}" }
       end
 
-      # Постоянное логирование важных бизнес-событий (всегда включено)
+      # Постоянное логирование важных бизнес-событий (не зависит от autorate_debug_enabled)
       def warn_log(message)
         return unless defined?(Rails) && Rails.logger
 
@@ -186,13 +188,13 @@ module Gera
       end
 
       # UC-14 (issue #86): Fallback на первую целевую позицию при отсутствии позиций выше.
-      # При position_from > 1 и rate_above = nil — ВСЕГДА занимаем первую целевую позицию,
-      # чтобы гарантировать что обменник не выйдет за пределы целевого диапазона.
+      # При position_from > 1 и rate_above = nil — ВСЕГДА используем курс первой целевой позиции,
+      # если он в допустимом диапазоне autorate_from..autorate_to. Иначе — autorate_from.
       def fallback_to_first_target_position(rates)
         first_target_rate = rates[position_from - 1]
 
         unless first_target_rate
-          debug_log("fallback: no first_target_rate, returning autorate_from")
+          warn_log("Fallback FAILED: first_target_rate is nil for position_from=#{position_from}, exchange_rate_id=#{exchange_rate.id}")
           return autorate_from
         end
 
@@ -201,7 +203,7 @@ module Gera
 
         # Проверяем что первая целевая позиция в допустимом диапазоне
         unless (autorate_from..autorate_to).include?(first_target_comission)
-          debug_log("fallback: first_target_comission #{first_target_comission} out of range [#{autorate_from}..#{autorate_to}], returning autorate_from")
+          warn_log("Fallback FAILED: first_target=#{first_target_comission} out of range [#{autorate_from}..#{autorate_to}], exchange_rate_id=#{exchange_rate.id}")
           return autorate_from
         end
 
