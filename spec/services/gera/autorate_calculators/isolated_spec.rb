@@ -420,5 +420,82 @@ RSpec.describe 'AutorateCalculators (isolated)' do
         end
       end
     end
+
+    # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
+    describe 'UC-14: fallback при отсутствии rate_above' do
+      context 'когда rate_above = nil (разреженный список)' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.0),   # pos 1
+            double('ExternalRate', target_rate_percent: 1.5),   # pos 2
+            double('ExternalRate', target_rate_percent: 2.0),   # pos 3
+            nil,                                                 # pos 4 - отсутствует
+            double('ExternalRate', target_rate_percent: 2.5),   # pos 5
+            double('ExternalRate', target_rate_percent: 2.6),   # pos 6
+            double('ExternalRate', target_rate_percent: 2.7)    # pos 7
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(5)
+          allow(exchange_rate).to receive(:position_to).and_return(7)
+        end
+
+        it 'использует первую целевую позицию и не перепрыгивает её' do
+          # rate_above = rates[3] = nil
+          # UC-14: first_target_rate = rates[4] = 2.5
+          # target_comission = 2.5 - GAP = 2.4999
+          # 2.4999 < 2.5 → корректируем до 2.5
+          expect(calculator.call).to eq(2.5)
+        end
+      end
+
+      context 'когда rate_above = nil и target_comission >= first_target' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.0),   # pos 1
+            double('ExternalRate', target_rate_percent: 1.5),   # pos 2
+            double('ExternalRate', target_rate_percent: 2.0),   # pos 3
+            nil,                                                 # pos 4 - отсутствует
+            double('ExternalRate', target_rate_percent: 2.4),   # pos 5
+            double('ExternalRate', target_rate_percent: 2.6)    # pos 6
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(5)
+          allow(exchange_rate).to receive(:position_to).and_return(6)
+        end
+
+        it 'не корректирует так как мы уже хуже первой позиции' do
+          # target = 2.4, GAP = 0.0001
+          # target_comission = 2.4 - 0.0001 = 2.3999
+          # 2.3999 < 2.4 → корректируем до 2.4
+          expect(calculator.call).to eq(2.4)
+        end
+      end
+
+      context 'когда first_target_rate вне допустимого диапазона' do
+        let(:external_rates) do
+          [
+            double('ExternalRate', target_rate_percent: 1.0),   # pos 1
+            double('ExternalRate', target_rate_percent: 1.5),   # pos 2
+            nil,                                                 # pos 3 - отсутствует
+            double('ExternalRate', target_rate_percent: 5.0),   # pos 4 - вне диапазона
+            double('ExternalRate', target_rate_percent: 5.5)    # pos 5
+          ]
+        end
+
+        before do
+          allow(exchange_rate).to receive(:position_from).and_return(4)
+          allow(exchange_rate).to receive(:position_to).and_return(5)
+        end
+
+        it 'возвращает autorate_from' do
+          # valid_rates пуст (5.0 и 5.5 > 3.0)
+          expect(calculator.call).to eq(1.0)
+        end
+      end
+    end
   end
 end

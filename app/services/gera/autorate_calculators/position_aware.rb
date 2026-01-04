@@ -11,6 +11,7 @@ module Gera
     # - UC-8: Исключение своего обменника из расчёта
     # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
     # - UC-13: Защита от перепрыгивания позиции position_from - 1
+    # - UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
     #
     # ОТМЕНЕНО:
     # - UC-9: Защита от аномалий по медиане (не работает с отрицательными курсами)
@@ -140,7 +141,10 @@ module Gera
 
       # UC-13: Защита от перепрыгивания позиции position_from - 1
       # Если после вычитания GAP наш курс станет лучше чем у позиции выше — корректируем
-      def adjust_for_position_above(target_comission, _target_rate, rates)
+      #
+      # UC-14: Если позиции выше нет (position_from=1 или нет данных) — занимаем первую
+      # целевую позицию если она в допустимом диапазоне autorate_from..autorate_to
+      def adjust_for_position_above(target_comission, target_rate, rates)
         if position_from <= 1
           debug_log("adjust_for_position_above: position_from <= 1, no adjustment")
           return target_comission
@@ -150,9 +154,10 @@ module Gera
         rate_above = rates[position_from - 2]
         debug_log("adjust_for_position_above: rate_above[#{position_from - 2}] = #{rate_above&.target_rate_percent}")
 
+        # UC-14: Если позиции выше нет — занимаем первую целевую позицию
         unless rate_above
-          debug_log("adjust_for_position_above: no rate_above, returning target_comission")
-          return target_comission
+          debug_log("adjust_for_position_above: no rate_above, using UC-14 fallback")
+          return fallback_to_first_target_position(target_comission, target_rate, rates)
         end
 
         rate_above_comission = rate_above.target_rate_percent
@@ -167,6 +172,36 @@ module Gera
         end
 
         debug_log("adjust_for_position_above: no adjustment needed")
+        target_comission
+      end
+
+      # UC-14: Fallback на первую целевую позицию при отсутствии позиций выше
+      # Гарантирует что обменник не выйдет за пределы position_from
+      def fallback_to_first_target_position(target_comission, target_rate, rates)
+        first_target_rate = rates[position_from - 1]
+
+        unless first_target_rate
+          debug_log("UC-14: no first_target_rate, returning target_comission")
+          return target_comission
+        end
+
+        first_target_comission = first_target_rate.target_rate_percent
+        debug_log("UC-14: first_target_rate[#{position_from - 1}] = #{first_target_comission}")
+
+        # Проверяем что первая целевая позиция в допустимом диапазоне
+        unless (autorate_from..autorate_to).include?(first_target_comission)
+          debug_log("UC-14: first_target_comission #{first_target_comission} out of range [#{autorate_from}..#{autorate_to}], returning target_comission")
+          return target_comission
+        end
+
+        # Если target_comission меньше (выгоднее) чем первая целевая позиция —
+        # мы перепрыгнём её. Нужно использовать курс первой целевой позиции.
+        if target_comission < first_target_comission
+          debug_log("UC-14: ADJUSTING to first_target_comission = #{first_target_comission}")
+          return first_target_comission
+        end
+
+        debug_log("UC-14: no adjustment needed, returning target_comission")
         target_comission
       end
     end
