@@ -131,12 +131,77 @@ make test  # запускает isolated_spec.rb и exchange_rate_spec.rb
 - `spec/` - Test suite with dummy app
 
 
-## stage сервер
+## Серверы и логи
+
+### Stage сервер
 
 На stage сервере логи находятся тут:
 
-```
+```bash
 scp kassa@89.248.193.193:/home/kassa/admin.kassa.cc/current/log/* .
+```
+
+### Production сервер
+
+```bash
+ssh kassa@185.132.176.44
+cd /home/kassa/admin.kassa.cc/current/log
+```
+
+## Логи калькулятора PositionAware
+
+Калькулятор `PositionAwareCalculator` логирует с тегом `[PositionAware]` на уровне WARN.
+
+### Команды для анализа логов
+
+```bash
+# SSH на production
+ssh kassa@185.132.176.44
+cd /home/kassa/admin.kassa.cc/current/log
+
+# Все логи PositionAware (последние записи)
+grep -i 'PositionAware' production.log | tail -100
+
+# Финальные результаты расчётов
+grep 'FINAL RESULT' production.log | grep PositionAware | tail -50
+
+# Пустые target rates (edge case когда мало курсов)
+grep 'Target position rates.*\[\]' production.log
+
+# Случаи когда не найден rate_above
+grep 'NO rate_above found' production.log | tail -50
+
+# Полный контекст одного расчёта (10 строк до и после FINAL)
+grep -B10 -A2 'FINAL RESULT' production.log | grep PositionAware | tail -100
+```
+
+### Структура логов калькулятора
+
+```
+[PositionAware] START position_from=X position_to=Y        # Начало расчёта
+[PositionAware] autorate_from=A autorate_to=B              # Границы авторейта
+[PositionAware] Filtered rates count: N, our_exchanger_id: 522
+[PositionAware] Target position rates [X..Y]: [...]        # Курсы на целевых позициях
+[PositionAware] Target rate: Z                              # Целевой курс
+[PositionAware] calculate_adaptive_gap: ...                 # Расчёт GAP
+[PositionAware] adjust_for_position_above: ...              # Корректировка
+[PositionAware] FINAL RESULT: X.XXXX                       # Финальный результат
+```
+
+### Особенности интерпретации
+
+- **Отрицательные комиссии** (FINAL RESULT: -0.888) - это нормально
+- **find_non_anomalous_rate_above: result = nil** - часто встречается, не аномалия
+- **Пустые Target position rates []** - когда настроенная позиция > количества курсов
+
+### Ключевые файлы калькулятора
+
+```bash
+# Поиск по имени класса
+grep -r "PositionAware" --include="*.rb" .
+
+# Калькулятор вызывается из:
+# gera/app/models/gera/exchange_rate.rb:162 - метод rate_comission_calculator
 ```
 
 # Requirements Management
