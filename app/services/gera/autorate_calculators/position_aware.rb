@@ -9,17 +9,25 @@ module Gera
     # Поддерживает:
     # - UC-6: Адаптивный GAP для плотных рейтингов
     # - UC-8: Исключение своего обменника из расчёта
-    # - UC-9: Защита от манипуляторов с аномальными курсами
     # - UC-12: Не вычитать GAP при одинаковых курсах (для любого position_from)
+    # - UC-13: Защита от перепрыгивания позиции position_from - 1
+    # - UC-14: Fallback на первую целевую позицию при отсутствии rate_above (issue #83)
+    #
+    # ОТМЕНЕНО:
+    # - UC-9: Защита от аномалий по медиане (не работает с отрицательными курсами)
     class PositionAware < Base
       # Минимальный GAP (используется когда разница между позициями меньше стандартного)
-      MIN_GAP = 0.0001
+      # Должен быть меньше AUTO_COMISSION_GAP чтобы адаптивная логика работала
+      MIN_GAP = 0.00001
 
       def call
         debug_log("START position_from=#{position_from} position_to=#{position_to}")
         debug_log("autorate_from=#{autorate_from} autorate_to=#{autorate_to}")
 
-        return 0 unless could_be_calculated?
+        unless could_be_calculated?
+          warn_log("SKIP: could_be_calculated?=false, exchange_rate_id=#{exchange_rate&.id}")
+          return 0
+        end
 
         # UC-8: Фильтрация своего обменника
         filtered = filtered_external_rates
@@ -31,14 +39,14 @@ module Gera
         end
 
         rates_in_target_position = filtered[(position_from - 1)..(position_to - 1)]
-        debug_log("Target position rates [#{position_from - 1}..#{position_to - 1}]: #{rates_in_target_position&.map(&:target_rate_percent)&.first(5)}")
+        debug_log("Target position rates [#{position_from - 1}..#{position_to - 1}]: #{rates_in_target_position&.compact&.map(&:target_rate_percent)&.first(5)}")
 
         unless rates_in_target_position.present?
           debug_log("RETURN autorate_from (no rates in target position)")
           return autorate_from
         end
 
-        valid_rates = rates_in_target_position.select do |rate|
+        valid_rates = rates_in_target_position.compact.select do |rate|
           (autorate_from..autorate_to).include?(rate.target_rate_percent)
         end
 
@@ -74,10 +82,28 @@ module Gera
 
       private
 
+      # Условное логирование (включается через Gera.autorate_debug_enabled).
+      # Использует уровень warn для видимости в production-логах.
       def debug_log(message)
         return unless Gera.autorate_debug_enabled
 
-        Rails.logger.warn { "[PositionAware] #{message}" }
+        log_message(message)
+      end
+
+      # Постоянное логирование важных бизнес-событий (не зависит от autorate_debug_enabled).
+      # Используется для аварийных путей (fallback failures), требующих внимания.
+      def warn_log(message)
+        log_message(message)
+      end
+
+      # Общий метод логирования с fallback в STDERR когда Rails недоступен
+      def log_message(message)
+        formatted = "[PositionAware] #{message}"
+        if defined?(Rails) && Rails.logger
+          Rails.logger.warn { formatted }
+        else
+          warn formatted
+        end
       end
 
       # UC-12: Проверяем, нужно ли пропустить вычитание GAP
@@ -99,10 +125,15 @@ module Gera
       end
 
       # UC-8: Фильтрация своего обменника
+      # @raise [ArgumentError] если external_rates nil (должен был быть отфильтрован в could_be_calculated?)
       def filtered_external_rates
+        if external_rates.nil?
+          raise ArgumentError, "external_rates is nil - should have been caught by could_be_calculated?"
+        end
+
         return external_rates unless Gera.our_exchanger_id.present?
 
-        external_rates.reject { |rate| rate.exchanger_id == Gera.our_exchanger_id }
+        external_rates.reject { |rate| rate&.exchanger_id == Gera.our_exchanger_id }
       end
 
       # UC-6: Адаптивный GAP
@@ -135,19 +166,27 @@ module Gera
         end
       end
 
+      # UC-13: Защита от перепрыгивания позиции position_from - 1
+      # Если после вычитания GAP наш курс станет лучше чем у позиции выше — корректируем
+      #
+      # UC-14: Если position_from > 1, но позиции выше нет (rate_above = nil) — занимаем
+      # первую целевую позицию если она в допустимом диапазоне autorate_from..autorate_to
       def adjust_for_position_above(target_comission, target_rate, rates)
         if position_from <= 1
           debug_log("adjust_for_position_above: position_from <= 1, no adjustment")
           return target_comission
         end
 
-        # UC-9: Найти ближайшую нормальную позицию выше
-        rate_above = find_non_anomalous_rate_above(rates)
-        debug_log("adjust_for_position_above: rate_above = #{rate_above&.target_rate_percent}")
+        # Берём ближайшую позицию выше целевого диапазона
+        rate_above = rates[position_from - 2]
+        debug_log("adjust_for_position_above: rate_above[#{position_from - 2}] = #{rate_above&.target_rate_percent}")
 
+        # UC-14: Если позиции выше нет — занимаем первую целевую позицию
         unless rate_above
-          debug_log("adjust_for_position_above: NO rate_above found! Returning target_comission unchanged")
-          return target_comission
+          debug_log("adjust_for_position_above: no rate_above, using fallback")
+          # Постоянное логирование для fallback (важное бизнес-событие)
+          warn_log("Fallback: no rate_above for position_from=#{position_from}, exchange_rate_id=#{exchange_rate.id}")
+          return fallback_to_first_target_position(rates)
         end
 
         rate_above_comission = rate_above.target_rate_percent
@@ -156,64 +195,43 @@ module Gera
         # Если после вычитания GAP комиссия станет меньше (выгоднее) чем у позиции выше -
         # мы перепрыгнём её. Нужно скорректировать.
         if target_comission < rate_above_comission
-          # Устанавливаем комиссию равную или чуть выше (хуже) чем у позиции выше,
-          # но не хуже чем у целевой позиции
-          safe_comission = [rate_above_comission, target_rate.target_rate_percent].min
-          debug_log("adjust_for_position_above: ADJUSTING to safe_comission = #{safe_comission}")
-
-          # Если одинаковые курсы - оставляем как есть, BestChange определит позицию по вторичным критериям
-          return safe_comission
+          # Устанавливаем комиссию равную позиции выше (не перепрыгиваем)
+          debug_log("adjust_for_position_above: ADJUSTING to rate_above_comission = #{rate_above_comission}")
+          return rate_above_comission
         end
 
         debug_log("adjust_for_position_above: no adjustment needed")
         target_comission
       end
 
-      # UC-9: Найти ближайшую нормальную (не аномальную) позицию выше целевой
-      def find_non_anomalous_rate_above(rates)
-        if position_from <= 1
-          debug_log("find_non_anomalous_rate_above: position_from <= 1, returning nil")
-          return nil
+      # UC-14 (issue #83): Fallback на первую целевую позицию при отсутствии позиций выше.
+      # При position_from > 1 и rate_above = nil — ВСЕГДА используем курс первой целевой позиции,
+      # если он в допустимом диапазоне autorate_from..autorate_to. Иначе — autorate_from.
+      #
+      # Edge cases:
+      # 1. SUCCESS: first_target_rate существует и в диапазоне → round_commission(target)
+      # 2. FAIL: first_target_rate = nil (нет данных на позиции) → autorate_from + warn_log
+      # 3. FAIL: курс вне диапазона autorate_from..autorate_to → autorate_from + warn_log
+      def fallback_to_first_target_position(rates)
+        first_target_rate = rates[position_from - 1]
+
+        unless first_target_rate
+          warn_log("Fallback FAILED: first_target_rate is nil for position_from=#{position_from}, exchange_rate_id=#{exchange_rate.id}")
+          return autorate_from
         end
 
-        # Берём все позиции выше целевой (от 0 до position_from - 2)
-        rates_above = rates[0..(position_from - 2)]
-        debug_log("find_non_anomalous_rate_above: rates_above[0..#{position_from - 2}] = #{rates_above&.map(&:target_rate_percent)}")
+        first_target_comission = first_target_rate.target_rate_percent
+        debug_log("fallback: first_target_rate[#{position_from - 1}] = #{first_target_comission}")
 
-        unless rates_above.present?
-          debug_log("find_non_anomalous_rate_above: no rates_above, returning nil")
-          return nil
+        # Проверяем что первая целевая позиция в допустимом диапазоне
+        unless (autorate_from..autorate_to).include?(first_target_comission)
+          warn_log("Fallback FAILED: first_target=#{first_target_comission} out of range [#{autorate_from}..#{autorate_to}], exchange_rate_id=#{exchange_rate.id}")
+          return autorate_from
         end
 
-        # Если фильтрация аномалий отключена - просто берём ближайшую позицию выше
-        threshold = Gera.anomaly_threshold_percent
-        debug_log("find_non_anomalous_rate_above: anomaly_threshold = #{threshold}, rates.size = #{rates.size}")
-
-        unless threshold&.positive? && rates.size >= 3
-          debug_log("find_non_anomalous_rate_above: anomaly filter disabled, returning rates_above.last = #{rates_above.last&.target_rate_percent}")
-          return rates_above.last
-        end
-
-        # Вычисляем медиану для определения аномалий
-        all_comissions = rates.map(&:target_rate_percent).sort
-        median = all_comissions[all_comissions.size / 2]
-        debug_log("find_non_anomalous_rate_above: median = #{median}")
-
-        # Защита от деления на ноль: если медиана = 0, возвращаем ближайшую позицию выше
-        if median.zero?
-          debug_log("find_non_anomalous_rate_above: median is zero, returning rates_above.last")
-          return rates_above.last
-        end
-
-        # Ищем ближайшую нормальную позицию сверху вниз
-        result = rates_above.reverse.find do |rate|
-          deviation = ((rate.target_rate_percent - median) / median * 100).abs
-          debug_log("find_non_anomalous_rate_above: rate #{rate.target_rate_percent} deviation = #{deviation.round(4)}% (threshold: #{threshold})")
-          deviation <= threshold
-        end
-
-        debug_log("find_non_anomalous_rate_above: result = #{result&.target_rate_percent || 'nil'}")
-        result
+        # Всегда возвращаем курс первой целевой позиции (с округлением для консистентности)
+        debug_log("fallback: using first_target_comission = #{first_target_comission}")
+        round_commission(first_target_comission)
       end
     end
   end

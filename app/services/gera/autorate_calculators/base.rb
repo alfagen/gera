@@ -25,7 +25,11 @@ module Gera
       protected
 
       # Округление комиссии до заданной точности
+      # @param value [Numeric] значение комиссии
+      # @raise [ArgumentError] если value nil
       def round_commission(value)
+        raise ArgumentError, "Cannot round nil commission value" if value.nil?
+
         value.round(COMMISSION_PRECISION)
       end
 
@@ -42,7 +46,7 @@ module Gera
       def external_rates_in_target_comission
         return [] unless external_rates_in_target_position.present?
 
-        external_rates_in_target_position.select do |rate|
+        external_rates_in_target_position.compact.select do |rate|
           (autorate_from..autorate_to).include?(rate.target_rate_percent)
         end
       end

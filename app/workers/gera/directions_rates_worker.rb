@@ -37,11 +37,16 @@ module Gera
               rate_percent: rate_percent,
               rate_value: calculate_finite_rate(base_rate_value, rate_percent)
             }
-            rescue CurrencyRatesRepository::UnknownPair, DirectionRate::UnknownExchangeRate
+            rescue CurrencyRatesRepository::UnknownPair, DirectionRate::UnknownExchangeRate => e
+              logger.warn "[DirectionsRatesWorker] Skipped exchange_rate_id=#{exchange_rate.id}: #{e.class}"
               nil
           end.compact
 
-          DirectionRate.insert_all(rates)
+          if rates.present?
+            DirectionRate.insert_all(rates)
+          else
+            logger.warn '[DirectionsRatesWorker] No rates to insert — all exchange_rates were skipped or had no currency_rate'
+          end
         end
       end
       logger.info 'finish'

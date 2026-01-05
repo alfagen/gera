@@ -4,7 +4,7 @@ module Gera
   class RateComissionCalculator
     include Virtus.model strict: true
 
-    AUTO_COMISSION_GAP = 0.0001
+    # AUTO_COMISSION_GAP теперь определён в AutorateCalculators::Base
     NOT_ALLOWED_COMISSION_RANGE = (0.7..1.4)
     EXCLUDED_PS_IDS = [54, 56]
 
@@ -150,10 +150,6 @@ module Gera
       @commission ||= auto_comission_by_external_comissions + auto_comission_by_reserve + comission_by_base_rate
     end
 
-    def could_be_calculated?
-      !external_rates.nil? && exchange_rate.target_autorate_setting&.could_be_calculated?
-    end
-
     def auto_commision_range
       @auto_commision_range ||= (auto_comission_from..auto_comission_to)
     end
@@ -165,6 +161,13 @@ module Gera
           external_rates: external_rates
         )
         calculator.call
+      rescue StandardError => e
+        Rails.logger.error do
+          "[RateComissionCalculator] Calculator failed for exchange_rate_id=#{exchange_rate.id}, " \
+          "calculator=#{exchange_rate.autorate_calculator_class}, error=#{e.class}: #{e.message}\n" \
+          "Backtrace:\n#{e.backtrace&.first(10)&.join("\n")}"
+        end
+        exchange_rate.autorate_from || 0
       end
     end
 
