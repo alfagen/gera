@@ -42,7 +42,11 @@ module Gera
               nil
           end.compact
 
-          DirectionRate.insert_all(rates) if rates.present?
+          if rates.present?
+            DirectionRate.insert_all(rates)
+          else
+            logger.warn '[DirectionsRatesWorker] No rates to insert — all exchange_rates were skipped or had no currency_rate'
+          end
         end
       end
       logger.info 'finish'
