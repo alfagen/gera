@@ -138,3 +138,8 @@ make test  # запускает isolated_spec.rb и exchange_rate_spec.rb
 ```
 scp kassa@89.248.193.193:/home/kassa/admin.kassa.cc/current/log/* .
 ```
+
+# Requirements Management
+
+- **spreadsheet_id:** 1bY_cH5XpuO47qnPsYEdxjkQpwvPNYXHAms_ohkca15A
+- **spreadsheet_url:** https://docs.google.com/spreadsheets/d/1bY_cH5XpuO47qnPsYEdxjkQpwvPNYXHAms_ohkca15A
