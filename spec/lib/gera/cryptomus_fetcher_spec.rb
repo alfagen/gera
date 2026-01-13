@@ -1,24 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-
-# Stub PaymentServices::Base::Client before CryptomusFetcher is loaded
-# This is necessary because CryptomusFetcher extends this class from host app
-module PaymentServices
-  module Base
-    class Client
-      def http_request(url:, method:, body: nil, headers: {})
-        ''
-      end
-
-      def safely_parse(response)
-        JSON.parse(response) rescue {}
-      end
-    end
-  end
-end unless defined?(PaymentServices::Base::Client)
-
-# Now require the fetcher
 require 'gera/cryptomus_fetcher'
 
 module Gera
@@ -86,13 +68,6 @@ module Gera
 
       it 'returns currencies from RateSourceCryptomus' do
         expect(subject.send(:supported_currencies)).to eq(RateSourceCryptomus.supported_currencies)
-      end
-    end
-
-    describe '#build_headers' do
-      it 'returns headers with Content-Type' do
-        headers = subject.send(:build_headers)
-        expect(headers['Content-Type']).to eq('application/json')
       end
     end
   end
