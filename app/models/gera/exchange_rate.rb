@@ -56,8 +56,6 @@ module Gera
 
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
-    after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
-
     before_create do
       self.in_cur = payment_system_from.currency.to_s
       self.out_cur = payment_system_to.currency.to_s
