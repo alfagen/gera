@@ -163,7 +163,12 @@ module Gera
     end
 
     def bestchange_key
-      [payment_system_from.id_b, payment_system_to.id_b].join('-')
+      return '' if payment_system_from.nil? || payment_system_to.nil?
+
+      from_id = payment_system_from.read_attribute(:id_b)
+      to_id = payment_system_to.read_attribute(:id_b)
+
+      [from_id, to_id].join('-')
     end
 
     def rate_comission_calculator
