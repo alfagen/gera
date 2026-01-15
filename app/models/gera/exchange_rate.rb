@@ -163,7 +163,7 @@ module Gera
     end
 
     def bestchange_key
-      [payment_system_from.bestchange_id, payment_system_to.bestchange_id].join('-')
+      [payment_system_from.id_b, payment_system_to.id_b].join('-')
     end
 
     def rate_comission_calculator
