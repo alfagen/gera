@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
+require 'rest-client'
+
 module Gera
-  class CryptomusFetcher < PaymentServices::Base::Client
+  class CryptomusFetcher
     API_URL = 'https://api.cryptomus.com/v1/exchange-rate'
     Error = Class.new StandardError
 
@@ -22,7 +24,7 @@ module Gera
     def rates
       data = supported_currencies.map(&:iso_code).map { |code| rate(currency: code) }.flatten.filter { |rate| rate['from'] != rate['to'] }
       unique_pairs = Set.new
-      filtered_data = data.select do |hash|
+      filtered_data = data.reverse.select do |hash|
         pair = [hash['from'], hash['to']].sort
         unique_pairs.add?(pair) ? true : false
       end
@@ -32,21 +34,20 @@ module Gera
     def rate(currency:)
       currency = 'DASH' if currency == 'DSH'
 
-      safely_parse(http_request(
+      response = RestClient::Request.execute(
         url: "#{API_URL}/#{currency}/list",
-        method: :GET,
-        headers: build_headers
-      )).dig('result')
+        method: :get,
+        headers: { 'Content-Type' => 'application/json' },
+        verify_ssl: true
+      )
+
+      raise Error, "HTTP #{response.code}" unless response.code == 200
+
+      JSON.parse(response.body).dig('result')
     end
 
     def supported_currencies
       @supported_currencies ||= RateSourceCryptomus.supported_currencies
-    end
-
-    def build_headers
-      {
-        'Content-Type'   => 'application/json'
-      }
     end
   end
 end

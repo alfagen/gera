@@ -5,5 +5,6 @@ FactoryBot.define do
     rate_value { 60 }
     association :snapshot, factory: :currency_rate_snapshot
     mode { :direct }
+    currency_pair { Gera::CurrencyPair.new(USD, RUB) }
   end
 end

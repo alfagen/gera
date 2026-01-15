@@ -1,8 +1,8 @@
 FactoryBot.define do
-  factory :currency_rate_mode do
+  factory :currency_rate_mode, class: Gera::CurrencyRateMode do
     cur_from { USD }
     cur_to { RUB }
     mode { :auto }
-    association :currency_rate_mode_snapshot
+    association :snapshot, factory: :currency_rate_mode_snapshot
   end
 end

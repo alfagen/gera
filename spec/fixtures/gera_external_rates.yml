@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+usd_rub:
+  snapshot: cbr_snapshot
+  source: cbr
+  currency_from: "USD"
+  currency_to: "RUB"
+  rate: 60.5
+  created_at: <%= 30.minutes.ago %>
+
+btc_usd:
+  snapshot: exmo_snapshot
+  source: exmo
+  currency_from: "BTC"
+  currency_to: "USD"
+  rate: 45000.0
+  created_at: <%= 15.minutes.ago %>
+
+eth_usd:
+  snapshot: exmo_snapshot
+  source: exmo
+  currency_from: "ETH"
+  currency_to: "USD"
+  rate: 3000.0
+  created_at: <%= 15.minutes.ago %>

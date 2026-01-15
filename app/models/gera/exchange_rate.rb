@@ -15,6 +15,7 @@
 module Gera
   class ExchangeRate < ApplicationRecord
     include Authority::Abilities
+    include AliasAssociation
 
     DEFAULT_COMISSION = 50
     MIN_COMISSION = -9.9
@@ -24,7 +25,13 @@ module Gera
 
     belongs_to :payment_system_from, foreign_key: :income_payment_system_id, class_name: 'Gera::PaymentSystem'
     belongs_to :payment_system_to, foreign_key: :outcome_payment_system_id, class_name: 'Gera::PaymentSystem'
-    has_one :target_autorate_setting, class_name: 'TargetAutorateSetting'
+
+    has_many :direction_rates, class_name: 'Gera::DirectionRate', dependent: :delete_all
+
+    # NOTE: These tables are optional and may be defined in host application
+    # dependent: :delete not used because tables may not exist
+    has_one :target_autorate_setting, class_name: 'Gera::TargetAutorateSetting'
+    has_one :exchange_rate_limit, class_name: 'Gera::ExchangeRateLimit'
 
     scope :ordered, -> { order :id }
     scope :enabled, -> { where is_enabled: true }
@@ -40,9 +47,14 @@ module Gera
         .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
         .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
-    scope :with_auto_rates, -> { where(auto_rate: true) }
 
-    after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
+    scope :available_for_parser, lambda {
+      with_payment_systems
+        .enabled
+        .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
+    }
+
+    scope :with_auto_rates, -> { where(auto_rate: true) }
 
     before_create do
       self.in_cur = payment_system_from.currency.to_s
@@ -51,7 +63,7 @@ module Gera
     end
 
     validates :commission, presence: true
-    validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
+    # validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
 
     delegate :rate, :currency_rate, to: :direction_rate
 
@@ -60,8 +72,10 @@ module Gera
               :current_base_rate, :average_base_rate, :auto_comission_from,
               :auto_comission_to, :bestchange_delta, to: :rate_comission_calculator
 
-    delegate  :position_from, :position_to, 
+    delegate  :position_from, :position_to,
               :autorate_from, :autorate_to, to: :target_autorate_setting, allow_nil: true
+
+    delegate :min_amount, :max_amount, to: :exchange_rate_limit, allow_nil: true
 
     alias_attribute :ps_from_id, :income_payment_system_id
     alias_attribute :ps_to_id, :outcome_payment_system_id
@@ -73,8 +87,8 @@ module Gera
     alias_attribute :comission_percents, :value
     alias_attribute :fixed_comission, :value
 
-    alias_attribute :income_payment_system, :payment_system_from
-    alias_attribute :outcome_payment_system, :payment_system_to
+    alias_association :income_payment_system, :payment_system_from
+    alias_association :outcome_payment_system, :payment_system_to
 
     monetize :minamount_cents, as: :minamount
     monetize :maxamount_cents, as: :maxamount
@@ -92,9 +106,9 @@ module Gera
 
     def update_finite_rate!(finite_rate)
       logger = Logger.new("#{Rails.root}/log/call_exchange_rate_updater_worker.log")
-      logger.info("Calls perform_async from update_finite_rate Gera::ExchangeRate")
+      logger.info("Calls perform_later from update_finite_rate Gera::ExchangeRate")
 
-      ExchangeRateUpdaterWorker.perform_async(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
+      ExchangeRateUpdaterJob.perform_later(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
     end
 
     def custom_inspect
@@ -145,7 +159,16 @@ module Gera
     end
 
     def update_direction_rates
-      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+      DirectionsRatesJob.perform_later(exchange_rate_id: id)
+    end
+
+    def bestchange_key
+      return '' if payment_system_from.nil? || payment_system_to.nil?
+
+      from_id = payment_system_from.read_attribute(:id_b)
+      to_id = payment_system_to.read_attribute(:id_b)
+
+      [from_id, to_id].join('-')
     end
 
     def rate_comission_calculator
@@ -153,7 +176,7 @@ module Gera
     end
 
     def external_rates
-      @external_rates ||= BestChange::Service.new(exchange_rate: self).rows_without_kassa
+      @external_rates ||= Gera.manul_client&.top_exchangers(bestchange_key) || []
     end
 
     def flexible_rate

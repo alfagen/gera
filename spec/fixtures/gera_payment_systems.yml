@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+one:
+  name: "Yandex Money"
+  currency: "RUB"
+  income_enabled: true
+  outcome_enabled: true
+  is_available: true
+  commission: 5.0
+  icon_url: "https://example.com/yandex.png"
+
+two:
+  name: "Qiwi"
+  currency: "RUB"
+  income_enabled: true
+  outcome_enabled: true
+  is_available: true
+  commission: 3.0
+  icon_url: "https://example.com/qiwi.png"
+
+btc:
+  name: "Bitcoin"
+  currency: "BTC"
+  income_enabled: true
+  outcome_enabled: true
+  is_available: true
+  commission: 1.0
+  icon_url: "https://example.com/btc.png"
+
+usd:
+  name: "Perfect Money"
+  currency: "USD"
+  income_enabled: true
+  outcome_enabled: true
+  is_available: true
+  commission: 2.5
+  icon_url: "https://example.com/pm.png"

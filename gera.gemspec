@@ -17,13 +17,13 @@ Gem::Specification.new do |s|
     s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
 
     s.add_dependency 'simple_form'
-    s.add_dependency "rails", "~> 6.0.6"
+    s.add_dependency "rails"
     s.add_dependency 'best_in_place'
     s.add_dependency 'virtus'
     s.add_dependency 'kaminari'
     s.add_dependency 'require_all'
     s.add_dependency 'rest-client', '~> 2.0'
-    s.add_dependency 'sidekiq'
+    s.add_dependency 'solid_queue'
     s.add_dependency 'auto_logger', '~> 0.1.4'
     s.add_dependency 'request_store'
     s.add_dependency 'business_time'
@@ -33,10 +33,11 @@ Gem::Specification.new do |s|
     s.add_dependency 'money'
     s.add_dependency 'money-rails'
     s.add_dependency 'percentable'
-    s.add_dependency 'draper', '~> 3.1.0'
+    s.add_dependency 'draper'
     s.add_dependency 'active_link_to'
     s.add_dependency 'breadcrumbs_on_rails'
     s.add_dependency 'noty_flash'
+    s.add_dependency 'alias_association'
 
     # s.add_development_dependency 'rails-erd'
     # s.add_development_dependency 'railroady'
@@ -52,10 +53,11 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'pry-rails'
     s.add_development_dependency 'pry-byebug'
     s.add_development_dependency 'factory_bot'
-    s.add_development_dependency 'rspec-rails', '~> 3.7'
+    s.add_development_dependency 'rspec-rails', '~> 6.0'
     s.add_development_dependency 'database_rewinder'
     s.add_development_dependency 'mysql2'
     s.add_development_dependency 'pg'
+    s.add_development_dependency 'sqlite3'
     s.add_development_dependency 'vcr'
     s.add_development_dependency 'webmock'
     s.add_development_dependency 'timecop'

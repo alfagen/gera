@@ -10,5 +10,11 @@ module Gera
     initializer 'gera.factories', after: 'factory_bot.set_factory_paths' do
       FactoryBot.definition_file_paths << File.expand_path('../../../factories', __FILE__) if defined?(FactoryBot)
     end
+
+    config.generators do |g|
+      g.test_framework :rspec
+      g.fixture_replacement :factory_bot
+      g.factory_bot dir: 'factories'
+    end
   end
 end
