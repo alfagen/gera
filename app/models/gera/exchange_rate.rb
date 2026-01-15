@@ -162,6 +162,10 @@ module Gera
       DirectionsRatesJob.perform_later(exchange_rate_id: id)
     end
 
+    def bestchange_key
+      [payment_system_from.bestchange_id, payment_system_to.bestchange_id].join('-')
+    end
+
     def rate_comission_calculator
       @rate_comission_calculator ||= RateComissionCalculator.new(exchange_rate: self, external_rates: external_rates)
     end
