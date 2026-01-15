@@ -176,7 +176,7 @@ module Gera
     end
 
     def external_rates
-      @external_rates ||= Gera.manul_client.top_exchangers(bestchange_key)
+      @external_rates ||= Gera.manul_client&.top_exchangers(bestchange_key) || []
     end
 
     def flexible_rate
