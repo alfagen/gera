@@ -1,5 +1,11 @@
 = render 'filter'
 
+- unless history_intervals_enabled?
+  .alert.alert-warning
+    strong Внимание!
+    |  Сбор данных для графиков направлений отключен (enable_direction_rate_history_intervals = false).
+    |  Отображаются только исторические данные.
+
 #container style="height: 400px; min-width: 310px"
 
 = javascript_include_tag 'https://code.highcharts.com/stock/highstock.js'

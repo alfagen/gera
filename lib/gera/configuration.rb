@@ -35,6 +35,12 @@ module Gera
     @@cross_pairs = { kzt: :rub }
     @@manul_client = nil
 
+    # @param [Boolean] Включение/отключение создания direction_rate_history_intervals
+    # По умолчанию true для обратной совместимости
+    # Таблица занимает ~42GB и используется только для графиков в админке
+    mattr_accessor :enable_direction_rate_history_intervals
+    @@enable_direction_rate_history_intervals = true
+
     def cross_pairs
       h = {}
       @@cross_pairs.each do |k, v|

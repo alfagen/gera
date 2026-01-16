@@ -10,7 +10,13 @@ module Gera
     MINIMAL_DATE = Time.parse('13-07-2018 18:00')
 
     def perform
-      save_direction_rate_history_intervals if Gera::DirectionRateHistoryInterval.table_exists?
+      if Gera::DirectionRateHistoryInterval.table_exists?
+        if Gera.enable_direction_rate_history_intervals
+          save_direction_rate_history_intervals
+        else
+          logger.info 'Skipping direction_rate_history_intervals creation (disabled by config)'
+        end
+      end
       save_currency_rate_history_intervals if Gera::CurrencyRateHistoryInterval.table_exists?
     end
 

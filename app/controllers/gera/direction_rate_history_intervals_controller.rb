@@ -6,6 +6,7 @@ module Gera
     authorize_actions_for DirectionRate
     helper_method :payment_system_from, :payment_system_to
     helper_method :filter
+    helper_method :history_intervals_enabled?
 
     def index
       respond_to do |format|
@@ -57,6 +58,10 @@ module Gera
       else
         raise "Unknown value_type #{filter.value_type}"
       end
+    end
+
+    def history_intervals_enabled?
+      Gera.enable_direction_rate_history_intervals
     end
   end
 end
