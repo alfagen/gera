@@ -15,7 +15,11 @@ module Gera
     end
 
     describe '#perform' do
-      context 'when tables exist' do
+      context 'when tables exist and enable_direction_rate_history_intervals is true' do
+        before do
+          allow(Gera).to receive(:enable_direction_rate_history_intervals).and_return(true)
+        end
+
         it 'calls save_direction_rate_history_intervals' do
           expect(DirectionRateHistoryInterval).to receive(:table_exists?).and_return(true)
           expect(CurrencyRateHistoryInterval).to receive(:table_exists?).and_return(true)
@@ -28,6 +32,26 @@ module Gera
           job.perform
 
           expect(job).to have_received(:save_direction_rate_history_intervals)
+          expect(job).to have_received(:save_currency_rate_history_intervals)
+        end
+      end
+
+      context 'when tables exist but enable_direction_rate_history_intervals is false' do
+        before do
+          allow(Gera).to receive(:enable_direction_rate_history_intervals).and_return(false)
+        end
+
+        it 'skips save_direction_rate_history_intervals but saves currency_rate_history_intervals' do
+          expect(DirectionRateHistoryInterval).to receive(:table_exists?).and_return(true)
+          expect(CurrencyRateHistoryInterval).to receive(:table_exists?).and_return(true)
+
+          job = described_class.new
+          allow(job).to receive(:save_direction_rate_history_intervals)
+          allow(job).to receive(:save_currency_rate_history_intervals)
+
+          job.perform
+
+          expect(job).not_to have_received(:save_direction_rate_history_intervals)
           expect(job).to have_received(:save_currency_rate_history_intervals)
         end
       end
