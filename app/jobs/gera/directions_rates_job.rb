@@ -4,6 +4,7 @@ module Gera
   class DirectionsRatesJob < ApplicationJob
     include ActiveSupport::Callbacks
     include AutoLogger
+    include Mathematic
 
     Error = Class.new StandardError
 
@@ -19,9 +20,8 @@ module Gera
 
       run_callbacks :perform do
         Gera::DirectionRateSnapshot.transaction do
-          Gera::ExchangeRate.includes(:payment_system_from, :payment_system_to).find_each do |exchange_rate|
-            safe_create(exchange_rate)
-          end
+          records = build_direction_rate_records
+          Gera::DirectionRate.insert_all!(records) if records.any?
         end
       end
       logger.info 'finish'
@@ -29,21 +29,50 @@ module Gera
 
     private
 
-    delegate :direction_rates, to: :snapshot
-
     def snapshot
       @snapshot ||= Gera::DirectionRateSnapshot.create!
     end
 
-    def safe_create(exchange_rate)
-      direction_rates.create!(
-        snapshot: snapshot,
-        exchange_rate: exchange_rate,
-        currency_rate: Gera::Universe.currency_rates_repository.find_currency_rate_by_pair(exchange_rate.currency_pair)
-      )
-    rescue Gera::CurrencyRatesRepository::UnknownPair => err
-    rescue Gera::DirectionRate::UnknownExchangeRate, ActiveRecord::RecordInvalid => err
-      logger.error err
+    def currency_rates_cache
+      @currency_rates_cache ||= Gera::Universe.currency_rates_repository
+                                              .snapshot
+                                              .rates
+                                              .index_by(&:currency_pair)
+    end
+
+    def build_direction_rate_records
+      current_time = Time.current
+      exchange_rates = Gera::ExchangeRate.includes(:payment_system_from, :payment_system_to).to_a
+
+      exchange_rates.filter_map do |exchange_rate|
+        build_direction_rate_hash(exchange_rate, current_time)
+      end
+    end
+
+    def build_direction_rate_hash(exchange_rate, current_time)
+      currency_rate = currency_rates_cache[exchange_rate.currency_pair]
+      return nil unless currency_rate
+
+      rate_percent = exchange_rate.final_rate_percents
+      return nil if rate_percent.nil?
+
+      base_rate_value = currency_rate.rate_value
+      rate_value = calculate_finite_rate(base_rate_value, rate_percent)
+
+      {
+        snapshot_id: snapshot.id,
+        exchange_rate_id: exchange_rate.id,
+        currency_rate_id: currency_rate.id,
+        ps_from_id: exchange_rate.income_payment_system_id,
+        ps_to_id: exchange_rate.outcome_payment_system_id,
+        base_rate_value: base_rate_value,
+        rate_percent: rate_percent,
+        rate_value: rate_value,
+        created_at: current_time
+      }
+    rescue StandardError => e
+      logger.error "Failed to build direction rate for exchange_rate #{exchange_rate.id}: #{e.message}"
+      nil
     end
   end
 end

@@ -20,12 +20,12 @@ Gera is a Rails engine for generating and managing currency exchange rates for c
 - **CurrencyPair** - Utility class for currency pair operations
 - **Universe** - Central repository pattern for accessing rate data
 
-### Worker Architecture
-- **RatesWorker** concern for fetching external rates
-- Individual workers for each rate source (ExmoRatesWorker, BitfinexRatesWorker, etc.)
-- **CurrencyRatesWorker** - Builds currency rate matrix from external rates
-- **DirectionsRatesWorker** - Calculates final direction rates with commissions
-- **CreateHistory_intervalsWorker** - Aggregates historical data
+### Job Architecture (ActiveJob/SolidQueue)
+- **RatesJob** concern for fetching external rates
+- Individual jobs for each rate source (ExmoRatesJob, BitfinexRatesJob, etc.)
+- **CurrencyRatesJob** - Builds currency rate matrix from external rates
+- **DirectionsRatesJob** - Calculates final direction rates with commissions
+- **CreateHistoryIntervalsJob** - Aggregates historical data
 
 ## Development Commands
 
@@ -100,7 +100,7 @@ RUB, USD, BTC, LTC, ETH, DSH, KZT, XRP, ETC, XMR, BCH, EUR, NEO, ZEC
 ## File Organization
 
 - `app/models/gera/` - Core domain models
-- `app/workers/gera/` - Background job workers
+- `app/jobs/gera/` - Background jobs (ActiveJob/SolidQueue)
 - `lib/gera/` - Core engine logic and utilities
 - `lib/builders/` - Rate calculation builders
 - `spec/` - Test suite with dummy app
