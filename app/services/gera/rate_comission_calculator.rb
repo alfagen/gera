@@ -164,15 +164,11 @@ module Gera
 
     def auto_comission_by_external_comissions
       @auto_comission_by_external_comissions ||= begin
-        return 0 unless could_be_calculated?
-
-        external_rates_in_target_position = external_rates[(position_from - 1)..(position_to - 1)]
-        return autorate_from unless external_rates_in_target_position.present?
-        external_rates_in_target_comission = external_rates_in_target_position.select { |rate| ((autorate_from)..(autorate_to)).include?(calculate_rate_commission(rate['rate'], exchange_rate.currency_rate.rate_value)) }
-        return autorate_from if external_rates_in_target_comission.empty?
-
-        target_comission = calculate_rate_commission(external_rates_in_target_comission.first['rate'], exchange_rate.currency_rate.rate_value) - AUTO_COMISSION_GAP
-        target_comission
+        calculator = exchange_rate.autorate_calculator_class.new(
+          exchange_rate: exchange_rate,
+          external_rates: external_rates
+        )
+        calculator.call
       end
     end
 
