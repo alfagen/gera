@@ -175,5 +175,14 @@ module Gera
     def same_currencies?
       in_currency == out_currency
     end
+
+    def calculate_rate_commission(finite_rate, base_rate)
+      finite = finite_rate.to_f
+      base = base_rate.to_f
+
+      normalized_finite = finite < 1 && base > 1 ? 1.0 / finite : finite
+
+      ((base - normalized_finite) / base) * 100
+    end
   end
 end

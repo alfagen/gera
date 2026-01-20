@@ -35,4 +35,20 @@ RSpec.describe Gera::Configuration do
       expect(Gera).to respond_to(:payment_system_decorator)
     end
   end
+
+  describe '.enable_direction_rate_history_intervals' do
+    it 'defaults to true' do
+      expect(Gera.enable_direction_rate_history_intervals).to be true
+    end
+
+    it 'can be configured' do
+      original_value = Gera.enable_direction_rate_history_intervals
+      begin
+        Gera.enable_direction_rate_history_intervals = false
+        expect(Gera.enable_direction_rate_history_intervals).to be false
+      ensure
+        Gera.enable_direction_rate_history_intervals = original_value
+      end
+    end
+  end
 end

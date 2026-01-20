@@ -37,7 +37,7 @@ module Gera
         CurrencyRateModeSnapshot.status_active.update_all status: :deactive
         snapshot.update status: :active
       end
-      CurrencyRatesWorker.perform_async if Rails.env.production?
+      CurrencyRatesJob.perform_later if Rails.env.production?
       flash[:success] = 'Режимы активированы'
       redirect_to currency_rate_mode_snapshot_path snapshot
     end

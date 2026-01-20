@@ -58,8 +58,6 @@ module Gera
 
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
-    after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
-
     before_create do
       self.in_cur = payment_system_from.currency.to_s
       self.out_cur = payment_system_to.currency.to_s
@@ -111,9 +109,9 @@ module Gera
 
     def update_finite_rate!(finite_rate)
       logger = Logger.new("#{Rails.root}/log/call_exchange_rate_updater_worker.log")
-      logger.info("Calls perform_async from update_finite_rate Gera::ExchangeRate")
+      logger.info("Calls perform_later from update_finite_rate Gera::ExchangeRate")
 
-      ExchangeRateUpdaterWorker.perform_async(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
+      ExchangeRateUpdaterJob.perform_later(id, { comission: calculate_comission(finite_rate, currency_rate.rate_value) })
     end
 
     def custom_inspect
@@ -164,7 +162,16 @@ module Gera
     end
 
     def update_direction_rates
-      DirectionsRatesWorker.perform_async(exchange_rate_id: id)
+      DirectionsRatesJob.perform_later(exchange_rate_id: id)
+    end
+
+    def bestchange_key
+      return '' if payment_system_from.nil? || payment_system_to.nil?
+
+      from_id = payment_system_from.read_attribute(:id_b)
+      to_id = payment_system_to.read_attribute(:id_b)
+
+      [from_id, to_id].join('-')
     end
 
     def rate_comission_calculator
@@ -172,7 +179,7 @@ module Gera
     end
 
     def external_rates
-      @external_rates ||= BestChange::Service.new(exchange_rate: self).rows_without_kassa
+      @external_rates ||= Gera.manul_client&.top_exchangers(bestchange_key) || []
     end
 
     def flexible_rate

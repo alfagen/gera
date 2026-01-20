@@ -29,9 +29,17 @@ module Gera
     end
 
     # @param [Hash] Набор кросс-валют для расчета
-    mattr_accessor :cross_pairs
+    # @param [Object] HTTP клиент для работы с Manul API (BestChange rates fetcher)
+    mattr_accessor :cross_pairs, :manul_client
     # В данном примере курс к KZT считать через RUB
     @@cross_pairs = { kzt: :rub }
+    @@manul_client = nil
+
+    # @param [Boolean] Включение/отключение создания direction_rate_history_intervals
+    # По умолчанию true для обратной совместимости
+    # Таблица занимает ~42GB и используется только для графиков в админке
+    mattr_accessor :enable_direction_rate_history_intervals
+    @@enable_direction_rate_history_intervals = true
 
     def cross_pairs
       h = {}

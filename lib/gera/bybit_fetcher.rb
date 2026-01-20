@@ -3,7 +3,7 @@
 require 'rest-client'
 
 module Gera
-  class BybitFetcher < PaymentServices::Base::Client
+  class BybitFetcher
     API_URL = 'https://api2.bytick.com/fiat/otc/item/online'
     Error = Class.new StandardError
 
@@ -20,20 +20,27 @@ module Gera
     private
 
     def rates
-      items = safely_parse(http_request(
+      response = RestClient::Request.execute(
         url: API_URL,
-        method: :POST,
-        body: params.to_json,
-        headers: build_headers
-      )).dig('result', 'items')
+        method: :post,
+        payload: params.to_json,
+        headers: {
+          'Content-Type' => 'application/json',
+          'Host' => 'api2.bytick.com'
+        },
+        verify_ssl: true
+      )
 
+      raise Error, "HTTP #{response.code}" unless response.code == 200
+
+      items = JSON.parse(response.body).dig('result', 'items')
       rate = items[2] || items[1] || raise(Error, 'No rates')
 
       [rate]
     end
 
     def params
-      { 
+      {
         userId: '',
         tokenId: 'USDT',
         currencyId: 'RUB',
@@ -49,14 +56,6 @@ module Gera
 
     def supported_currencies
       @supported_currencies ||= RateSourceBybit.supported_currencies
-    end
-
-    def build_headers
-      {
-        'Content-Type'   => 'application/json',
-        'Host'           => 'api2.bytick.com',
-        'Content-Length' => '182'
-      }
     end
   end
 end

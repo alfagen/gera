@@ -14,9 +14,8 @@ require 'authority'
 
 require 'timecop'
 
-require 'sidekiq/testing'
-Sidekiq::Testing.fake!
-Sidekiq.strict_args!(false)
+# ActiveJob test mode - jobs execute immediately
+ActiveJob::Base.queue_adapter = :test
 
 # Suppress Money gem deprecation warnings
 Money.locale_backend = :i18n
