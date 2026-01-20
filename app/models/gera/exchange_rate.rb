@@ -20,6 +20,8 @@ module Gera
     DEFAULT_COMISSION = 50
     MIN_COMISSION = -9.9
 
+    CALCULATOR_TYPES = %w[legacy position_aware].freeze
+
     include Mathematic
     include DirectionSupport
 
@@ -56,6 +58,8 @@ module Gera
 
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
+    after_commit :update_direction_rates, if: -> { previous_changes.key?('value') }
+
     before_create do
       self.in_cur = payment_system_from.currency.to_s
       self.out_cur = payment_system_to.currency.to_s
@@ -63,7 +67,8 @@ module Gera
     end
 
     validates :commission, presence: true
-    # validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
+    validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
+    validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }, allow_nil: true
 
     delegate :rate, :currency_rate, to: :direction_rate
 
@@ -162,6 +167,10 @@ module Gera
       DirectionsRatesJob.perform_later(exchange_rate_id: id)
     end
 
+    def rate_comission_calculator
+      @rate_comission_calculator ||= RateComissionCalculator.new(exchange_rate: self, external_rates: external_rates)
+    end
+
     def bestchange_key
       return '' if payment_system_from.nil? || payment_system_to.nil?
 
@@ -169,10 +178,6 @@ module Gera
       to_id = payment_system_to.read_attribute(:id_b)
 
       [from_id, to_id].join('-')
-    end
-
-    def rate_comission_calculator
-      @rate_comission_calculator ||= RateComissionCalculator.new(exchange_rate: self, external_rates: external_rates)
     end
 
     def external_rates
@@ -185,6 +190,17 @@ module Gera
 
     def flexible_rate?
       flexible_rate
+    end
+
+    def autorate_calculator_class
+      case calculator_type
+      when 'legacy'
+        AutorateCalculators::Legacy
+      when 'position_aware'
+        AutorateCalculators::PositionAware
+      else
+        raise ArgumentError, "Unknown calculator_type: #{calculator_type}"
+      end
     end
   end
 end

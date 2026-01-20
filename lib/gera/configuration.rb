@@ -48,6 +48,15 @@ module Gera
       end
       h
     end
+
+    # @param [Integer] ID нашего обменника в BestChange (для исключения из расчёта позиции)
+    mattr_accessor :our_exchanger_id
+    @@our_exchanger_id = nil
+
+    # @param [Float] Порог аномальной комиссии для защиты от манипуляторов (UC-9)
+    # Если комиссия отличается от медианы более чем на этот процент - считается аномальной
+    mattr_accessor :anomaly_threshold_percent
+    @@anomaly_threshold_percent = 50.0
 	end
 end
 
