@@ -68,7 +68,13 @@ module Gera
     validates :commission, numericality: { greater_than_or_equal_to: MIN_COMISSION }
     validates :calculator_type, inclusion: { in: CALCULATOR_TYPES }, allow_nil: true, if: -> { self.class.column_names.include?('calculator_type') }
 
-    delegate :rate, :currency_rate, to: :direction_rate
+    delegate :rate, to: :direction_rate
+
+    # Get currency_rate directly from repository to avoid circular dependency
+    # when creating DirectionRate (direction_rate -> exchange_rate.currency_rate -> direction_rate)
+    def currency_rate
+      @currency_rate ||= Universe.currency_rates_repository.find_currency_rate_by_pair(currency_pair)
+    end
 
     delegate  :auto_comission_by_reserve, :comission_by_base_rate, :auto_rate_by_base_from,
               :auto_rate_by_base_to, :auto_rate_by_reserve_from, :auto_rate_by_reserve_to,
