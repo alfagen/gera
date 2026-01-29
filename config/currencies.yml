@@ -966,3 +966,67 @@ idr:
 
   # минимальная сумма валюты на выдачу (из minGetSumOut)
   minimal_output_value: 1000
+
+avax:
+  priority: 37
+  iso_code: AVAX
+  name: Avalanche
+  symbol:
+  alternate_symbols: []
+  subunit: nAVAX
+  subunit_to_unit: 1000000000
+  symbol_first: false
+  html_entity: ''
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: ''
+  smallest_denomination: 1
+  authorized_round: 6
+  is_crypto: true
+
+  local_id: 39
+  minimal_input_value: 0.01
+  minimal_output_value: 0.01
+
+cny:
+  priority: 38
+  iso_code: CNY
+  name: Chinese Yuan
+  symbol: '¥'
+  alternate_symbols:
+  - 元
+  subunit: Fen
+  subunit_to_unit: 100
+  symbol_first: true
+  html_entity: '&#165;'
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: '156'
+  smallest_denomination: 1
+  is_crypto: false
+
+  local_id: 40
+  minimal_input_value: 10
+  minimal_output_value: 10
+
+inr:
+  priority: 39
+  iso_code: INR
+  name: Indian Rupee
+  symbol: '₹'
+  alternate_symbols:
+  - Rs
+  - ₨
+  subunit: Paisa
+  subunit_to_unit: 100
+  symbol_first: true
+  html_entity: '&#x20B9;'
+  decimal_mark: "."
+  thousands_separator: ","
+  iso_numeric: '356'
+  smallest_denomination: 50
+  is_crypto: false
+
+  local_id: 41
+  minimal_input_value: 100
+  minimal_output_value: 100
