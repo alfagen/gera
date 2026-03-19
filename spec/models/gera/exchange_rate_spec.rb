@@ -10,6 +10,15 @@ module Gera
     subject { create :gera_exchange_rate }
     it { expect(subject).to be_persisted }
 
+    describe '.available scope' do
+      it 'includes same-to-same direction (PIR-076)' do
+        ps = create(:gera_payment_system, income_enabled: true, outcome_enabled: true)
+        er = create(:gera_exchange_rate, payment_system_from: ps, payment_system_to: ps)
+
+        expect(Gera::ExchangeRate.available).to include(er)
+      end
+    end
+
     describe '#autorate_calculator_class' do
       context 'when calculator_type is legacy' do
         before { subject.calculator_type = 'legacy' }
