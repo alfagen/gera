@@ -41,14 +41,11 @@ module Gera
       with_payment_systems
         .enabled
         .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
-        .where("#{table_name}.income_payment_system_id <> #{table_name}.outcome_payment_system_id")
     }
 
-    scope :available_for_parser, lambda {
-      with_payment_systems
-        .enabled
-        .where("#{PaymentSystem.table_name}.income_enabled and payment_system_tos_gera_exchange_rates.outcome_enabled")
-    }
+    # Legacy alias — previously excluded same-to-same directions (income_ps_id <> outcome_ps_id),
+    # but available no longer has that restriction (PIR-076 / issue #2291).
+    scope :available_for_parser, -> { available }
 
     scope :with_auto_rates, -> { where(auto_rate: true) }
 
